@@ -1,0 +1,544 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+  <div class="container-fluid">
+    <div class="col-md-12">
+      <% include ../partials/message %>
+      <div class="row page-titles">
+        <div class="col-md-6 col-8 align-self-center">
+          <h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="javascript:void(0)">SIM Based Tracking</a>
+            </li>
+            <li class="breadcrumb-item active">Add Number</li>
+          </ol>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body pb-0">
+          <ul class="nav nav-tabs customtab2" role="tablist">
+            <li class="nav-item col-md-6 text-center">
+              <a
+                class="nav-link active"
+                data-toggle="tab"
+                href="#addNumber"
+                role="tab"
+                ><span class="hidden-sm-up"><i class="ti-home"></i></span>
+                <span class="hidden-xs-down">Add Number</span></a
+              >
+            </li>
+            <li class="nav-item col-md-6 text-center">
+              <a
+                class="nav-link"
+                data-toggle="tab"
+                href="#validateNumber"
+                role="tab"
+                ><span class="hidden-sm-up"><i class="ti-user"></i></span>
+                <span class="hidden-xs-down">Number List</span></a
+              >
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="addNumber" role="tabpanel">
+              <div class="p-3">
+                <form
+                  class="form-horizontal"
+                  method="POST"
+                  action="/simTracking/addNumber"
+                  enctype="multipart/form-data"
+                  style="margin-left: 125px"
+                >
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h5 class="mt-4 mb-2">Mobile Number*</h5>
+                      <input
+                        class="form-control col-md-12"
+                        type="text"
+                        name="phone_number"
+                        placeholder="Mobile Number"
+                        maxlength="10"
+                        minlength="10"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h5 class="mt-4 mb-2">Name Of Tracking Person*</h5>
+                      <input
+                        type="text"
+                        class="form-control col-md-12"
+                        name="name"
+                        placeholder="Name"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h5 class="mt-4 mb-2">Operator*</h5>
+                      <input
+                        type="text"
+                        class="form-control col-md-12"
+                        name="operator"
+                        placeholder="Operator"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <br />
+                  <button
+                    type="submit"
+                    style="margin-left: 250px"
+                    class="btn waves-effect waves-light btn-rounded btn-info"
+                  >
+                    ADD
+                  </button>
+                </form>
+              </div>
+            </div>
+            <div class="tab-pane p-3" id="validateNumber" role="tabpanel">
+              <div class="card-body">
+                <h4 class="card-title">Number</h4>
+                <div class="table-responsive m-t-40">
+                  <table
+                    id="datatable"
+                    class="display nowrap table table-hover table-striped table-bordered"
+                    cellspacing="0"
+                    width="100%"
+                  >
+                    <thead>
+                      <tr>
+                        <th>S No.</th>
+                        <th>Name</th>
+                        <th>Mobile Number</th>
+                        <th>Operator</th>
+                        <th>Resend Concent</th>
+                        <th>Check Concent</th>
+                        <th>Edit</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% for( let i = 0; i < number.length; i++ ) { %>
+                      <tr>
+                        <td><%= number[i].id %></td>
+                        <td><%= number[i].name %></td>
+                        <td><%= number[i].mob %></td>
+                        <td><%= number[i].operator %></td>
+                        <td>
+                        <button
+                        href="#" id="rConcent"
+                            class="btn btn-info rConcent" value="<%= number[i].mob %>"
+                            >  Resend Concent </button
+                          >
+                        </td>
+                        <td>
+                          <% if(number[i].concent=="Pending"){ %><button
+                            href="#" id="chConcent"
+                            class="btn btn-danger chConcent" value="<%= number[i].mob %>"
+                            >  Check Concent </button
+                          ><% }else{ %> <%= number[i].concent %> <%}%>
+                        </td>
+
+                        <td>
+                          <a
+                            class="btn btn-outline-default btn-round"
+                            data-toggle="modal"
+                            data-trans="<%=number[i].id%>"
+                            data-target="#updateTrans"
+                            >Edit</a
+                          >
+                        </td>
+                      </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">© 2019 Road Express by CodeBuckets.in</footer>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="updateTrans"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="mapmodal1"
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">Update Driver Info</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form
+          class="form-horizontal"
+          method="POST"
+          action="/admin/updateTrans"
+          enctype="multipart/form-data"
+          style="margin-left: 125px"
+        >
+          <div class="row"></div>
+          <div class="row">
+            <div class="col-md-5">
+              <h5 class="mt-4 mb-2">City*</h5>
+              <select
+                class="select2 col-6 btn btn-info btn-round id1"
+                name="ucity"
+              >
+                <option disabled selected value>Choose</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <h5 class="mt-4 mb-2">Mobile Number*</h5>
+              <input
+                class="form-control col-md-12"
+                type="text"
+                name="umob"
+                placeholder="Mobile Number"
+                maxlength="10"
+                minlength="10"
+                required
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <h5 class="mt-4 mb-2">Expected Fleet Size*</h5>
+              <input
+                type="text"
+                class="form-control col-md-12"
+                name="ufleet"
+                placeholder="Fleet Size"
+                required
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <h5 class="mt-4 mb-2">Bank Account Number*</h5>
+              <input
+                type="text"
+                class="form-control col-md-12"
+                name="ubankAcc"
+                placeholder="Bank Account No."
+                required
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <h5 class="mt-4 mb-2">Account Holder Name*</h5>
+              <input
+                type="text"
+                class="form-control col-md-12"
+                name="uacc_name"
+                placeholder="Account Holder Name"
+                required
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <h5 class="mt-4 mb-2">IFSC Code*</h5>
+              <input
+                type="text"
+                class="form-control col-md-12"
+                name="uifsc"
+                placeholder="IFSC Code"
+                required
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <h5 class="mt-4 mb-2">Username*</h5>
+              <input
+                type="text"
+                class="form-control col-md-12"
+                name="uusername"
+                placeholder="Username"
+                required
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <h5 class="mt-4 mb-2">Email*</h5>
+              <input
+                type="email"
+                class="form-control col-md-12"
+                name="uemail"
+                placeholder="Email"
+                required
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <h5 class="mt-4 mb-2">Password*</h5>
+              <input
+                type="password"
+                class="form-control col-md-12"
+                name="upassword"
+                placeholder="Password"
+              />
+            </div>
+            <input type="text" name="trans" hidden />
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Aadhar Pic</h5>
+                  <!--  <label for="input-file-now">Your so fresh input file — Default version</label> -->
+                  <input
+                    type="file"
+                    class="dropify"
+                    name="uaadhar_trans_pic"
+                    accept="image/*"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Profile Pic</h5>
+                  <!--  <label for="input-file-now">Your so fresh input file — Default version</label> -->
+                  <input
+                    type="file"
+                    class="dropify"
+                    name="uprof_trans_pic"
+                    accept="image/*"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <br />
+          <button
+            type="submit"
+            style="margin-left: 250px"
+            class="btn waves-effect waves-light btn-rounded btn-info"
+          >
+            ADD
+          </button>
+        </form>
+        <hr />
+      </div>
+    </div>
+  </div>
+</div>
+
+<% include ../partials/footer %>
+<script src="/plugins/dropify/dist/js/dropify.min.js"></script>
+<script src="/plugins/dropify/dist/js/dropify.min.js"></script>
+<script src="/plugins/datatables/dataTables.buttons.min.js"></script>
+<script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
+<script src="/plugins/datatables/jszip.min.js"></script>
+<script src="/plugins/datatables/pdfmake.min.js"></script>
+<script src="/plugins/datatables/vfs_fonts.js"></script>
+<script src="/plugins/datatables/buttons.html5.min.js"></script>
+<script src="/plugins/datatables/buttons.colVis.min.js"></script>
+<script src="/plugins/datatables/dataTables.responsive.min.js"></script>
+
+<script type="text/javascript">
+  let state;
+  $(document).ready(function () {
+    $(".select2").select2();
+    $("#state").change(function () {
+      state = $(this).children("option:selected").val();
+      stateFind(state);
+    });
+  });
+
+  $(document).ready(function () {
+    $(document).on('click','.chConcent',function(){
+
+const mob = $(this).val();
+const  tel = mob.trim();
+
+    $.ajax({
+      url: `/simTracking/checkConcent/`,
+      type: "get",
+      data: {
+       tel:tel
+      },
+      dataType: "json",
+      success: function (data) {
+        alert("Your Concent Updated");
+      }
+    });
+  });
+  });
+
+  $(document).ready(function () {
+    $(document).on('click','.rConcent',function(){
+
+const phone_number = $(this).val();
+const  phone = phone_number.trim();
+
+    $.ajax({
+      url: "/simTracking/resndConcent",
+      type: "post",
+      data: {
+        phone_number: phone,
+      },
+      dataType: "json",
+      success: function (data) {
+        alert(" SMS Resend Succefully");
+      }
+    });
+  });
+  });
+
+  function stateFind(state) {
+    $.ajax({
+      url: "/admin/search",
+      type: "post",
+      data: {
+        state: state,
+      },
+      dataType: "json",
+      success: function (data) {
+        var len = data.length;
+        if (len > 0) {
+          $(".id1").empty();
+          for (var i = 0; i < len; i++) {
+            var cid = data[i].id;
+            var city = data[i].city;
+            $(".id1").append(
+              "<option value='" + cid + "'>" + city + "</option>"
+            );
+          }
+        } else {
+          $(".id1").empty();
+          $(".id1").append("<option disabled selected>Choose</option>");
+        }
+      },
+    });
+  }
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+      $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+    });
+    // Basic
+    $(".dropify").dropify();
+  });
+</script>
+
+<script>
+  $(function () {
+    $("#datatable").DataTable({
+      dom: "Bfrtip",
+      buttons: [
+        {
+          extend: "csvHtml5",
+          title: "Transporters",
+        },
+        {
+          extend: "excelHtml5",
+          title: "Transporters",
+        },
+      ],
+      scrollY: 600,
+      scrollX: true,
+    });
+  });
+</script>
+
+<script>
+  function stateUpdate(state, cities) {
+    $.ajax({
+      url: "/admin/search",
+      type: "post",
+      data: {
+        state: state,
+      },
+      dataType: "json",
+      success: function (data) {
+        var len = data.length;
+        if (len > 0) {
+          $(".id1").empty();
+          for (var i = 0; i < len; i++) {
+            var cid = data[i].id;
+            var city = data[i].city;
+            if (cid != cities) {
+              $(".id1").append(
+                "<option value='" + cid + "'>" + city + "</option>"
+              );
+            } else {
+              $(".id1").append(
+                "<option selected value='" + cid + "'>" + city + "</option>"
+              );
+            }
+          }
+        } else {
+          $(".id1").empty();
+          $(".id1").append("<option disabled selected>Choose</option>");
+        }
+      },
+    });
+  }
+
+  $("#updateTrans").on("show.bs.modal", (event) => {
+    tid = $(event.relatedTarget).attr("data-trans");
+    $.ajax({
+      url: "/admin/autoTrans",
+      type: "post",
+      data: {
+        tid,
+      },
+      dataType: "json",
+      success: (data) => {
+        console.log(data);
+        $("input[name='ufleet']").val(data.result[0].fleet_size);
+        $("input[name='ubankAcc']").val(data.result[0].bankAcc);
+        $("input[name='uacc_name']").val(data.result[0].acc_name);
+        $("input[name='uusername']").val(data.result[0].name);
+        $("select[name='ustate']").val(data.result[0].state);
+        stateUpdate(data.result[0].state, data.result[0].city);
+        $("select[name='ucity']").val(data.result[0].city);
+        $("input[name='umob']").val(data.result[0].mob);
+        $("input[name='uemail']").val(data.result[0].email);
+        $("input[name='uifsc']").val(data.result[0].ifsc);
+        $("input[name='trans']").val(tid);
+      },
+    });
+  });
+</script>
+
+<script>
+  var url = document.location.toString();
+  if (url.match("#")) {
+    $('.nav-tabs a[href="#' + url.split("#")[1] + '"]').tab("show");
+  }
+
+  // Change hash for page-reload
+  $(".nav-tabs a").on("shown.bs.tab", function (e) {
+    window.location.hash = e.target.hash;
+  });
+</script>

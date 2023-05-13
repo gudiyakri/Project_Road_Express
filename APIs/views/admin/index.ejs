@@ -1,0 +1,1987 @@
+<% include ../partials/header %>
+<link href="/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+<style>
+    .gm-style .controls button {
+        border: 0;
+        background-color: white;
+        color: rgba(0, 0, 0, 0.6);
+        display: inline-block;
+        font-size: 1em;
+        margin: 0 1px;
+        padding: 0 6px;
+        font-size: 20px;
+        border-radius: 2px;
+        width: auto;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+        box-sizing: border-box;
+    }
+
+    .gm-style .controls button:hover {
+        color: rgba(0, 0, 0, 0.9);
+    }
+</style>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper ">
+    <div class="container-fluid "
+        style="background-image: url('img1.jpg');background-size: cover;background-repeat: no-repeat;min-height: 500px;">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Number of Clients</h4>
+                        <a href="/admin/client">
+                            <div id="noClient">
+                                <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i></h2>
+                            </div>
+                        </a>
+                        <div class="text-right">
+                            <h2 class="font-light mb-0" id="noClientAdd"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Kilometers Driven</h4>
+                        <a data-toggle="modal" data-target="#kmInfo">
+                            <div id="noKm">
+                                <h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i></h2>
+                            </div>
+                        </a>
+                        <div class="text-right">
+                            <h2 class="font-light mb-0" id="noKmAdd"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">No. Of Trips Completed</h4>
+                        <a data-toggle="modal" data-target="#tripInfo">
+                            <div id="noTrip">
+                                <h2 class="font-light mb-0"><i class="ti-arrow-up text-purple"></i></h2>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Vehicles On Board</h4>
+                        <a href="/admin/getVehicle">
+                            <div id="noVeh">
+                                <h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i></h2>
+                            </div>
+                        </a>
+                        <div class="text-right">
+                            <h2 class="font-light mb-0" id="noVehicleAdd"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Drivers Online</h4>
+                        <a data-toggle="modal" data-target="#online">
+                            <div id="noDriverOn">
+                                <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i></h2>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Drivers Offline</h4>
+                        <a data-toggle="modal" data-target="#offline">
+                            <div id="noDriverOff">
+                                <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i></h2>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Total Bookings</h4>
+                        <a href="/admin/allTrip">
+                            <div id="noBookings">
+                                <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i></h2>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Profit</h4>
+                        <div id="profit">
+                            <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Transporters</h4>
+                        <a href="/admin/addTrans/#validateTrans">
+                            <div id="noTrans">
+                                <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i></h2>
+                            </div>
+                        </a>
+                        <div class="text-right">
+                            <h2 class="font-light mb-0" id="noTransAdd"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Total Income</h4>
+                        <div id="income">
+                            <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Customers</h4>
+                        <div id="noCust">
+                            <h2 class="font-light mb-0"><i class="ti-arrow-up text-purple"></i>20</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Late Trips</h4>
+                        <a data-toggle="modal" data-target="#lateModal">
+                            <div id="late">
+                                <h2 class="font-light mb-0"><i class="ti-arrow-up text-purple"></i></h2>
+                            </div>
+                        </a>
+                        <div class="text-right">
+                            <h2 class="font-light mb-0" id="noLateAdd"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="switchery-demo mb-4 text-right">
+            <input type="checkbox" class="js-switch" id="dark" data-color="#3d3b3b" />
+        </div>
+        <div id="map" class="map" style="height:600px"></div>
+        <br>
+        <!-- Hide controls until they are moved into the map. -->
+        <div style="display:none">
+            <div class="controls map-control maptype-control-is-map">
+                <button class="track" id='defaultMap'>Track</button>
+                <button class="trips">Trips</button>
+                <button class="trackAll">Track All</button>
+            </div>
+        </div>
+        <select class="select2 mb-3 mr-2 btn btn-info btn-round" id="type" title="Type" required>
+            <option value="month">Monthly</option>
+            <option value="year">Yearly</option>
+        </select>
+        <select class="select2 mb-3 mr-2 btn btn-info btn-round" id="month" required>
+            <option selected>SELECT</option>
+            <option value="01">JAN</option>
+            <option value="02">FEB</option>
+            <option value="03">MAR</option>
+            <option value="04">APR</option>
+            <option value="05">MAY</option>
+            <option value="06">JUNE</option>
+            <option value="07">JULY</option>
+            <option value="08">AUG</option>
+            <option value="09">SEPT</option>
+            <option value="10">OCT</option>
+            <option value="11">NOV</option>
+            <option value="12">DEC</option>
+        </select>
+        <select class="select2 mb-3 mr-2 btn btn-info btn-round" id="year" required>
+            <option selected>SELECT</option>
+            <% for(var i=0 ;i<year.length; i++) {%>
+            <option value="<%= year[i].year %>"><%= year[i].year %></option>
+            <% } %>
+        </select>
+        <canvas id="chart" height="100"></canvas>
+        <br>
+        <br>
+        <div class="row">
+            <select class="select2 mb-3 mr-2 btn btn-info btn-round" id="state" name="state" required>
+                <option selected>SELECT</option>
+                <% for(var i=0 ;i<state.length; i++) {%>
+                <option value="<%= state[i].state %>"><%= state[i].state %></option>
+                <% } %>
+            </select>
+            <select class="select2 mb-3 mr-2 btn btn-info btn-round" id="city" name="city" required>
+                <option selected>SELECT</option>
+            </select>
+        </div>
+        <div id="chartParent">
+            <canvas id="cityChart" height="100"></canvas>
+        </div>
+        <footer class="footer"> © 2019 Road Express by CodeBuckets.in</footer>
+    </div>
+</div>
+<div class="modal fade" id="lateModal" tabindex="-1" role="dialog" aria-labelledby="mapmodal1">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel1">Late List</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <table id="datatable" class="display table table-hover table-striped table-bordered" cellspacing="0"
+                    width="100%">
+                    <thead>
+                        <tr>
+                            <th>Driver Name</th>
+                            <th>Vehicle Number</th>
+                            <th>Client Name</th>
+                            <th>Source City</th>
+                            <th>Start Time</th>
+                            <th>Final Time</th>
+                            <th>Late By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="offline" tabindex="-1" role="dialog" aria-labelledby="mapmodal1">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel1">Offline List</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <table id="datatable2" class="display table table-hover table-striped table-bordered" cellspacing="0"
+                    width="100%">
+                    <thead>
+                        <tr>
+                            <th>Driver Name</th>
+                            <th>Vehicle Number</th>
+                            <th>Phone Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="kmInfo" tabindex="-1" role="dialog" aria-labelledby="kmInfo">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel1">Km List</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="col-md-12 col-sm-12 col-lg-12">
+                            <h5 class="mt-4 mb-2">Select Date</h5>
+                            <div class="input-group">
+                                <input type="text" class="form-control singledate" id="date" placeholder="Select Date" autocomplete="off" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="calender"><i class="icon-calender"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table id="kmTab" class="display table table-hover table-striped table-bordered" cellspacing="0"
+                    width="100%">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Distance (In KM)</th>
+                            <th>Vehicle Type</th>
+                            <th>Client Name</th>
+                            <th>Source</th>
+                            <th>Destination</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="online" tabindex="-1" role="dialog" aria-labelledby="mapmodal1">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel1">Online List</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <table id="datatable3" class="display table table-hover table-striped table-bordered" cellspacing="0"
+                    width="100%">
+                    <thead>
+                        <tr>
+                            <th>Driver Name</th>
+                            <th>Vehicle Number</th>
+                            <th>Phone Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tripInfo" tabindex="-1" role="dialog" aria-labelledby="mapmodal1">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel1">Trip List</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <table id="datatable4" class="display table table-hover table-striped table-bordered" cellspacing="0"
+                    width="100%">
+                    <thead>
+                        <tr>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Distance</th>
+                            <th>Driver Name</th>
+                            <th>Driver Phn</th>
+                            <th>Vehicle Type</th>
+                            <th>Vehicle Number</th>
+                            <th>Client Name</th>
+                            <th>Transporter Name</th>
+                            <th>Transporter Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtc_1Ie4_kMbMn_UyvwZeyLa7CgWBdAm4&libraries=geometry">
+</script>
+<script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
+<script src="/plugins/jquery.easy/jquery.easing.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marker-animate-unobtrusive/0.2.8/vendor/markerAnimate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marker-animate-unobtrusive/0.2.8/SlidingMarker.min.js"></script>
+<script src="/plugins/Chart.js/chartjs.init.js"></script>
+<script src="/plugins/Chart.js/Chart.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>
+<script src="/plugins/daterangepicker/daterangepicker.js"></script>
+
+<script>
+    $(document).ready(function (event) {
+        demo.initDateTimePicker();
+        $.fn.dataTable.moment('DD/MM/YYYY hh:mm a');
+        $.ajax({
+            url: '/admin/noInfo',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == '1') {
+                    $('#noClient').empty();
+                    if (data.noClient[0].noClient == null) {
+                        var noClientHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i>0</h2>`;
+                    } else {
+                        var noClientHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i>${data.noClient[0].noClient}</h2>`;
+                    }
+                    $('#noClient').html(noClientHtml);
+                    $('#noClientAdd').html(`+${data.noClientAdd[0].noClientAdd}`);
+                    $('#noTrip').empty();
+                    if (data.noTrip[0].noTrip == null) {
+                        var noTripHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i>0</h2>`;
+                    } else {
+                        var noTripHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i>${data.noTrip[0].noTrip}</h2>`;
+                    }
+                    $('#noTrip').html(noTripHtml);
+                    $('#noKm').empty();
+                    if (data.noKm[0].noKm == null) {
+                        var noKmHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-purple"></i>0 KM</h2>`;
+                    } else {
+                        var noKmHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-purple"></i>${data.noKm[0].noKm.toFixed(2)} KM</h2>`;
+                    }
+                    $('#noKm').html(noKmHtml);
+                    $('#noKmAdd').html(`+${data.noKmAdd[0].noKmAdd ? data.noKmAdd[0].noKmAdd.toFixed(2) : 0}`);
+                    $('#noVeh').empty();
+                    if (data.noVeh[0].noVeh == null) {
+                        var noVehHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i>0</h2>`;
+                    } else {
+                        var noVehHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i>${data.noVeh[0].noVeh}</h2>`;
+                    }
+                    $('#noVeh').html(noVehHtml);
+                    $('#noVehicleAdd').html(`+${data.noVehAdd[0].noVehAdd}`);
+                    $('#noDriverOn').empty();
+                    if (data.noDriverOn[0].noDriverOn == null) {
+                        var noDriverOnHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i>${data.noDriverOn[0].noDriverOn}</h2>`;
+                    } else {
+                        var noDriverOnHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i>${data.noDriverOn[0].noDriverOn}</h2>`;
+                    }
+                    $('#noDriverOn').html(noDriverOnHtml);
+                    $('#noDriverOff').empty();
+                    if (data.noDriverOff[0].noDriverOff == null) {
+                        var noDriverOffHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i>0</h2>`;
+                    } else {
+                        var noDriverOffHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i>${data.noDriverOff[0].noDriverOff}</h2>`;
+                    }
+                    $('#noDriverOff').html(noDriverOffHtml);
+                    $('#noBookings').empty();
+                    if (data.noLoad[0].noLoad == null) {
+                        var noBookingsHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-purple"></i>0</h2>`;
+                    } else {
+                        var noBookingsHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-purple"></i>${data.noLoad[0].noLoad}</h2>`;
+                    }
+                    $('#noBookings').html(noBookingsHtml);
+                    $('#profit').empty();
+                    if (data.profit[0].profit == null) {
+                        var profitHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i>0</h2>`;
+                    } else {
+                        var profitHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i>${data.profit[0].profit}</h2>`;
+                    }
+                    $('#profit').html(profitHtml);
+                    $('#noTrans').empty();
+                    if (data.noTrans[0].noTrans == null) {
+                        var noTransHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i>0</h2>`;
+                    } else {
+                        var noTransHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i>${data.noTrans[0].noTrans}</h2>`;
+                    }
+                    $('#noTrans').html(noTransHtml);
+                    $('#noTransAdd').html(`+${data.noTransAdd[0].noTransAdd}`);
+                    $('#income').empty();
+                    if (data.income[0].income == null) {
+                        var incomeHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i>0</h2>`;
+                    } else {
+                        var incomeHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i>${data.income[0].income}</h2>`;
+                    }
+                    $('#income').html(incomeHtml);
+                    $('#late').empty();
+                    if (data.late[0].late == null) {
+                        var lateHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i>0</h2>`;
+                    } else {
+                        var lateHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i>${data.late[0].late}</h2>`;
+                    }
+                    $('#late').html(lateHtml);
+                    $('#noLateAdd').html(`+${data.lateAdd[0].lateAdd}`);
+                }
+            }
+        });
+    });
+
+    function info() {
+        $.ajax({
+            url: '/admin/noInfo',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == '1') {
+                    $('#noClient').empty();
+                    if (data.noClient[0].noClient == null) {
+                        var noClientHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i>0</h2>`;
+                    } else {
+                        var noClientHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i>${data.noClient[0].noClient}</h2>`;
+                    }
+                    $('#noClient').html(noClientHtml);
+                    $('#noClientAdd').html(`+${data.noClientAdd[0].noClientAdd}`);
+                    $('#noTrip').empty();
+                    if (data.noTrip[0].noTrip == null) {
+                        var noTripHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i>0</h2>`;
+                    } else {
+                        var noTripHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i>${data.noTrip[0].noTrip}</h2>`;
+                    }
+                    $('#noTrip').html(noTripHtml);
+                    $('#noKm').empty();
+                    if (data.noKm[0].noKm == null) {
+                        var noKmHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-purple"></i>0 KM</h2>`;
+                    } else {
+                        var noKmHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-purple"></i>${data.noKm[0].noKm.toFixed(2)} KM</h2>`;
+                    }
+                    $('#noKm').html(noKmHtml);
+                    $('#noKmAdd').html(`+${data.noKmAdd[0].noKmAdd ? data.noKmAdd[0].noKmAdd.toFixed(2) : 0}`);
+                    $('#noVeh').empty();
+                    if (data.noVeh[0].noVeh == null) {
+                        var noVehHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i>0</h2>`;
+                    } else {
+                        var noVehHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i>${data.noVeh[0].noVeh}</h2>`;
+                    }
+                    $('#noVeh').html(noVehHtml);
+                    $('#noVehicleAdd').html(`+${data.noVehAdd[0].noVehAdd}`);
+                    $('#noDriverOn').empty();
+                    if (data.noDriverOn[0].noDriverOn == null) {
+                        var noDriverOnHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i>${data.noDriverOn[0].noDriverOn}</h2>`;
+                    } else {
+                        var noDriverOnHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i>${data.noDriverOn[0].noDriverOn}</h2>`;
+                    }
+                    $('#noDriverOn').html(noDriverOnHtml);
+                    $('#noDriverOff').empty();
+                    if (data.noDriverOff[0].noDriverOff == null) {
+                        var noDriverOffHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i>0</h2>`;
+                    } else {
+                        var noDriverOffHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i>${data.noDriverOff[0].noDriverOff}</h2>`;
+                    }
+                    $('#noDriverOff').html(noDriverOffHtml);
+                    $('#noBookings').empty();
+                    if (data.noLoad[0].noLoad == null) {
+                        var noBookingsHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-purple"></i>0</h2>`;
+                    } else {
+                        var noBookingsHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-purple"></i>${data.noLoad[0].noLoad}</h2>`;
+                    }
+                    $('#noBookings').html(noBookingsHtml);
+                    $('#profit').empty();
+                    if (data.profit[0].profit == null) {
+                        var profitHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i>0</h2>`;
+                    } else {
+                        var profitHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i>${data.profit[0].profit}</h2>`;
+                    }
+                    $('#profit').html(profitHtml);
+                    $('#noTrans').empty();
+                    if (data.noTrans[0].noTrans == null) {
+                        var noTransHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i>0</h2>`;
+                    } else {
+                        var noTransHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i>${data.noTrans[0].noTrans}</h2>`;
+                    }
+                    $('#noTrans').html(noTransHtml);
+                    $('#noTransAdd').html(`+${data.noTransAdd[0].noTransAdd}`);
+                    $('#income').empty();
+                    if (data.income[0].income == null) {
+                        var incomeHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i>0</h2>`;
+                    } else {
+                        var incomeHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i>${data.income[0].income}</h2>`;
+                    }
+                    $('#income').html(incomeHtml);
+                    $('#late').empty();
+                    if (data.late[0].late == null) {
+                        var lateHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i>0</h2>`;
+                    } else {
+                        var lateHtml =
+                            `<h2 class="font-light mb-0"><i class="ti-arrow-up text-danger"></i>${data.late[0].late}</h2>`;
+                    }
+                    $('#late').html(lateHtml);
+                    $('#noLateAdd').html(`+${data.lateAdd[0].lateAdd}`);
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        initMap();
+        $(".select2").select2();
+        $(".singledate").daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            locale: {
+                format: "DD/MM/YYYY",
+            },
+    		autoUpdateInput: false,
+        });
+    });
+</script>
+
+<script>
+    let styleDark = [{
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#242f3e"
+            }]
+        },
+        {
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "color": "#746855"
+            }]
+        },
+        {
+            "elementType": "labels.text.stroke",
+            "stylers": [{
+                "color": "#242f3e"
+            }]
+        },
+        {
+            "featureType": "administrative.country",
+            "elementType": "geometry.stroke",
+            "stylers": [{
+                    "color": "#ffffff"
+                },
+                {
+                    "weight": 0.5
+                }
+            ]
+        },
+        {
+            "featureType": "administrative.land_parcel",
+            "elementType": "labels",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "administrative.locality",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "color": "#d59563"
+            }]
+        },
+        {
+            "featureType": "administrative.province",
+            "elementType": "geometry.stroke",
+            "stylers": [{
+                "color": "#ffffff"
+            }]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "labels.text",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "color": "#d59563"
+            }]
+        },
+        {
+            "featureType": "poi.business",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#263c3f"
+            }]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "color": "#6b9a76"
+            }]
+        },
+        {
+            "featureType": "road",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#38414e"
+            }]
+        },
+        {
+            "featureType": "road",
+            "elementType": "geometry.stroke",
+            "stylers": [{
+                "color": "#212a37"
+            }]
+        },
+        {
+            "featureType": "road",
+            "elementType": "labels.icon",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "road",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "color": "#9ca5b3"
+            }]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#746855"
+            }]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry.stroke",
+            "stylers": [{
+                "color": "#1f2835"
+            }]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "color": "#f3d19c"
+            }]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "labels",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "transit",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "transit",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#2f3948"
+            }]
+        },
+        {
+            "featureType": "transit.station",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "color": "#d59563"
+            }]
+        },
+        {
+            "featureType": "water",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#17263c"
+            }]
+        },
+        {
+            "featureType": "water",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "color": "#515c6d"
+            }]
+        },
+        {
+            "featureType": "water",
+            "elementType": "labels.text.stroke",
+            "stylers": [{
+                "color": "#17263c"
+            }]
+        }
+    ];
+    let styleLight = [{
+            "featureType": "administrative.country",
+            "elementType": "geometry.stroke",
+            "stylers": [{
+                    "color": "#000000"
+                },
+                {
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "featureType": "administrative.land_parcel",
+            "elementType": "labels",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "administrative.province",
+            "elementType": "geometry.fill",
+            "stylers": [{
+                    "color": "#ed0000"
+                },
+                {
+                    "lightness": "100"
+                },
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative.province",
+            "elementType": "geometry.stroke",
+            "stylers": [{
+                    "color": "#ff0000"
+                },
+                {
+                    "saturation": "80"
+                },
+                {
+                    "lightness": "56"
+                },
+                {
+                    "gamma": "0.00"
+                },
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative.province",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "color": "#636363"
+            }]
+        },
+        {
+            "featureType": "landscape",
+            "elementType": "geometry",
+            "stylers": [{
+                    "color": "#e3e3e3"
+                },
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "landscape.man_made",
+            "stylers": [{
+                "visibility": "on"
+            }]
+        },
+        {
+            "featureType": "landscape.man_made",
+            "elementType": "geometry",
+            "stylers": [{
+                "visibility": "on"
+            }]
+        },
+        {
+            "featureType": "landscape.natural",
+            "elementType": "labels",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "labels.text",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "poi.business",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "geometry.fill",
+            "stylers": [{
+                "visibility": "on"
+            }]
+        },
+        {
+            "featureType": "poi.sports_complex",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "road",
+            "stylers": [{
+                    "color": "#c0c0c0"
+                },
+                {
+                    "weight": 0.5
+                }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "labels.icon",
+            "stylers": [{
+                    "color": "#938db8"
+                },
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "road",
+            "elementType": "labels.text.stroke",
+            "stylers": [{
+                "color": "#ffffff"
+            }]
+        },
+        {
+            "featureType": "road.arterial",
+            "elementType": "geometry.fill",
+            "stylers": [{
+                    "color": "#bcbaba"
+                },
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "road.arterial",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "road.highway",
+            "stylers": [{
+                    "color": "#a6a6a6"
+                },
+                {
+                    "visibility": "on"
+                },
+                {
+                    "weight": 1.5
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry.stroke",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "labels",
+            "stylers": [{
+                    "color": "#ffffff"
+                },
+                {
+                    "visibility": "off"
+                },
+                {
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "labels.icon",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                    "visibility": "off"
+                },
+                {
+                    "weight": 2.5
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "labels.text.stroke",
+            "stylers": [{
+                    "color": "#ffffff"
+                },
+                {
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway.controlled_access",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "road.local",
+            "stylers": [{
+                    "color": "#b7b7bc"
+                },
+                {
+                    "lightness": 35
+                },
+                {
+                    "visibility": "simplified"
+                },
+                {
+                    "weight": 1.5
+                }
+            ]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "labels",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "transit",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "transit",
+            "elementType": "labels.icon",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "transit.line",
+            "stylers": [{
+                    "color": "#ffffff"
+                },
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "transit.line",
+            "elementType": "labels.text",
+            "stylers": [{
+                "visibility": "on"
+            }]
+        },
+        {
+            "featureType": "transit.station",
+            "stylers": [{
+                "visibility": "on"
+            }]
+        },
+        {
+            "featureType": "water",
+            "stylers": [{
+                    "color": "#c6d6d7"
+                },
+                {
+                    "visibility": "on"
+                }
+            ]
+        }
+    ];
+    styles = styleLight;
+    const firebaseConfig = {
+        apiKey: "AIzaSyAI1c0TK9xwm3aKXkrwLmPlAPWPUUABGms",
+        authDomain: "bot-dectnx.firebaseapp.com",
+        databaseURL: "https://bot-dectnx.firebaseio.com",
+        projectId: "bot-dectnx",
+        storageBucket: "bot-dectnx.appspot.com",
+        messagingSenderId: "462233025150",
+        appId: "1:462233025150:web:27a55715086746c4"
+    };
+    firebase.initializeApp(firebaseConfig);
+    let longitude;
+    let latitude;
+    let infowindow = null;
+    let table2 = $('#datatable2').DataTable({
+        scrollY: 600,
+    });
+    let table3 = $('#datatable3').DataTable({
+        scrollY: 600,
+    });
+    let x = firebase.database().ref(`/driver/`);
+
+    function initMap() {
+        marker = [];
+        var geocoder = new google.maps.Geocoder();
+        var address = 'INDIA';
+        geocoder.geocode({
+            'address': address
+        }, function (results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+                latitude = results[0].geometry.location.lat();
+                longitude = results[0].geometry.location.lng();
+                var uluru = {
+                    lat: latitude,
+                    lng: longitude
+                };
+                map = new google.maps.Map(
+                    document.getElementById('map'), {
+                        zoom: 5,
+                        center: uluru,
+                        styles: styles,
+                        streetViewControl: false,
+                        mapTypeControl: false
+                    });
+                let uluruVeh = [];
+                let DidAll = [];
+                let latiAll, longiAll, posAll;
+                let lati1 = [],
+                    longi1 = [],
+                    pos1 = [],
+                    infowindow;
+                x.once('value', function (snapshot) {
+                    snapshot.forEach(function (child) {
+                    // console.log(child.val().location.split(','))
+                    if(child.val().location){
+                        posAll = child.val().location.split(',');
+                        latiAll = posAll[0];
+                        longiAll = posAll[1];
+                        uluruVeh = {
+                            lat: parseFloat(latiAll),
+                            lng: parseFloat(longiAll)
+                        };
+                        marker[child.key] = new SlidingMarker({
+                            position: uluruVeh,
+                            map: map,
+                            icon: {
+                                url: `/img/vehicle/trucks1.png#${child.key}`,
+                                scaledSize: new google.maps.Size(60, 80),
+
+                            },
+                            duration: 8000,
+                            easing: "linear",
+                        });
+                        if (child.val().d_av == '1' || child.val().t_av == '1') {
+                            marker[child.key].setMap(null);
+                            $.ajax({
+                                url: '/admin/DidInfo',
+                                type: 'post',
+                                data: {
+                                    Did: child.key
+                                },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.code === 1) {
+                                        table2.row.add([
+                                            data.result[0].d_name,
+                                            data.result[0].v_num,
+                                            data.result[0].phn,
+                                        ]).draw().node().id = `${child.key}`;
+                                    }
+                                }
+                            });
+                        } else if (child.val().d_av == '0' && child.val().t_av == '0') {
+                            $.ajax({
+                                url: '/admin/DidInfo',
+                                type: 'post',
+                                data: {
+                                    Did: child.key
+                                },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.code === 1) {
+                                        table3.row.add([
+                                            data.result[0].d_name,
+                                            data.result[0].v_num,
+                                            data.result[0].phn,
+                                        ]).draw().node().id = `${child.key}`;
+                                    }
+                                }
+                            });
+                        }
+                        marker[child.key].addListener('click', function () {
+                            $.ajax({
+                                url: '/admin/markerInfo',
+                                type: 'post',
+                                data: {
+                                    Did: child.key
+                                },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.code == '1') {
+                                        var content = `<div id="content">
+                                        <h3 id="firstHeading" class="firstHeading">${data.result[0].d_name}</h3>
+                                        <div id="bodyContent">
+                                            <h6>Driver's Phone Number : ${data.result[0].phn}</h6><br>
+                                            <h6>Tranporter : ${data.result[0].name}</h6><br>
+                                            <h6>Tranporter's Phone Number : ${data.result[0].mob}</h6><br>
+                                            <h6>State : ${data.result[0].state}</h6><br>
+                                            <h6>City : ${data.result[0].city}</h6><br>
+                                            <h6>Vehicle Type : ${data.result[0].v_type}</h6><br>
+                                        </div>
+                                    </div>`;
+                                    }
+                                    if (infowindow) {
+                                        infowindow.close();
+                                    }
+                                    infowindow = new google.maps
+                                        .InfoWindow({
+                                            content: content
+                                        });
+                                    infowindow.open(map, marker[child.key]);
+                                }
+                            });
+                        });
+                    
+                    }        
+                });
+                });
+                x.on('child_changed', function (snap) {
+                    if (snap.val().d_av == '1' || snap.val().t_av == '1') {
+                        marker[snap.key].setMap(null);
+                        table3.row(`#${snap.key}`).remove().draw();
+                        table2.row(`#${snap.key}`).remove().draw();
+                        $.ajax({
+                            url: '/admin/DidInfo',
+                            type: 'post',
+                            data: {
+                                Did: snap.key
+                            },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.code === 1) {
+                                    table2.row.add([
+                                        data.result[0].d_name,
+                                        data.result[0].v_num,
+                                        data.result[0].phn,
+                                    ]).draw().node().id = `${snap.key}`;
+                                }
+                            }
+                        });
+                    } else if (snap.val().d_av == '0' && snap.val().t_av == '0') {
+                        marker[snap.key].setMap(map);
+                        table3.row(`#${snap.key}`).remove().draw();
+                        table2.row(`#${snap.key}`).remove().draw();
+                        $.ajax({
+                            url: '/admin/DidInfo',
+                            type: 'post',
+                            data: {
+                                Did: snap.key
+                            },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.code === 1) {
+                                    table3.row.add([
+                                        data.result[0].d_name,
+                                        data.result[0].v_num,
+                                        data.result[0].phn,
+                                    ]).draw().node().id = `${snap.key}`;
+                                }
+                            }
+                        });
+                    }
+                    posAll = snap.val().location.split(',');
+                    lati1[snap.key] = posAll[0];
+                    longi1[snap.key] = posAll[1];
+                    var prevPos = marker[snap.key].getPosition();
+                    marker[snap.key].setPosition({
+                        lat: parseFloat(lati1[snap.key]),
+                        lng: parseFloat(longi1[snap.key])
+                    });
+                    $(`img[src="${marker[snap.key].getIcon().url}"]`).css({
+                        '-webkit-transform': 'rotate(' + google.maps.geometry.spherical
+                            .computeHeading(prevPos, marker[snap.key].getPosition()) + 'deg)',
+                        '-moz-transform': 'rotate(' + google.maps.geometry.spherical
+                            .computeHeading(prevPos, marker[snap.key].getPosition()) + 'deg)',
+                        '-ms-transform': 'rotate(' + google.maps.geometry.spherical
+                            .computeHeading(prevPos, marker[snap.key].getPosition()) + 'deg)',
+                        'transform': 'rotate(' + google.maps.geometry.spherical.computeHeading(
+                            prevPos, marker[snap.key].getPosition()) + 'deg)',
+                        '-webkit-transition': 'all 1s',
+                        '-moz-transition': 'all 1s',
+                        '-ms-transition': 'all 1s',
+                        'transition': 'all 1s',
+                    });
+                    marker[snap.key].addListener('click', function () {
+                        $.ajax({
+                            url: '/admin/markerInfo',
+                            type: 'post',
+                            data: {
+                                Did: snap.key
+                            },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.code == '1') {
+                                    var content = `<div id="content">
+                                        <h3 id="firstHeading" class="firstHeading">${data.result[0].d_name}</h3>
+                                        <div id="bodyContent">
+                                            <h6>Driver's Phone Number : ${data.result[0].phn}</h6><br>
+                                            <h6>Tranporter : ${data.result[0].name}</h6><br>
+                                            <h6>Tranporter's Pnone Number : ${data.result[0].mob}</h6><br>
+                                            <h6>State : ${data.result[0].state}</h6><br>
+                                            <h6>City : ${data.result[0].city}</h6><br>
+                                        </div>
+                                    </div>`;
+                                }
+                                if (infowindow) {
+                                    infowindow.close();
+                                }
+                                infowindow = new google.maps.InfoWindow({
+                                    content: content
+                                });
+                                infowindow.open(map, marker[snap.key]);
+                            }
+                        });
+                    });
+                });
+                initMapTypeControl(map);
+            }
+        });
+    }
+    let marker = [],
+        cityCircle = [];
+
+    function initMapTypeControl(map) {
+        var mapTypeControlDiv = document.querySelector('.map-control');
+        document.querySelector('.track').onclick = function () {
+            setCircle();
+            setMapsAll(null);
+            setMaps(map);
+        };
+
+        document.querySelector('.trackAll').onclick = function () {
+            setMapsAll(map);
+            setCircle();
+        };
+
+        function setMapsAll(mapAll) {
+            setMaps(null);
+            for (var driverx in marker) {
+                marker[driverx].setMap(mapAll);
+            }
+        }
+
+        function setMaps(mapx) {
+            if (mapx != null) {
+                x.once('value', function (snap) {
+                    snap.forEach(function (child) {
+                        if (child.val().d_av == '0' && child.val().t_av == '0') {
+                            marker[child.key].setMap(mapx);
+                        }
+                    });
+                });
+            } else {
+                for (var driverx in marker) {
+                    marker[driverx].setMap(null);
+                }
+            }
+        }
+
+        function setCircle() {
+            for (var city in cityCircle) {
+                cityCircle[city].setMap(null);
+            }
+        }
+
+        document.querySelector('.trips').onclick = function () {
+            setMaps(null);
+            setCircle();
+            setMapsAll(null);
+            $.ajax({
+                url: '/admin/tripDens',
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == '1') {
+                        var geocoder = new google.maps.Geocoder();
+                        data.result.forEach((city) => {
+                            var address = city.city;
+                            geocoder.geocode({
+                                'address': address
+                            }, function (results, status) {
+                                if (status == google.maps.GeocoderStatus.OK) {
+                                    latitude = results[0].geometry.location.lat();
+                                    longitude = results[0].geometry.location.lng();
+                                    cityCircle[city.city] = new google.maps.Circle({
+                                        strokeColor: '#FF0000',
+                                        strokeOpacity: 0.8,
+                                        strokeWeight: 0,
+                                        fillColor: '#0866ff',
+                                        fillOpacity: 0.5,
+                                        map: map,
+                                        clickable: true,
+                                        center: {
+                                            lat: latitude,
+                                            lng: longitude
+                                        },
+                                        radius: Math.sqrt(city.count) * 10000
+                                    });
+                                    cityCircle[city.city].addListener('click',
+                                        function (event) {
+                                            $.ajax({
+                                                url: '/admin/InOut',
+                                                type: 'post',
+                                                data: {
+                                                    city: city.city
+                                                },
+                                                dataType: 'json',
+                                                success: function (data) {
+                                                    if (data.code ==
+                                                        '1') {
+                                                        var content = `<div id="content">
+                                                <h3 id="firstHeading" class="firstHeading">Trips</h3>
+                                                <div id="bodyContent">
+                                                    <h6>Incoming Trips in the city : ${data.out[0].count}</h6><br>
+                                                    <h6>Outgoing Trips  : ${data.in[0].count}</h6><br>
+                                                </div>
+                                            </div>`;
+                                                    }
+                                                    var infowindowTrip =
+                                                        new google.maps
+                                                        .InfoWindow({
+                                                            content: content,
+                                                            position: event
+                                                                .latLng
+                                                        });
+                                                    infowindowTrip.open(
+                                                        map,
+                                                        cityCircle[
+                                                            city
+                                                            .city]);
+                                                }
+                                            });
+                                        });
+                                }
+                            });
+                        });
+                    }
+                }
+            })
+        };
+
+        map.controls[google.maps.ControlPosition.LEFT_TOP].push(
+            mapTypeControlDiv);
+    }
+    $("#dark").on("change", function (event) {
+        if ($(this).is(':checked')) {
+            styles = styleDark;
+            map.setOptions({
+                styles: styles
+            });
+        } else {
+            styles = styleLight;
+            map.setOptions({
+                styles: styles
+            });
+        }
+    });
+</script>
+
+<script>
+    jQuery(document).ready(function () {
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+        $('.js-switch').each(function () {
+            new Switchery($(this)[0], $(this).data());
+        });
+        $(".vertical-spin").TouchSpin({
+            verticalbuttons: true
+        });
+    });
+</script>
+
+<script>
+    var type, days = [],
+        Ddata = [],
+        DdataYear = [];
+
+    function createMonth(datas, month) {
+        days = [];
+        Ddata = [];
+        for (var i = 0; i < datas.result.length; i++) {
+            if (datas.result[i]) {
+                datas.result[i].day = datas.result[i].day.replace(/^0+/, '');
+                Ddata[datas.result[i].day] = datas.result[i].tot;
+            }
+        }
+        for (var i = 0; i < new Date(new Date().getFullYear(), month, 0).getDate(); i++) {
+            if (!Ddata[i + 1]) {
+                Ddata[i + 1] = 0;
+            }
+            days[i + 1] = i + 1;
+        }
+        chartMonth(days, Ddata);
+    }
+
+    function chartMonth(days, Ddata) {
+        new Chart(document.getElementById("chart"), {
+            "type": "line",
+            "data": {
+                "labels": days,
+                "datasets": [{
+                    "label": "Monthly",
+                    "data": Ddata,
+                    "fill": false,
+                    "borderColor": "rgb(86, 192, 216)",
+                    "lineTension": 0.1
+                }]
+            },
+            "options": {
+                "events": ['click'],
+            }
+        });
+    }
+
+    function createYear(datas, year) {
+        days = [];
+        DdataYear = [];
+        for (var i = 0; i < datas.result.length; i++) {
+            if (datas.result[i]) {
+                datas.result[i].month = datas.result[i].month.replace(/^0+/, '');
+                DdataYear[datas.result[i].month] = datas.result[i].tot;
+            }
+        }
+        for (var i = 0; i < 12; i++) {
+            if (!DdataYear[i + 1]) {
+                DdataYear[i + 1] = 0;
+            }
+            days[i + 1] = i + 1;
+        }
+        chartYear(days, DdataYear);
+    }
+
+    function chartYear(days, DdataYear) {
+        new Chart(document.getElementById("chart"), {
+            "type": "line",
+            "data": {
+                "labels": ["", "January", "February", "March", "April", "May", "June", "July", "August",
+                    "September", "October", "November", "December"
+                ],
+                "datasets": [{
+                    "label": "Yearly",
+                    "data": DdataYear,
+                    "fill": false,
+                    "borderColor": "rgb(86, 192, 216)",
+                    "lineTension": 0.1
+                }]
+            },
+            "options": {
+                "events": ['click'],
+            }
+        });
+    }
+    $(document).ready(function () {
+        $('#year').select2().next().hide();
+        var d = new Date();
+        var months = ("0" + (d.getMonth() + 1)).slice(-2);
+        $("#month").val(months);
+        $.ajax({
+            url: '/admin/month',
+            type: 'post',
+            data: {
+                month: months
+            },
+            dataType: 'json',
+            success: function (data) {
+                createMonth(data, months);
+            }
+        });
+    });
+
+    $("#type").on("change", function () {
+        type = $("#type").val();
+        chartInit(type);
+    });
+    $("#month").on("change", function () {
+        var months = $('#month').val();
+        $.ajax({
+            url: '/admin/month',
+            type: 'post',
+            data: {
+                month: months
+            },
+            dataType: 'json',
+            success: function (data) {
+                createMonth(data, months);
+            }
+        });
+    });
+    $('#year').on('change', function () {
+        var years = $('#year').val();
+        $.ajax({
+            url: '/admin/year',
+            type: 'post',
+            data: {
+                year: years
+            },
+            dataType: 'json',
+            success: function (data) {
+                createYear(data, years);
+            }
+        });
+    });
+
+    function chartInit(type) {
+        if (type == 'year') {
+            $('#year').select2().next().show();
+            $('#month').select2().next().hide();
+        }
+        if (type == 'month') {
+            $('#year').select2().next().hide();
+            $('#month').select2().next().show();
+            $('#month').on('change', function () {
+                var months = $('#month').val();
+                $.ajax({
+                    url: '/admin/month',
+                    type: 'post',
+                    data: {
+                        month: months
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                    }
+                });
+            });
+        }
+    }
+</script>
+
+<script>
+    var count;
+    function check() {
+        $.ajax({
+            url: '/admin/check',
+            type: 'post',
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == 1) {}
+                if (data.code == 2) {
+                    var d = new Date();
+                    var months = ("0" + (d.getMonth() + 1)).slice(-2);
+                    $.ajax({
+                        url: '/admin/month',
+                        type: 'post',
+                        data: {
+                            month: months
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            createMonth(data, months);
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    $('#state').on('change', function () {
+        var state = $(this).children("option:selected").val();
+        $.ajax({
+            url: '/admin/search',
+            type: 'post',
+            data: {
+                state: state
+            },
+            dataType: 'json',
+            success: function (data) {
+                data = JSON.stringify(data);
+                data = JSON.parse(data);
+                var len = data.length;
+                if (len > 0) {
+                    $('#city').empty();
+                    $("#city").append("<option value>SELECT</option>");
+                    for (var i = 0; i < len; i++) {
+                        var cid = data[i].id;
+                        var city = data[i].city;
+                        $("#city").append("<option value='" + cid + "'>" + city + "</option>");
+                    }
+                } else {
+                    $('#city').empty();
+                    $("#city").append("<option value='0'>Chose City</option>");
+                }
+            }
+        });
+    });
+    $('#city').on('change', function () {
+        var city = $(this).children("option:selected").val();
+        $.ajax({
+            url: '/admin/cityChart',
+            type: 'post',
+            data: {
+                city: city
+            },
+            dataType: 'json',
+            success: function (data) {
+                createCity(data);
+            }
+        });
+    });
+
+    function createCity(data) {
+        $('#cityChart').remove();
+        $('#chartParent').append('<canvas id="cityChart" height="100"></canvas>');
+        var cityChart = new Chart(document.getElementById("cityChart"), {
+            type: 'bar',
+            data: {
+                labels: ['Pending', 'Ongoing', 'Completed'],
+                datasets: [{
+                    data: [data.pending[0].pending, data.ongoing[0].ongoing, data.completed[0]
+                        .completed
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(153, 102, 255, 1)',
+
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                title: {
+                    display: true,
+                    text: 'CITY WISE'
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        fontColor: 'rgb(255, 99, 132)'
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    $(document).on('shown.bs.modal', function (e) {
+        $.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+    });
+
+    let table4 = $('#datatable4').DataTable({
+        scrollY: 600,
+        scrollX: true
+    });
+    let table = $('#datatable').DataTable();
+
+    let kmTab = $('#kmTab').DataTable();
+
+
+    $("#lateModal").on('show.bs.modal', function (event) {
+        table.clear().draw();
+        $.ajax({
+            url: '/admin/lateList',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $('#datatable td').remove();
+                for (let i = 0; i < data.length; i++) {
+                    let hours = Math.floor(data[i].late_time / 60);
+                    let minutes = data[i].late_time % 60;
+                    table.row.add([
+                        data[i].d_name,
+                        data[i].v_num,
+                        data[i].name,
+                        data[i].source,
+                        moment.utc(data[i].start_time, "DD/MM/YYYY h:mm a").format("DD/MM/YYYY hh:mm a"),
+                        moment.utc(data[i].final_endtime, "DD/MM/YYYY h:mm a").format("DD/MM/YYYY hh:mm a"),
+                        `${hours} Hr ${minutes} min`
+                    ]).draw();
+                }
+            }
+        });
+    });
+    $("#tripInfo").on('show.bs.modal', function (event) {
+        table4.clear().draw();
+        $.ajax({
+            url: '/admin/tripInfo',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $('#datatable4 td').remove();
+                for (let i = 0; i < data.result.length; i++) {
+                    table4.row.add([
+                        data.result[i].start_time,
+                        data.result[i].final_endtime,
+                        data.result[i].distance,
+                        data.result[i].d_name,
+                        data.result[i].phn,
+                        data.result[i].v_type,
+                        data.result[i].v_num,
+                        data.result[i].user,
+                        data.result[i].name,
+                        data.result[i].mob,
+                    ]).draw();
+                }
+            }
+        });
+    });
+
+    $("#kmInfo").on('show.bs.modal', function (event) {
+        kmTab.clear().draw();
+        $("#date").val("");
+
+        let date;
+
+        $("#date").on("apply.daterangepicker", function (e, picker) {
+            date = $("#date").data("daterangepicker").startDate.format("YYYY-MM-DD");
+            $("#date").val(`${$("#date").data("daterangepicker").startDate.format("DD/MM/YYYY")}`);
+            $.ajax({
+                url: '/admin/kmWise',
+                type: 'post',
+                data: {
+                    date:date
+                },
+                dataType: 'json',
+                success: function (data) {
+                    kmTab.clear().draw();
+
+                    for (let i = 0; i < data.data.length; i++) {
+                        kmTab.row.add([
+                            data.data[i].load_id,
+                            data.data[i].distance,
+                            data.data[i].vehicle_type,
+                            data.data[i].name,
+                            data.data[i].source,
+                            data.data[i].destination,
+                        ]).draw();
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    // setTimeout("updated()", 10000);
+    // setInterval("updated()", 600000);
+
+    function updated() {
+        $('#loadLink').empty();
+        $.ajax({
+            url: '/admin/fetchMapped',
+            type: 'get',
+            dataType: 'JSON',
+            success: function (data) {
+                if (data.code === 1) {
+                    data.result.forEach((driver) => {
+                        if (driver.gps_val) {
+                            Did = firebase.database().ref(`/driver/${driver.Did}`);
+                            Did.once('value', function (snap) {
+                                pos = snap.val().location;
+                                if (pos == driver.gps_val) {
+                                    audio.play();
+                                    var l =
+                                        `<a href="#"><div class="mail-contnet"><h5>Driver : ${driver.d_name} is not moving due to some reason.</h5><span class="mail-desc">Phone Number:${driver.phn}</span><h5></div></a>`;
+                                    $('#default').remove();
+                                    $('#loadLink').append(l);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>
+

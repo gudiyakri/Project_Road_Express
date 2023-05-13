@@ -1,0 +1,79 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<% include ../partials/message %>
+		<div class="row page-titles">
+			<div class="col-md-6 col-8 align-self-center">
+				<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+					<li class="breadcrumb-item active">Driver info</li>
+				</ol>
+			</div>
+		</div>
+		<div class="card">
+			<div class="card-body">
+				<div class="row">
+					<p class="col-2">Driver Name</p>
+					<p class="col-2"><%= driver[0].d_name %></p>
+				</div>
+				<div class="row">
+					<p class="col-2">Vehicle Phn</p>
+					<p class="col-2"><%= driver[0].phn %></p>
+				</div>
+				<div class="row">
+					<p class="col-2">City</p>
+					<p class="col-2"><%= driver[0].sahar %></p>
+				</div>
+				<div class="row">
+					<p class="col-2">State</p>
+					<p class="col-2"><%= driver[0].state %></p>
+				</div>
+				<div class="row">
+					<p class="col-2">License EXP</p>
+					<p class="col-2"><%= driver[0].lice_exp %></p>
+				</div>
+				<div class="row">
+					<p class="col-2">Acc Name</p>
+					<p class="col-2"><%= driver[0].acc_name %></p>
+				</div>
+				<div class="row">
+					<p class="col-2">Ifsc</p>
+					<p class="col-2"><%= driver[0].ifsc %></p>
+				</div>
+				<div class="row">
+					<p class="col-2">Birthday</p>
+					<p class="col-2"><%= driver[0].birthday %></p>
+				</div>
+				<div class="row">
+					<p class="col-2">Aadhar Pic</p>
+					<a target="_blank" href="/admin/display/aadhar/<%= driver[0].aadhar_front_pic %>"
+						><img src="/images/aadhar_front_pic/<%= driver[0].aadhar_front_pic %>" style="width: 50px; height: 60px"
+					/></a>
+				</div>
+				<div class="row">
+					<p class="col-2">D.L. Font</p>
+					<a target="_blank" href="/admin/display/dl_front/<%= driver[0].dl_pic_front %>"
+						><img src="/images/dl_pic_front/<%= driver[0].dl_pic_front %>" style="width: 50px; height: 60px"
+					/></a>
+				</div>
+				<div class="row">
+					<p class="col-2">D.L. Back</p>
+					<a target="_blank" href="/admin/display/dl_back/<%= driver[0].dl_pic_back %>"
+						><img src="/images/dl_pic_back/<%= driver[0].dl_pic_back %>" style="width: 50px; height: 60px"
+					/></a>
+				</div>
+				<div class="row">
+					<p class="col-2">Profile</p>
+					<a target="_blank" href="https://admin.roadexpress.in/images/profile/<%= driver[0].prof_pic %>"
+						><img src="/images/profile/<%= driver[0].prof_pic %>" style="width: 50px; height: 60px"
+					/></a>
+				</div>
+			</div>
+		</div>
+		<footer class="footer">© 2019 Road Express by CodeBuckets.in</footer>
+	</div>
+</div>
+
+<% include ../partials/footer %>

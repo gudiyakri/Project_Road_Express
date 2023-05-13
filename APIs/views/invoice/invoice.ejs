@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+ div#watermark {
+    position: absolute;
+    padding: 180px 0 0 0 ;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: url('RoadExpress.png') center center no-repeat;
+    background-size: 500px 200px;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+  text-align: left;
+}
+
+.rows{
+    border:1px solid white;
+}
+
+/* .colm{
+  border:0px;  
+} */
+#big{
+    height:200px;
+    width:100%;
+    background-color:#f7f7f7;
+    PADDING:15PX 15PX;
+}
+
+</style>
+</head>
+<body>
+
+<div id="watermark">
+</div>
+  <div id="big">
+    <CENTER><H2>ROADEXPRESS TECHNOLOGY PVT. LTD.</H2></CENTER>
+    <P>C/O- Rajendra Villa, Savitri Gali,  Patel Nagar, Near Krishna Niketan School , Patna-800027 (BIHAR)<BR>
+    H/O- Bahadurpur, Behind- Singh Petrol Pump, Patna-800020 (Bihar)<BR>
+    Contact No - 9554600400<BR>
+    Email - contact@roadexpress.in <BR>
+    CIN- U72200BR2018PTC036844<BR>
+    GST-10AAICR7121A1Z4<BR>
+    
+    </P>
+    <IMG SRC="RoadExpress.png" style="float:right;margin-top:-200px;">
+    </div>
+    
+    
+    
+    <table style="width:100%">
+    <br>
+    <tr style="background-color:grey;">
+        <th>BOOKING ID:- <%= invoice.invoiceDate %><%= invoice.loadId %></th>
+        <th>DATE:- <%= invoice.invoiceDate %></th>
+      </tr>
+      
+      <tr class="rows">
+        <td style="border:0px;" ><B><I>CONSIGNER DETAILS:-</I></B></td>
+        <td style="border:0px;" ><B><I>CONSIGNEE DETAILS:-</I></B></td>
+      </tr>
+      <tr>
+        <td>NAME:- <%= invoice.congisnerName %></td>
+        <td>NAME:- <%= invoice.congisneeName %></td>
+      </tr>
+      <tr class="rows">
+        <td class="colm">CONTACT NUMBER:- <%= invoice.congisnerPhn %></td>
+        <td class="colm">CONTACT NUMBER:- <%= invoice.congisneePhn %></td>
+      </tr>
+      <tr class="rows">
+        <td class="colm">EMAIL ID:- <%= invoice.congisnerEmail %></td>
+        <td class="colm">ADDRESS:- <%= invoice.congisneeAddress %></td>
+      </tr>
+      <tr class="rows">
+        <td class="colm" COLSPAN="2">GST NUMBER:- <%= invoice.congisnerGst %></td>
+      </tr>
+      <tr class="rows">
+        <td COLSPAN="2">ADDRESS:- <%= invoice.congisnerAddress %></td>
+      </tr>
+      
+      
+	  <tr class="rows">
+        <td style="border:0px;" COLSPAN="2"><B><I>DETAILS OF THE GOODS:-</I></B></td>
+      </tr>
+     <tr>
+        <td>INVOICE NO:-</td>
+        <td><%= invoice.invoiceNumber %></td>
+      </tr>
+      <tr class="rows">
+        <td class="colm" COLSPAN="1">GOODS CATEGORY:-</td>
+        <td><%= invoice.category %></td>
+      </tr>
+      <tr class="rows">
+        <td class="colm" COLSPAN="1">QUANTITY OF THE GOODS(IN KG):-</td>
+        <td><%= invoice.quan %></td>
+      </tr>
+      <tr class="rows">
+        <td class="colm" COLSPAN="1">AMOUNT OF THE GOODS:-</td>
+        <td><%= invoice.amountTotal %></td>
+      </tr>
+      <tr class="rows">
+        <td class="colm" COLSPAN="1">INSURANCE DETAIL OF THE GOODS:-</td>
+        <td><%= invoice.insurance %></td>
+      </tr>
+      
+      
+      <tr class="rows">
+        <td style="border:0px;" COLSPAN="2"><B><I>DETAILS OF THE VEHICLE:-</I></B></td>
+      </tr>
+      <tr>
+        <td>TYPE OF VEHICLE:-</th>
+        <td><%= invoice.vehicleType %></th>
+      </tr>
+      <tr>
+        <td>VEHICLE NO:-</th>
+        <td><%= invoice.vehicleNumber %></th>
+      </tr>
+      
+      <tr class="rows">
+        <td style="border:0px;" COLSPAN="2"><B><I>INSURANCE DETAILS:-</I></B></td>
+      </tr>
+      <tr>
+        <td>POLICY NUMBER:- <%= invoice.policyNumber %></td>
+        <td>DATE:- <%= invoice.date %></td>
+      </tr>
+      <tr>
+        <td>PRODUCT AMOUNT:-<%= invoice.totalAmount %></td>
+        <td>RISK:- <%= invoice.risk %></td>
+      </tr>
+      
+    </table>
+    
+    <table style="width:100%;MARGIN-TOP:30PX;">
+      <caption><H2>SHIPPING DETAILS</H2></caption>
+      <tr>
+        <th>S.NO</th>
+        <th>PRODUCT NAME</th>
+        <th>QNTY.</th>
+        <th>INVOICE NO</th>
+        <th>AMOUNT</th>
+        <th>UNIT</th>
+      </tr>
+      
+	  <% let num = invoice.prodLength.split(','); if(invoice[`product${num[0]}`]) for( let i = 0; i < num.length; i++ ) { %>
+		<tr>
+			<td>
+				<%= i+1 %> 
+			</td>
+			<td>
+				<%= invoice[`product${num[i]}`] %> 
+      </td>
+      <td>
+				<%= invoice[`quantity${num[i]}`] %> 
+      </td>
+      <td>
+				<%= invoice[`prodInvoice${num[i]}`] %> 
+      </td>
+      <td>
+				<%= invoice[`prodAmount${num[i]}`] %> 
+      </td>
+      <td>
+				<%= invoice[`prodUnit${num[i]}`] %> 
+			</td>
+		</tr>
+	  <% } %>
+      
+    </table>
+    
+    
+    
+    <BR>
+    
+    
+    
+    
+    <table style="width:100%;MARGIN-TOP:30PX;">
+      <caption><H2>PAYMENT DETAILS</H2></caption>
+     
+      
+      <tr>
+        
+        <td>VEHICLE RENTAL COST</td>
+        <td><%= invoice.rental %></td>
+        
+      </tr>
+      
+      <tr>
+        
+        <td>TOTAL TAX:-</td>
+        <td><%= invoice.toll %></td>
+        
+      </tr>
+      
+      <tr>
+     
+        <td>LOADING UNLOADING TEST:-</td>
+        <td><%= invoice.loadUnload %></td>
+        
+      </tr>
+      
+      <tr>
+      
+        <td>DETENSION CHARGES:-</td>
+        <td><%= invoice.detention %></td>
+        
+      </tr>
+      
+      <tr>
+        
+        <td>SGST:-</td>
+        <td><%= invoice.sgst %></td>
+        
+      </tr>
+      
+      <tr>
+        
+        <td>CGST:-</td>
+        <td><%= invoice.cgst %></td>
+        
+      </tr>
+      
+      <tr>
+        
+        <td>IGST:-</td>
+        <td><%= invoice.igst %></td>
+        
+      </tr>
+      
+      <tr>
+       
+        <td>TOTAL:-</td>
+        <td><%= invoice.amount %></td>
+        
+      </tr>
+      <tr class="rows">
+        <td style="border:0px;" COLSPAN="2"><B><I>REMARK:-</I></B></td>
+      </tr>
+      <tr class="rows">
+        <td COLSPAN="2"><%= invoice.remark %></td>
+      </tr>
+    </table>
+
+    
+
+</body>
+</html>

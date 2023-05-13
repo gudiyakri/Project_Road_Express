@@ -1,0 +1,62 @@
+<% include ../../partials/header %> <% include ../../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<% include ../../partials/message %>
+		<div class="row page-titles">
+			<div class="col-md-6 col-8 align-self-center">
+				<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+					<li class="breadcrumb-item active">View Devices</li>
+				</ol>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-body pb-0">
+					<div class="row">
+						<table
+							id="datatable"
+							class="display table table-hover table-striped table-bordered"
+							cellspacing="0"
+							width="100%"
+						>
+							<thead>
+								<tr>
+									<th>Service Id</th>
+									<th>Name</th>
+									<th>View</th>
+								</tr>
+							</thead>
+							<tbody>
+								<% for( let i = 0; i < gps.length; i++ ) { %>
+								<tr>
+									<td><%= gps[i].serviceId %></td>
+									<td><%= gps[i].name %></td>
+									<td>
+										<a href="/admin/monthly/<%= gps[i].id %>"
+											><%= gps[i].name %></a
+										>
+									</td>
+								</tr>
+								<% } %>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<% include ../../partials/footer %>
+
+<script>
+	$(function () {
+		$(".select2").select2();
+		$("#datatable").DataTable({
+			scrollY: 400,
+		});
+	});
+</script>

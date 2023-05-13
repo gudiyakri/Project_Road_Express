@@ -1,0 +1,290 @@
+<% include ../partials/header %>
+<link href="/plugins/switchery/dist/switchery.min.css" rel="stylesheet" />
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<% include ../partials/message %>
+		<div class="row page-titles">
+			<div class="col-md-6 col-8 align-self-center">
+				<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+					<li class="breadcrumb-item active">Add Client</li>
+				</ol>
+			</div>
+		</div>
+		<div class="col-md-11">
+			<div class="card">
+				<div class="card-body pb-0">
+					<div class="p-3">
+						<form class="form-horizontal" style="margin-left: 125px" method="POST" action="/admin/addUser" enctype="multipart/form-data">
+							<div class="row">
+								<div class="col-md-5">
+									<h5 class="mt-4 mb-2">Select state</h5>
+									<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="state" name="state" title="Choose State" required>
+										<% for( let i = 0; i < state.length; i++ ) { %>
+										<option value="<%= state[i].state %>"><%= state[i].state %></option>
+										<% } %>
+									</select>
+								</div>
+								<div class="col-md-5">
+									<h5 class="mt-4 mb-2">Select City</h5>
+									<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="id1" name="city" required>
+										<option disabled selected value>Choose</option>
+									</select>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">Mobile Number</h5>
+									<input type="number" class="form-control col-md-12" placeholder="Enter Mobile Number" maxlength="10" minlength="10" name="mob" required />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">Name</h5>
+									<input type="text" class="form-control col-md-12" placeholder="Enter Name" name="name" required />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">Address</h5>
+									<input type="text" class="form-control col-md-12" placeholder="Enter Address" name="address" required />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">Email</h5>
+									<input type="email" class="form-control col-md-12" placeholder="Enter Email-Id" name="email" required />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">Password</h5>
+									<input type="Password" class="form-control col-md-12" placeholder="Enter Password" name="password" required />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">G.S.T Number</h5>
+									<input type="text" class="form-control col-md-12" placeholder="Enter G.S.T Number" name="gst" required />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">Designation</h5>
+									<input type="text" class="form-control col-md-12" placeholder="Enter Designation" name="desig" required />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">Employee Id</h5>
+									<input type="text" class="form-control col-md-12" placeholder="Enter Employee Id" name="emp_id" required />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">Surger Charge</h5>
+									<input type="number" class="form-control col-md-12" placeholder="Enter Surge Charge" name="surge_charge" required />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6 col-md-6">
+									<div class="card">
+										<div class="card-body">
+											<h5 class="card-title">Profile Pic</h5>
+											<input type="file" name="profilePic" accept="image/*" class="dropify" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-5">
+								<h5 class="mt-4 mb-2">Select Type</h5>
+								<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="manager" name="manager" required>
+									<option value="0" selected>Default</option>
+									<option value="1">Manager</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<h5 class="mt-4 mb-2">Select Rate Type</h5>
+								<select class="select2 col-12 btn-info btn-rounded" id="rate" name="rateMatrix" required>
+									<option value="0">Static</option>
+									<option value="1">Dynamic</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<h5 class="mt-4 mb-2">Select Wait Charge Type</h5>
+								<select class="select2 col-12 btn-info btn-rounded" id="wait" name="waitFlag" required>
+									<option value="0">No Wait Charge</option>
+									<option value="1">Wait Charge</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<div class="switchery-demo mt-4">
+									<input type="checkbox" class="js-switch" id="sub" name="subFlag" value="true" data-color="#3d3b3b" />
+									<label for="sub">Add Subscription</label>
+								</div>
+							</div>
+							<span id="subDiv">
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">Vehicle Number</h5>
+									<select class="select2 col-12" id="vehicle" name="vehicle" data-style="btn-info btn-outline-info" multiple="multiple"></select>
+								</div>
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">Select Date</h5>
+									<div class="input-group">
+										<input type="text" class="form-control daterange" id="date" name="date" placeholder="Select Date" autocomplete="off" />
+										<div class="input-group-append">
+											<span class="input-group-text" id="calender"><i class="icon-calender"></i></span>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">KM Allowed</h5>
+									<input type="text" name="km" class="form-control col-md-12" placeholder="Enter KM Limit" autocomplete="off" />
+								</div>
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">Rate After Allowed/KM</h5>
+									<input type="text" name="rate" class="form-control col-md-12" placeholder="Enter Rate" autocomplete="off" />
+								</div>
+								<div class="col-md-6">
+									<h5 class="mt-4 mb-2">Amount</h5>
+									<input type="text" name="amount" class="form-control col-md-12" placeholder="Enter Amount" autocomplete="off" />
+								</div>
+							</span>
+							<br />
+							<button type="submit" style="margin-left: 250px" class="btn waves-effect waves-light btn-rounded btn-info">ADD</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<% include ../partials/footer %>
+<script src="/plugins/dropify/dist/js/dropify.min.js"></script>
+<script src="/plugins/switchery/dist/switchery.min.js"></script>
+
+<script type="text/javascript">
+	$("#vehicle").select2({
+		placeholder: "Select vehicle",
+		ajax: {
+			url: "/admin/vehicleList",
+			type: "post",
+			delay: 50,
+			data: function (params) {
+				let query = {
+					search: params.term,
+					page: params.page || 1,
+				};
+
+				// Query parameters will be ?search=[term]&page=[page]
+				return query;
+			},
+			processResults: function (data, params) {
+				params.page = params.page || 1;
+
+				return {
+					results: data.data,
+					pagination: {
+						more: params.page * 10 < data.total,
+					},
+				};
+			},
+		},
+	});
+	$(document).ready(() => {
+		$("#state").select2({
+			placeholder: "Select State",
+		});
+
+		$("#id1").select2({
+			placeholder: "Select City",
+		});
+
+		$("#manager").select2();
+
+		$("#rate").select2();
+
+		$("#wait").select2();
+	});
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		let elems = Array.prototype.slice.call(document.querySelectorAll(".js-switch"));
+		$(".js-switch").each(function () {
+			new Switchery($(this)[0], $(this).data());
+		});
+
+		$(".daterange").daterangepicker({
+			locale: {
+				format: "DD/MM/YYYY",
+			},
+			autoApply: true,
+		});
+
+		$("#subDiv").hide();
+
+		$("#sub").on("change", function (event) {
+			if ($(this).is(":checked")) {
+				$("#subDiv").show();
+				$("#date").prop("required", true);
+				$("#vehicle").prop("required", true);
+				$("input[name='km']").prop("required", true);
+				$("input[name='rate']").prop("required", true);
+				$("input[name='amount']").prop("required", true);
+			} else {
+				$("#subDiv").hide();
+				$("#date").prop("required", false);
+				$("#vehicle").prop("required", false);
+				$("input[name='km']").prop("required", false);
+				$("input[name='rate']").prop("required", false);
+				$("input[name='amount']").prop("required", false);
+			}
+		});
+
+		$("#state").change(function () {
+			let state = $(this).children("option:selected").val();
+
+			$.ajax({
+				url: "/admin/search",
+				type: "post",
+				data: {
+					state: state,
+				},
+				dataType: "json",
+				success: function (data) {
+					let len = data.length;
+
+					$("#id1").empty();
+
+					for (let i = 0; i < len; i++) {
+						let cid = data[i].id;
+						let city = data[i].city;
+						//console.log(city);
+						$("#id1").append("<option value='" + cid + "'>" + city + "</option>");
+					}
+				},
+			});
+		});
+	});
+</script>
+
+<script>
+	$(document).ready(function () {
+		// Basic
+		$(".dropify").dropify();
+
+		$("#toggleDropify").on("click", function (e) {
+			e.preventDefault();
+			if (drDestroy.isDropified()) {
+				drDestroy.destroy();
+			} else {
+				drDestroy.init();
+			}
+		});
+	});
+</script>

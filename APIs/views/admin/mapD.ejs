@@ -1,0 +1,761 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<div class="col-md-12">
+			<% include ../partials/message %>
+			<div class="row page-titles">
+				<div class="col-md-6 col-8 align-self-center">
+					<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+						<li class="breadcrumb-item active">Map Drivers</li>
+					</ol>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card-body">
+					<ul class="nav nav-tabs customtab2" role="tablist">
+						<li class="nav-item col-md-4 text-center">
+							<a class="nav-link active" data-toggle="tab" href="#mapNew" role="tab"
+								><span class="hidden-sm-up"><i class="ti-home"></i></span>
+								<span class="hidden-xs-down">Map Driver</span></a
+							>
+						</li>
+						<li class="nav-item col-md-4 text-center">
+							<a class="nav-link" data-toggle="tab" href="#updateMap" role="tab"
+								><span class="hidden-sm-up"><i class="ti-user"></i></span>
+								<span class="hidden-xs-down">Update Driver</span></a
+							>
+						</li>
+
+						<li class="nav-item col-md-4 text-center">
+							<a class="nav-link" data-toggle="tab" href="#removeMap" role="tab"
+								><span class="hidden-sm-up"><i class="ti-email"></i></span>
+								<span class="hidden-xs-down">Remove Driver</span></a
+							>
+						</li>
+					</ul>
+					<div id="my-tab-content" class="tab-content text-center">
+						<div
+							class="tab-pane active"
+							id="mapNew"
+							role="tabpanel"
+							aria-expanded="true"
+						>
+							<div class="card-body">
+								<div class="col-lg-6 col-md-6 col-sm-3">
+									<div class="row">
+										<select
+											class="select2 mb-3 mr-2 btn btn-info btn-round"
+											title="Select Transporter"
+											id="transSelect"
+										>
+											<option>Select</option>
+											<% for( let i = 0; i < trans.length; i++ ) { %>
+											<option href="/admin/mapD/<%= trans[i].id %>">
+												<%= trans[i].id %> - <%= trans[i].name %> /<%=
+												trans[i].city %>
+											</option>
+											<% } %>
+										</select>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="card card-plain">
+										<div class="card-body">
+											<%if(transporter!=null) {%>
+											<h2 class="card-title">Transporter</h2>
+											<p class="card-category">
+												<%= transporter[0].name %> Info
+											</p>
+											<div class="table-responsive">
+												<table class="table">
+													<thead class="">
+														<th>Name</th>
+														<th>State</th>
+														<th>City</th>
+														<th>Expected Fleet Size</th>
+														<th>Current Fleet Size</th>
+														<th>Mobile No.</th>
+													</thead>
+													<% if (vehicles!=null) { %>
+													<tbody>
+														<% if(vehicles.length) {%>
+														<tr>
+															<td><%= vehicles[0].name %></td>
+															<td><%= vehicles[0].state %></td>
+															<td><%= vehicles[0].sahar %></td>
+															<td><%= vehicles[0].fleet_size %></td>
+															<td>
+																<%= vehicles.length + mapped.length
+																%>
+															</td>
+															<td><%= vehicles[0].mob %></td>
+														</tr>
+														<% } else { %>
+														<tr>
+															<td><%= transporter[0].name %></td>
+															<td><%= transporter[0].state %></td>
+															<td><%= transporter[0].sahar %></td>
+															<td>
+																<%= transporter[0].fleet_size %>
+															</td>
+															<td><%= mapped.length %></td>
+															<td class="text-right">
+																<%= transporter[0].mob %>
+															</td>
+														</tr>
+														<% } %>
+														<tr>
+															<% if(vehicles.length) {%> <%
+															if(vehicles[0].v_type!=null) {%>
+															<!-- <td> -->
+															<table class="table">
+																<thead>
+																	<th>Vehicle Type</th>
+																	<th>Vehicle Number</th>
+																	<th>Insurance Munber</th>
+																	<th>Permit Type</th>
+																	<th>Mapping Status</th>
+																</thead>
+																<tbody>
+																	<% for( let i = 0; i <
+																	vehicles.length; i++ ) { %>
+																	<tr>
+																		<td>
+																			<%= vehicles[i].v_type
+																			%>
+																		</td>
+																		<td>
+																			<%= vehicles[i].v_num %>
+																		</td>
+																		<td>
+																			<%=
+																			vehicles[i].insurance_num
+																			%>
+																		</td>
+																		<td>
+																			<%=
+																			vehicles[i].permit_type
+																			%>
+																		</td>
+																		<td>
+																			<a
+																				class="btn btn-info btn-rounded"
+																				data-toggle="modal"
+																				data-target="#mapDriver"
+																				data-vehicleId="<%= vehicles[i].v_id %>"
+																				>Map</a
+																			>
+																		</td>
+																	</tr>
+																	<% } %>
+																</tbody>
+															</table>
+															<!-- </td> -->
+														</tr>
+														<% } %>
+													</tbody>
+													<% } else{%> No Verified Vehicle Available For
+													This Transporter.. <% } %> <% } %>
+												</table>
+											</div>
+											<% } else {%>
+											<h3>Please Select A Transporter</h3>
+											<% } %>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div
+							class="modal fade"
+							id="mapDriver"
+							tabindex="-1"
+							role="dialog"
+							aria-labelledby="ModalLabel"
+							aria-hidden="true"
+						>
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h4 class="modal-title" id="exampleModalLabel1">
+											Driver Mapping
+										</h4>
+										<button
+											type="button"
+											class="close"
+											data-dismiss="modal"
+											aria-label="Close"
+										>
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<div class="row">
+											<% if(driver!=null) if(driver.length){%>
+											<select
+												class="selectpicker mb-3 mr-2 btn btn-info btn-round"
+												name="update"
+												id="update"
+												title="Choose Driver"
+											>
+												<option disabled selected value>Choose</option>
+												<% for( let i = 0; i < vehicles.length; i++ ) { %>
+												<option value="<%= driver[j].Did %>">
+													<%= driver[j].d_name %>
+												</option>
+
+												<% } %>
+											</select>
+											<% } else{%>
+											<h4>
+												No UnMapped Drivers available for this
+												transporter...
+											</h4>
+											<% } %>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<div class="left-side">
+											<button
+												type="button"
+												class="btn btn-danger"
+												data-dismiss="modal"
+											>
+												Never mind
+											</button>
+										</div>
+										<div class="divider"></div>
+										<% if(driver!=null) if(driver.length){%>
+										<div class="right-side">
+											<button
+												type="button"
+												class="btn btn-success"
+												id="update1"
+											>
+												Map
+											</button>
+										</div>
+										<% } %>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane" id="updateMap" role="tabpanel" aria-expanded="false">
+							<div class="card-body">
+								<div class="col-md-12">
+									<div class="card card-plain">
+										<div class="card-body">
+											<% if(mapped!=null) {%> <% if(mapped.length) {%>
+											<h2>Transporter</h2>
+											<p class="card-category"><%= mapped[0].name %> Info</p>
+											<div class="table-responsive">
+												<table class="table">
+													<thead class="">
+														<th>Name</th>
+														<th>State</th>
+														<th>City</th>
+														<th>Expected Fleet Size</th>
+														<th>Current Fleet Size</th>
+														<th class="text-right">Mobile No.</th>
+													</thead>
+													<tbody>
+														<tr>
+															<td><%= mapped[0].name %></td>
+															<td><%= mapped[0].state %></td>
+															<td><%= mapped[0].sahar %></td>
+															<td><%= mapped[0].fleet_size %></td>
+															<td>
+																<%= vehicles.length + mapped.length
+																%>
+															</td>
+															<td class="text-right">
+																<%= mapped[0].mob %>
+															</td>
+														</tr>
+														<tr>
+															<% if(mapped[0].v_type!=null) {%>
+															<table class="table">
+																<thead>
+																	<th>Vehicle Type</th>
+																	<th>Vehicle Number</th>
+																	<th>Insurance Munber</th>
+																	<th>Permit Type</th>
+																	<th>Driver Currently Mapped</th>
+																	<th>GPS Info</th>
+																	<th>Mapping Status</th>
+																	<th>Change Status</th>
+																</thead>
+																<tbody>
+																	<% for( let i = 0; i <
+																	mapped.length; i++ ) { %>
+																	<tr>
+																		<td>
+																			<%= mapped[i].v_type %>
+																		</td>
+																		<td>
+																			<%= mapped[i].v_num %>
+																		</td>
+																		<td>
+																			<%=
+																			mapped[i].insurance_num
+																			%>
+																		</td>
+																		<td>
+																			<%=
+																			mapped[i].permit_type %>
+																		</td>
+																		<td>
+																			<%= mapped[i].d_name %>
+																		</td>
+																		<td>
+																			<%= mapped[i].name %>
+																			<br />
+																			<%= mapped[i].serviceId
+																			%>
+																		</td>
+																		<td>
+																			<a
+																				class="btn btn-info"
+																				data-toggle="modal"
+																				data-target="#mapUpdate"
+																				data-vehicleId2="<%= mapped[i].vehicle_id %>"
+																				>Update Mapping</a
+																			>
+																		</td>
+																		<td>
+																			<a
+																				class="btn btn-info"
+																				data-toggle="modal"
+																				data-target="#statusUpdate"
+																				data-vehicleId2="<%= mapped[i].vehicle_id %>"
+																				data-Did="<%= mapped[i].Did %>"
+																				>Update Status</a
+																			>
+																		</td>
+																	</tr>
+																	<% } %>
+																</tbody>
+															</table>
+														</tr>
+														<% } %>
+													</tbody>
+												</table>
+											</div>
+											<% } else {%>
+											<h3>No Driver Currently Mapped..</h3>
+											<% } %> <% } else{%>
+											<h3>Please Select A Transporter</h3>
+											<% } %>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane" id="removeMap" role="tabpanel" aria-expanded="false">
+							<div class="card-body">
+								<!-- <div class="col-lg-6 col-md-6 col-sm-3">
+                  <div class="row">
+                    <div class="dropdown">
+                      <button class="dropdown-toggle btn btn-info btn-outline-info mb-3 mr-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Select Transporter
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <div class="dropdown-header">Select</div>
+                        <% for(var i = 0; i<trans.length ; i++) {%>
+                        <a class="dropdown-item" href="/admin/mapD/<%= trans[i].id %>"><%= trans[i].name %>
+                          /<%= trans[i].city %></a>
+                        <% } %>
+                      </div>
+                    </div>
+                  </div>
+                </div> -->
+								<div class="col-md-12">
+									<div class="card card-plain">
+										<div class="card-body">
+											<% if(mapped!=null) {%> <% if(mapped.length) {%>
+											<h4 class="card-title">Transporter</h4>
+											<p class="card-category"><%= mapped[0].name %> Info</p>
+											<div class="table-responsive">
+												<table class="table">
+													<thead class="">
+														<th>Name</th>
+														<th>State</th>
+														<th>City</th>
+														<th>Fleet Size</th>
+														<th class="text-right">Mobile No.</th>
+													</thead>
+													<tbody>
+														<tr>
+															<td><%= mapped[0].name %></td>
+															<td><%= mapped[0].state %></td>
+															<td><%= mapped[0].sahar %></td>
+															<td><%= mapped[0].fleet_size %></td>
+															<td class="text-right">
+																<%= mapped[0].mob %>
+															</td>
+														</tr>
+														<tr>
+															<% if(mapped[0].v_type!=null) {%>
+															<table class="table">
+																<thead>
+																	<th>Vehicle Type</th>
+																	<th>Vehicle Number</th>
+																	<th>Insurance Munber</th>
+																	<th>Permit Type</th>
+																	<th>Driver Currently Mapped</th>
+																	<th>Mapping Status</th>
+																</thead>
+																<tbody>
+																	<% for( let i = 0; i <
+																	mapped.length; i++ ) { %>
+																	<tr>
+																		<td>
+																			<%= mapped[i].v_type %>
+																		</td>
+																		<td>
+																			<%= mapped[i].v_num %>
+																		</td>
+																		<td>
+																			<%=
+																			mapped[i].insurance_num
+																			%>
+																		</td>
+																		<td>
+																			<%=
+																			mapped[i].permit_type %>
+																		</td>
+																		<td>
+																			<%= mapped[i].d_name %>
+																		</td>
+																		<td>
+																			<a
+																				class="btn btn-danger"
+																				data-toggle="modal"
+																				data-target="#mapRemove"
+																				data-vehicleId3="<%= mapped[i].vehicle_id %>"
+																				data-driverId="<%= mapped[i].Did %>"
+																				><i
+																					class="nc-icon nc-simple-remove"
+																				></i
+																				>Remove</a
+																			>
+																		</td>
+																	</tr>
+																	<% } %>
+																</tbody>
+															</table>
+														</tr>
+														<% } %>
+													</tbody>
+												</table>
+											</div>
+											<% } else {%>
+											<h3>No Driver Currently Mapped..</h3>
+											<% } %> <% } else{%>
+											<h3>Please Select A Transporter</h3>
+											<% } %>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div
+				class="modal fade"
+				id="mapUpdate"
+				tabindex="-1"
+				role="dialog"
+				aria-labelledby="ModalLabel"
+				aria-hidden="true"
+			>
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="exampleModalLabel1">
+								Update Driver Mapping
+							</h4>
+							<button
+								type="button"
+								class="close"
+								data-dismiss="modal"
+								aria-label="Close"
+							>
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-lg-7 col-md-7 col-sm-7">
+									<% if(driver!=null) if(driver.length){%>
+									<select
+										class="selectpicker btn btn-info btn-round"
+										name="update2"
+										id="update2"
+										title="Choose Driver"
+										data-size="7"
+									>
+										<option disabled selected value>Choose</option>
+										<% for( let j = 0; j < driver.length; j++ ) { %>
+										<option value="<%= driver[j].Did %>">
+											<%= driver[j].d_name %>
+										</option>
+										<% } %>
+									</select>
+									<% } else{%>
+									<h4>No UnMapped Drivers available for this transporter...</h4>
+									<% } %>
+									<select
+										class="selectpicker btn btn-info btn-round"
+										name="gpsUpdate"
+										id="gpsUpdate"
+										title="Choose Driver"
+										data-size="7"
+									>
+										<option disabled selected value>Choose</option>
+										<% for( let j = 0; j < gps.length; j++ ) { %>
+										<option value="<%= gps[j].serviceId %>">
+											<%= gps[j].name %>
+										</option>
+										<% } %>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="left-side">
+								<button type="button" class="btn btn-danger" data-dismiss="modal">
+									Never mind
+								</button>
+							</div>
+							<div class="divider"></div>
+							<div class="right-side">
+								<button type="button" class="btn btn-success" id="update3">
+									Update
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="modal fade"
+				id="statusUpdate"
+				tabindex="-1"
+				role="dialog"
+				aria-labelledby="ModalLabel"
+				aria-hidden="true"
+			>
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="exampleModalLabel1">
+								Update Driver Status
+							</h4>
+							<button
+								type="button"
+								class="close"
+								data-dismiss="modal"
+								aria-label="Close"
+							>
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-lg-7 col-md-7 col-sm-7">
+									<button type="button" class="btn btn-success" id="online">
+										Online
+									</button>
+									<button type="button" class="btn btn-success" id="offline">
+										Offline
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="modal fade"
+				id="mapRemove"
+				tabindex="-1"
+				role="dialog"
+				aria-labelledby="ModalLabel"
+				aria-hidden="true"
+			>
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="exampleModalLabel1">Remove Driver</h4>
+							<button
+								type="button"
+								class="close"
+								data-dismiss="modal"
+								aria-label="Close"
+							>
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-lg-12 col-md-12 col-sm-12">
+									<h4>Are You Sure you want to remove the Driver??</h4>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="left-side">
+								<button type="button" class="btn btn-danger" data-dismiss="modal">
+									Never mind
+								</button>
+							</div>
+							<div class="divider"></div>
+							<div class="right-side">
+								<button type="button" class="btn btn-success" id="remove">
+									Remove
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer class="footer">© 2019 Road Express by CodeBuckets.in</footer>
+	</div>
+</div>
+
+<% include ../partials/footer %>
+
+<script type="text/javascript">
+	// var update1;
+	$(document).ready(function () {
+		$(".select2").select2();
+		let v_id, Did;
+		$("#mapDriver").on("show.bs.modal", function (event) {
+			v_id = $(event.relatedTarget).attr("data-vehicleId");
+			$("#update").change(function () {
+				Did = $(this).children("option:selected").val();
+				$("#update1").on("click", function () {
+					$.ajax({
+						url: "/admin/update",
+						type: "post",
+						data: {
+							Did: Did,
+							v_id: v_id,
+						},
+						dataType: "json",
+						success: function (data) {
+							console.log(data);
+							$("#mapDriver").modal("hide");
+							location.reload();
+						},
+					});
+				});
+			});
+		});
+	});
+
+	$(document).ready(function () {
+		let v_id, Did, gpsId;
+		$("#mapUpdate").on("show.bs.modal", function (event) {
+			v_id = $(event.relatedTarget).attr("data-vehicleId2");
+		});
+		$("#update2").change(function () {
+			Did = $(this).children("option:selected").val();
+		});
+		$("#gpsUpdate").change(function () {
+			gpsId = $(this).children("option:selected").val();
+		});
+		$("#update3").on("click", function () {
+			// console.log("here",Did);
+			$.ajax({
+				url: "/admin/updateMapping",
+				type: "post",
+				data: {
+					Did: Did,
+					v_id: v_id,
+					gpsId: gpsId,
+				},
+				dataType: "json",
+				success: function (data) {
+					console.log(data);
+					$("#mapUpdate").modal("hide");
+					location.reload();
+				},
+			});
+		});
+
+		$("#statusUpdate").on("show.bs.modal", function (event) {
+			let vehicleId = $(event.relatedTarget).attr("data-vehicleId2");
+			let driver = $(event.relatedTarget).attr("data-Did");
+			$("#online").on("click", function () {
+				$.ajax({
+					url: "/admin/updateStatus",
+					type: "post",
+					data: {
+						Did: driver,
+						vehicleId: vehicleId,
+						flag: 0,
+					},
+					dataType: "json",
+					success: function (data) {
+						location.reload();
+					},
+				});
+			});
+			$("#offline").on("click", function () {
+				$.ajax({
+					url: "/admin/updateStatus",
+					type: "post",
+					data: {
+						Did: driver,
+						vehicleId: vehicleId,
+						flag: 1,
+					},
+					dataType: "json",
+					success: function (data) {
+						location.reload();
+					},
+				});
+			});
+		});
+	});
+
+	$(document).ready(function () {
+		var v_id;
+		var Did;
+		$("#mapRemove").on("show.bs.modal", function (event) {
+			v_id = $(event.relatedTarget).attr("data-vehicleId3");
+			Did = $(event.relatedTarget).attr("data-driverId");
+		});
+		$("#remove").on("click", function () {
+			$.ajax({
+				url: "/admin/removeMapping",
+				type: "post",
+				data: {
+					Did: Did,
+					v_id: v_id,
+				},
+				dataType: "json",
+				success: function (data) {
+					$("#mapRemove").modal("hide");
+					location.reload();
+				},
+			});
+		});
+	});
+</script>
+
+<script>
+	document.getElementById("transSelect").onchange = function () {
+		window.location.href = this.children[this.selectedIndex].getAttribute("href");
+	};
+</script>

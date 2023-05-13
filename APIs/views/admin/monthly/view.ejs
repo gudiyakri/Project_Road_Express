@@ -1,0 +1,704 @@
+<% include ../../partials/header %>
+<link href="/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+<% include ../../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<% include ../../partials/message %>
+		<div class="row page-titles">
+			<div class="col-md-6 col-8 align-self-center">
+				<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+					<li class="breadcrumb-item active">Devices</li>
+				</ol>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-body pb-0">
+					<ul class="nav nav-tabs customtab2" role="tablist">
+						<li class="nav-item col-md-6 text-center">
+							<a class="nav-link active" data-toggle="tab" href="#view" role="tab"
+								><span class="hidden-sm-up"><i class="ti-home"></i></span>
+								<span class="hidden-xs-down">View</span></a
+							>
+						</li>
+						<li class="nav-item col-md-6 text-center">
+							<a class="nav-link" data-toggle="tab" href="#selectList" role="tab"
+								><span class="hidden-sm-up"><i class="ti-user"></i></span>
+								<span class="hidden-xs-down">Select</span></a
+							>
+						</li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="view" role="tabpanel">
+							<div class="row">
+								<div class="col-4">
+									<div class="col-md-12 col-sm-12 col-lg-12">
+										<h5 class="mt-4 mb-2">Select Date</h5>
+										<div class="input-group">
+											<input
+												type="text"
+												class="form-control singledate"
+												id="date"
+												placeholder="Select Date"
+												autocomplete="off"
+											/>
+											<div class="input-group-append">
+												<span class="input-group-text" id="calender"
+													><i class="icon-calender"></i
+												></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-4 text-right">
+									<div class="col-md-12 col-sm-12 col-lg-12">
+										<button
+											class="btn btn-info"
+											style="margin-top: 3rem; margin-right: 1rem"
+											id="submit"
+										>
+											Process
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div id="mapTrack" class="map" style="height: 500px"></div>
+							<div class="col-12">
+								<input
+									type="range"
+									id="playback"
+									name="playback"
+									min="0"
+									max="10"
+									value="0"
+									class="col-12"
+								/>
+							</div>
+
+							<table
+								id="datatable"
+								class="display table table-hover table-striped table-bordered"
+								cellspacing="0"
+								width="100%"
+							>
+								<thead>
+									<tr>
+										<th>Driver Name</th>
+										<th>Start Time</th>
+										<th>End Time</th>
+										<th>Distance Travelled</th>
+										<th>Speed</th>
+										<th>Battery</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+						<div class="tab-pane p-3" id="selectList" role="tabpanel">
+							<div class="row">
+								<table
+									id="datatable2"
+									class="display table table-hover table-striped table-bordered"
+									cellspacing="0"
+									width="100%"
+								>
+									<thead>
+										<tr>
+											<th>Service Id</th>
+											<th>Name</th>
+											<th>View</th>
+										</tr>
+									</thead>
+									<tbody>
+										<% for( let i = 0; i < gpsData.length; i++ ) { %>
+										<tr>
+											<td><%= gpsData[i].serviceId %></td>
+											<td><%= gpsData[i].name %></td>
+											<td>
+												<a href="/admin/monthly/<%= gpsData[i].id %>"
+													><%= gpsData[i].name %></a
+												>
+											</td>
+										</tr>
+										<% } %>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<% include ../../partials/footer %>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtc_1Ie4_kMbMn_UyvwZeyLa7CgWBdAm4&libraries=geometry"></script>
+<script src="/plugins/jquery.easy/jquery.easing.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marker-animate-unobtrusive/0.2.8/vendor/markerAnimate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marker-animate-unobtrusive/0.2.8/SlidingMarker.min.js"></script>
+
+<script>
+	SlidingMarker.initializeGlobally();
+
+	const table = $("#datatable").DataTable({
+		scrollX: true,
+	});
+
+	$("#datatable2").DataTable({
+		scrollY: 400,
+		responsive: true,
+	});
+
+	$('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+		$($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
+		$.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+	});
+
+	let date = "",
+		base64Id = "<%= base64Id %>",
+		infowindow = null,
+		deviceId = "<%= gps[0].deviceId %>",
+		stopMarker = [],
+		interval = null,
+		marker;
+
+	const lineSymbol = {
+		path: google.maps.SymbolPath.CIRCLE,
+		fillOpacity: 1,
+		strokeOpacity: 1,
+		strokeWeight: 2,
+		fillColor: "white",
+		strokeColor: "#4D8BF0",
+		scale: 5,
+	};
+
+	$(".singledate").daterangepicker({
+		singleDatePicker: true,
+		showDropdowns: true,
+		locale: {
+			format: "DD/MM/YYYY",
+		},
+		autoUpdateInput: false,
+	});
+
+	const today = moment(new Date()).format("DD/MM/YYYY");
+
+	$("#date").on("apply.daterangepicker", function (e, picker) {
+		date = picker.startDate.format("DD/MM/YYYY");
+		$("#date").val(date);
+	});
+
+	$("#submit").on("click", () => {
+		if (interval) {
+			clearInterval(interval);
+		}
+		if (date === "") {
+			alert("Please select a date");
+		} else {
+			$("#date").val(date);
+
+			if (today === date) {
+				maptoday(date);
+			} else {
+				mapDate(date);
+			}
+			$("#hide").show();
+		}
+	});
+
+	function msToHMS(ms) {
+		// 1- Convert to seconds:
+		var seconds = ms / 1000;
+		// 2- Extract hours:
+		var hours = parseInt(seconds / 3600); // 3,600 seconds in 1 hour
+		seconds = seconds % 3600; // seconds remaining after extracting hours
+		// 3- Extract minutes:
+		var minutes = parseInt(seconds / 60); // 60 seconds in 1 minute
+		// 4- Keep only seconds not extracted to minutes:
+		seconds = seconds % 60;
+		return hours + " hrs " + minutes + " mins";
+	}
+
+	function mapDate(date) {
+		$.ajax({
+			url: "https://tracer.roadexpress.in/api/positions",
+			dataType: "json",
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Basic ${base64Id}`,
+			},
+			type: "GET",
+			data: {
+				deviceId: deviceId,
+				from: moment(date, "DD/MM/YYYY").toISOString(),
+				to: moment(date, "DD/MM/YYYY").add(1, "days").toISOString(),
+			},
+			success: function (data) {
+				const length = data.length;
+				let speed = 0,
+					battery = 0;
+
+				const map = new google.maps.Map(document.getElementById("mapTrack"), {
+					zoom: 11,
+					streetViewControl: false,
+					draggable: true,
+				});
+
+				const snappedCoordinates = [];
+
+				for (let i = 0; i < length; i++) {
+					const latlng = new google.maps.LatLng(data[i].latitude, data[i].longitude);
+					snappedCoordinates.push(latlng);
+					speed = data[i].speed * 1.852;
+					battery = data[i].attributes.batteryLevel;
+				}
+
+				$("#playback").val(0);
+
+				$("#playback").prop({
+					min: 0,
+					max: length - 1,
+				});
+
+				let fromMark = new google.maps.Marker({
+					position: new google.maps.LatLng(data[0].latitude, data[0].longitude),
+					map: map,
+				});
+				let toMark = new google.maps.Marker({
+					position: new google.maps.LatLng(
+						data[length - 1].latitude,
+						data[length - 1].longitude
+					),
+					map: map,
+					icon: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+				});
+
+				marker = new SlidingMarker({
+					position: new google.maps.LatLng(data[0].latitude, data[0].longitude),
+					map: map,
+					icon: {
+						url: `/img/vehicle/trucks1.png`,
+						scaledSize: new google.maps.Size(40, 40),
+					},
+					duration: 100,
+					easing: "linear",
+				});
+
+				map.setCenter(new google.maps.LatLng(data[0].latitude, data[0].longitude));
+				snappedPolyline = new google.maps.Polyline({
+					path: snappedCoordinates,
+					strokeColor: "#295CFF",
+					strokeOpacity: 1,
+					strokeWeight: 3,
+					map: map,
+					icons: [
+						{
+							icon: lineSymbol,
+							offset: "0",
+							repeat: "40px",
+						},
+					],
+				});
+				snappedPolyline.setMap(map);
+
+				$("input[type=range]").on("change", function () {
+					move($(this).val());
+				});
+
+				$(document).on("input", "#playback", function () {
+					move($(this).val());
+				});
+
+				function move(val) {
+					const prevPos = marker.getPosition();
+
+					if (data[val]) {
+						marker.setPosition({
+							lat: parseFloat(data[val].latitude),
+							lng: parseFloat(data[val].longitude),
+						});
+					}
+					const currentPos = marker.getPosition();
+
+					const angle = google.maps.geometry.spherical.computeHeading(
+						prevPos,
+						currentPos
+					);
+
+					if (angle !== 0) {
+						$(`img[src="${marker.getIcon().url}"]`).css({
+							"-webkit-transform": "rotate(" + angle + "deg)",
+							"-moz-transform": "rotate(" + angle + "deg)",
+							"-ms-transform": "rotate(" + angle + "deg)",
+							"transform": "rotate(" + angle + "deg)",
+							"-webkit-transition": "all 0.5s",
+							"-moz-transition": "all 0.5s",
+							"-ms-transition": "all 0.5s",
+							"transition": "all 0.5s",
+						});
+					}
+				}
+
+				$.ajax({
+					url: "https://tracer.roadexpress.in/api/reports/stops",
+					dataType: "json",
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Basic ${base64Id}`,
+					},
+					type: "GET",
+					data: {
+						deviceId: deviceId,
+						from: moment(date, "DD/MM/YYYY").toISOString(),
+						to: moment(date, "DD/MM/YYYY").add(1, "days").toISOString(),
+					},
+					success: function (stops) {
+						for (let i = 0; i < stops.length; i++) {
+							stopMarker[i] = new google.maps.Marker({
+								position: new google.maps.LatLng(
+									stops[i].latitude,
+									stops[i].longitude
+								),
+								map: map,
+							});
+							$.ajax({
+								url: `https://maps.googleapis.com/maps/api/geocode/json?latlng=${stops[i].latitude},${stops[i].longitude}&key=AIzaSyAtc_1Ie4_kMbMn_UyvwZeyLa7CgWBdAm4`,
+								type: "GET",
+								success: function (googleData) {
+									stopMarker[i].addListener("click", function () {
+										const content = `<div id="content">
+											<div id="bodyContent">
+												<h6>Duration : ${msToHMS(stops[i].duration)}</h6><br>
+												<h6>Location : ${stops[i].latitude},${stops[i].longitude}</h6><br>
+												<h6>Address : ${googleData.results[0].address_components[0].long_name}</h6><br>
+											</div>
+										</div>`;
+										if (infowindow) {
+											infowindow.close();
+										}
+										infowindow = new google.maps.InfoWindow({
+											content: content,
+										});
+										infowindow.open(map, stopMarker[i]);
+									});
+								},
+							});
+						}
+					},
+				});
+
+				$.ajax({
+					url: "https://tracer.roadexpress.in/api/reports/trips",
+					dataType: "json",
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Basic ${base64Id}`,
+					},
+					type: "GET",
+					data: {
+						deviceId: deviceId,
+						from: moment(date, "DD/MM/YYYY").toISOString(),
+						to: moment(date, "DD/MM/YYYY").add(1, "days").toISOString(),
+					},
+					success: function (trips) {
+						table.clear().draw();
+						const dataArray = [];
+						let distance = 0;
+
+						for (let i = 0; i < trips.length; i++) {
+							distance += trips[i].distance;
+						}
+
+						dataArray.push(
+							"<%= gps[0].d_name %>" ? "<%= gps[0].d_name %>" : "Not Mapped",
+							moment(trips[0].startTime).format("DD/MM/YYYY HH:mm:ss"),
+							moment(trips[trips.length - 1].endTime).format("DD/MM/YYYY HH:mm:ss"),
+							(parseFloat(distance) / 1000).toFixed(2),
+							`${speed.toFixed(2)} km/hr`,
+							`${battery ? battery : 0} %`
+						);
+
+						table.row.add(dataArray).draw();
+					},
+				});
+			},
+		});
+	}
+
+	function maptoday(date) {
+		$.ajax({
+			url: "https://tracer.roadexpress.in/api/positions",
+			dataType: "json",
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Basic ${base64Id}`,
+			},
+			type: "GET",
+			data: {
+				deviceId: deviceId,
+				from: moment(date, "DD/MM/YYYY").toISOString(),
+				to: moment(date, "DD/MM/YYYY").add(1, "days").toISOString(),
+			},
+			success: function (data) {
+				const length = data.length;
+				let speed = 0,
+					battery = 0;
+
+				const map = new google.maps.Map(document.getElementById("mapTrack"), {
+					zoom: 11,
+					streetViewControl: false,
+					draggable: true,
+				});
+
+				const snappedCoordinates = [];
+
+				for (let i = 0; i < length; i++) {
+					const latlng = new google.maps.LatLng(data[i].latitude, data[i].longitude);
+					snappedCoordinates.push(latlng);
+					speed = data[i].speed * 1.852;
+					battery = data[i].attributes.batteryLevel;
+				}
+
+				$("#playback").val(0);
+
+				$("#playback").prop({
+					min: 0,
+					max: length - 1,
+				});
+
+				let fromMark = new google.maps.Marker({
+					position: new google.maps.LatLng(data[0].latitude, data[0].longitude),
+					map: map,
+				});
+				let toMark = new google.maps.Marker({
+					position: new google.maps.LatLng(
+						data[length - 1].latitude,
+						data[length - 1].longitude
+					),
+					map: map,
+					icon: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+				});
+
+				marker = new SlidingMarker({
+					position: new google.maps.LatLng(data[0].latitude, data[0].longitude),
+					map: map,
+					icon: {
+						url: `/img/vehicle/trucks1.png`,
+						scaledSize: new google.maps.Size(40, 40),
+					},
+					duration: 100,
+					easing: "linear",
+				});
+
+				map.setCenter(new google.maps.LatLng(data[0].latitude, data[0].longitude));
+				snappedPolyline = new google.maps.Polyline({
+					path: snappedCoordinates,
+					strokeColor: "#295CFF",
+					strokeOpacity: 1,
+					strokeWeight: 3,
+					map: map,
+					icons: [
+						{
+							icon: lineSymbol,
+							offset: "0",
+							repeat: "40px",
+						},
+					],
+				});
+				snappedPolyline.setMap(map);
+
+				$("input[type=range]").on("change", function () {
+					move($(this).val());
+				});
+
+				$(document).on("input", "#playback", function () {
+					move($(this).val());
+				});
+
+				interval = setInterval(gpsData, 5000);
+
+				function move(val) {
+					const prevPos = marker.getPosition();
+
+					if (data[val]) {
+						marker.setPosition({
+							lat: parseFloat(data[val].latitude),
+							lng: parseFloat(data[val].longitude),
+						});
+					}
+					const currentPos = marker.getPosition();
+
+					const angle = google.maps.geometry.spherical.computeHeading(
+						prevPos,
+						currentPos
+					);
+
+					if (angle !== 0) {
+						$(`img[src="${marker.getIcon().url}"]`).css({
+							"-webkit-transform": "rotate(" + angle + "deg)",
+							"-moz-transform": "rotate(" + angle + "deg)",
+							"-ms-transform": "rotate(" + angle + "deg)",
+							"transform": "rotate(" + angle + "deg)",
+							"-webkit-transition": "all 0.5s",
+							"-moz-transition": "all 0.5s",
+							"-ms-transition": "all 0.5s",
+							"transition": "all 0.5s",
+						});
+					}
+				}
+
+				$.ajax({
+					url: "https://tracer.roadexpress.in/api/reports/stops",
+					dataType: "json",
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Basic ${base64Id}`,
+					},
+					type: "GET",
+					data: {
+						deviceId: deviceId,
+						from: moment(date, "DD/MM/YYYY").toISOString(),
+						to: moment(date, "DD/MM/YYYY").add(1, "days").toISOString(),
+					},
+					success: function (stops) {
+						for (let i = 0; i < stops.length; i++) {
+							stopMarker[i] = new google.maps.Marker({
+								position: new google.maps.LatLng(
+									stops[i].latitude,
+									stops[i].longitude
+								),
+								map: map,
+							});
+							$.ajax({
+								url: `https://maps.googleapis.com/maps/api/geocode/json?latlng=${stops[i].latitude},${stops[i].longitude}&key=AIzaSyAtc_1Ie4_kMbMn_UyvwZeyLa7CgWBdAm4`,
+								type: "GET",
+								success: function (googleData) {
+									stopMarker[i].addListener("click", function () {
+										const content = `<div id="content">
+											<div id="bodyContent">
+												<h6>Duration : ${msToHMS(stops[i].duration)}</h6><br>
+												<h6>Location : ${stops[i].latitude},${stops[i].longitude}</h6><br>
+												<h6>Address : ${googleData.results[0].address_components[0].long_name}</h6><br>
+											</div>
+										</div>`;
+										if (infowindow) {
+											infowindow.close();
+										}
+										infowindow = new google.maps.InfoWindow({
+											content: content,
+										});
+										infowindow.open(map, stopMarker[i]);
+									});
+								},
+							});
+						}
+					},
+				});
+
+				$.ajax({
+					url: "https://tracer.roadexpress.in/api/reports/trips",
+					dataType: "json",
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Basic ${base64Id}`,
+					},
+					type: "GET",
+					data: {
+						deviceId: deviceId,
+						from: moment(date, "DD/MM/YYYY").toISOString(),
+						to: moment(date, "DD/MM/YYYY").add(1, "days").toISOString(),
+					},
+					success: function (trips) {
+						table.clear().draw();
+						const dataArray = [];
+						let distance = 0;
+
+						for (let i = 0; i < trips.length; i++) {
+							distance += trips[i].distance;
+						}
+
+						dataArray.push(
+							"<%= gps[0].d_name %>" ? "<%= gps[0].d_name %>" : "Not Mapped",
+							trips[0]
+								? moment(trips[0].startTime).format("DD/MM/YYYY HH:mm:ss")
+								: "No Trip",
+							trips[0]
+								? moment(trips[trips.length - 1].endTime).format(
+										"DD/MM/YYYY HH:mm:ss"
+								  )
+								: "No Trip",
+							(parseFloat(distance) / 1000).toFixed(2),
+							`${speed.toFixed(2)} km/hr`,
+							`${battery ? battery : 0} %`
+						);
+
+						table.row.add(dataArray).draw();
+					},
+				});
+			},
+		});
+
+		function gpsData() {
+			$.ajax({
+				url: "https://tracer.roadexpress.in/api/positions",
+				dataType: "json",
+				type: "GET",
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader("Authorization", "Basic " + btoa("admin" + ":" + "admin"));
+				},
+				success: function (data) {
+					if (data) {
+						for (let i = 0; i < data.length; i++) {
+							if (data[i].deviceId == deviceId) {
+								let prevPos = marker.getPosition();
+								marker.setPosition({
+									lat: parseFloat(data[i].latitude),
+									lng: parseFloat(data[i].longitude),
+								});
+								$(`img[src="${marker.getIcon().url}"]`).css({
+									"-webkit-transform":
+										"rotate(" +
+										google.maps.geometry.spherical.computeHeading(
+											prevPos,
+											marker.getPosition()
+										) +
+										"deg)",
+									"-moz-transform":
+										"rotate(" +
+										google.maps.geometry.spherical.computeHeading(
+											prevPos,
+											marker.getPosition()
+										) +
+										"deg)",
+									"-ms-transform":
+										"rotate(" +
+										google.maps.geometry.spherical.computeHeading(
+											prevPos,
+											marker.getPosition()
+										) +
+										"deg)",
+									"transform":
+										"rotate(" +
+										google.maps.geometry.spherical.computeHeading(
+											prevPos,
+											marker.getPosition()
+										) +
+										"deg)",
+									"-webkit-transition": "all 1s",
+									"-moz-transition": "all 1s",
+									"-ms-transition": "all 1s",
+									"transition": "all 1s",
+								});
+							}
+						}
+					}
+				},
+			});
+		}
+	}
+</script>

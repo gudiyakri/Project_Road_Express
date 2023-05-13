@@ -1,0 +1,308 @@
+<% include ../partials/header %>
+<style>
+	.tab {
+		max-width: auto;
+		max-height: 50em;
+		overflow: scroll;
+		position: relative;
+	}
+
+	table {
+		position: relative;
+		border-collapse: collapse;
+	}
+
+	td,
+	th {
+		padding: 0.25em;
+	}
+
+	thead th {
+		position: -webkit-sticky;
+		/* for Safari */
+		position: sticky;
+		top: 0;
+		background: #000;
+		color: #fff;
+	}
+
+	thead th:first-child {
+		left: 0;
+		z-index: 1;
+	}
+
+	tbody th {
+		position: -webkit-sticky;
+		/* for Safari */
+		position: sticky;
+		left: 0;
+		background: #fff;
+		border-right: 1px solid #ccc;
+	}
+</style>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<div class="row page-titles">
+			<div class="col-md-6 col-8 align-self-center">
+				<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Rate Adjust</a></li>
+					<li class="breadcrumb-item active">Client Rate</li>
+				</ol>
+			</div>
+		</div>
+		<div class="card">
+			<div class="card-body pb-0">
+				<ul class="nav nav-tabs customtab2" role="tablist">
+					<li class="nav-item col-md-6 text-center">
+						<a class="nav-link active" data-toggle="tab" href="#addRate" role="tab"
+							><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">ADD RATE</span></a
+						>
+					</li>
+					<li class="nav-item col-md-6 text-center">
+						<a class="nav-link" data-toggle="tab" href="#addCity" role="tab"
+							><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">ADD CITY</span></a
+						>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="addRate" role="tabpanel">
+						<form style="margin-left: 125px">
+							<div class="row">
+								<div class="col-md-4 col-md-4">
+									<h5 class="mt-4 mb-2">Select Client</h5>
+									<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="client">
+										<option>Choose</option>
+										<% for( let i = 0; i < client.length; i++ ) { %>
+										<option value="<%=client[i].id%>" name="clientId"><%=client[i].name%></option>
+										<% } %>
+									</select>
+								</div>
+								<div class="col-md-4 col-md-4 ml-5">
+									<h5 class="mt-4 mb-2">Select Vehicle</h5>
+									<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="vehicle" data-style="btn-info">
+										<option id="choose">Choose</option>
+										<% for( let i = 0; i < vehicle.length; i++ ) { %>
+										<option value="<%=vehicle[i].v_type%>" name="vehicleId"><%=vehicle[i].type_name%></option>
+										<% } %>
+									</select>
+								</div>
+							</div>
+						</form>
+						<hr />
+						<div class="table-responsive tab">
+							<table class="table table-bordered no-wrap freezHeaderAndTitle" id="table">
+								<thead>
+									<tr>
+										<th>City</th>
+										<% for( let i = 0; i < city.length; i++ ) { %>
+										<th><%=city[i].city%></th>
+										<% } %>
+									</tr>
+								</thead>
+								<tbody>
+									<% for( let j = 0; j < city.length; j++ ) { %>
+									<tr>
+										<th><%=city[j].city%></th>
+										<% for( let i = 0; i < city.length; i++ ) { %> <% if(i==j) {%>
+										<td>0</td>
+										<% }else{%>
+										<td data-toggle="modal" data-target="#modal" data-end="<%=city[i].id%>" data-start="<%=city[j].id%>">
+											<div id="mod<%=city[j].id%>*<%=city[i].id%>" class="price"></div>
+										</td>
+										<% } %> <% } %>
+									</tr>
+									<% } %>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="tab-pane" id="addCity" role="tabpanel">
+						<form class="form-horizontal" style="margin-left: 125px" method="POST" action="/admin/addCityRate">
+							<div class="row">
+								<div class="col-md-5 col-md-4">
+									<h5 class="mt-4 mb-2">Select state</h5>
+									<select class="select2 mb-3 mr-2 btn-info btn-rounded" name="state" title="Choose City">
+										<% for( let i = 0; i < state.length; i++ ) { %>
+										<option value="<%= state[i].state %>"><%= state[i].state %></option>
+										<% } %>
+									</select>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4 col-md-6">
+									<h5 class="mt-4 mb-2">City</h5>
+									<input type="text" name="city" id="city" class="form-control col-md-12" placeholder="Enter City" autocomplete="off" />
+								</div>
+							</div>
+							<br />
+							<button type="submit" style="margin-left: 250px" class="btn waves-effect waves-light btn-rounded btn-info">ADD</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal1">
+	<div class="modal-dialog modal-md" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="exampleModalLabel1">Rate</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" id="rateUpdate">
+					<div class="row">
+						<div class="col-md-4 col-md-6">
+							<h5 class="mt-4">Update New Client Rate</h5>
+							<input type="number" class="form-control col-md-12" name="rate" placeholder="Enter New Client Rate" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-md-6">
+							<h5 class="mt-4">Update New Driver Rate</h5>
+							<input type="number" class="form-control col-md-12" name="rateDriver" placeholder="Enter New Driver Rate" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-success">Update</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="success" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title" id="exampleModalLabel1">Rate Updated</h3>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title" id="exampleModalLabel1">Please select both client and vehicle type to add a rate.</h3>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<% include ../partials/footer %>
+
+<script>
+	$(document).ready(function () {
+		$(".select2").select2();
+	});
+</script>
+
+<script>
+	let vehicle,
+		client,
+		flag = false;
+
+	$("#client").on("change", function (event) {
+		client = $(this).children("option:selected").val();
+		matrix(client, vehicle);
+	});
+	$("#vehicle").on("change", function () {
+		vehicle = $(this).children("option:selected").val();
+		matrix(client, vehicle);
+	});
+
+	function matrix(client, vehicle) {
+		if (client && vehicle) {
+			flag = true;
+			$(".price").empty();
+			$.ajax({
+				url: "/admin/matrix",
+				type: "post",
+				data: {
+					client,
+					vehicle,
+				},
+				dataType: "json",
+				success: function (data) {
+					let len = data.length;
+					if (len > 0) {
+						for (let x = 0; x < len; x++) {
+							if (data[x].start !== data[x].end) {
+								document.getElementById(`mod${data[x].start}*${data[x].end}`).innerHTML = `${data[x].price},${data[x].driverAmount ? data[x].driverAmount : "N/A"}`;
+							}
+						}
+						$("#table").removeClass("hide");
+					} else {
+						$(".price").empty();
+						$("#table").removeClass("hide");
+					}
+				},
+			});
+		}
+	}
+	let start, end;
+	$("#modal").on("show.bs.modal", function (event) {
+		end = $(event.relatedTarget).attr("data-end");
+		start = $(event.relatedTarget).attr("data-start");
+		$("input[name='rate']").val("");
+		$("input[name='rateDriver']").val("");
+		$.ajax({
+			url: "/admin/getStaticRate",
+			type: "post",
+			data: {
+				start,
+				end,
+				client,
+				vehicle,
+			},
+			dataType: "json",
+			success: function (data) {
+				if (data.code === 1) {
+					$("input[name='rate']").val(data.data[0].price);
+					$("input[name='rateDriver']").val(data.data[0].driverAmount);
+				}
+			},
+		});
+	});
+	$("#rateUpdate").submit(function (event) {
+		event.preventDefault();
+		let rate = $("input[name='rate']").val();
+		let rateDriver = $("input[name='rateDriver']").val();
+		if (flag) {
+			$.ajax({
+				url: "/admin/updateRate",
+				type: "post",
+				data: {
+					rate,
+					start,
+					end,
+					client,
+					vehicle,
+					rateDriver,
+				},
+				dataType: "json",
+				success: function (data) {
+					$("input[name='rate']").val("");
+					matrix(client, vehicle);
+					$("#modal").modal("hide");
+					$("#success").modal("show");
+					audio.play();
+				},
+			});
+		} else {
+			$("#modal").modal("hide");
+			$("#error").modal("show");
+		}
+	});
+</script>

@@ -1,0 +1,137 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+    <div class="container-fluid">
+        <div class="col-md-12">
+            <% include ../partials/message %>
+            <div class="row page-titles">
+                <div class="col-md-6 col-8 align-self-center">
+                    <h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Accouts</a></li>
+                        <li class="breadcrumb-item active">Driver Wise</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropdown-toggle btn btn-info btn-round btn-block col-md-2" type="button"
+                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <% if(currentDriver!=null) {%>
+                    <%= currentDriver[0].d_name %>
+                    <% } else {%>
+                    Select Driver
+                    <% } %>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    <div class="dropdown-header">Select</div>
+                    <% for(var i = 0; i<driver.length ; i++) {%>
+                    <a class="dropdown-item" href="/accounts/driverWise/<%= driver[i].Did %>"><%= driver[i].d_name %></a>
+                    <% } %>
+                </div>
+                <% if(currentDriver==null) {%>
+                <h1>PLease Select a Driver to Continue...</h1>
+                <% } %>
+            </div>
+            <br>
+            <% if(currentDriver!= null) {%>
+                <div class="card">
+                    <div class="card-body pb-0">
+                            <% if(acc!=null) {%>
+                                <% if(acc.length>0) {
+                                    var tot = 0%>
+                                    <div class="p-3">
+                                        <div class="table-responsive">
+                                            <table class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">                                        
+                                                <thead>
+                                                    <tr>
+                                                        <th>Client Name</th>
+                                                        <th>Load Type</th>
+                                                        <th>Pickup Loaction</th>
+                                                        <th>Last Point</th>
+                                                        <th>Total</th>
+                                                        <th>Driver's Cut</th>
+                                                        <th>Driver Received At Start</th>
+                                                        <th>Driver Received At End</th>
+                                                        <th>Driver's Cut Remaining</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% for(var i = 0;i<acc.length; i++) {%>
+                                                        <tr>
+                                                            <td>
+                                                                <%= acc[i].name %> 
+                                                            </td>
+                                                            <td>
+                                                                <%= acc[i].type %> 
+                                                            </td>
+                                                            <td>
+                                                                <%= acc[i].pickup_location %> 
+                                                            </td>
+                                                            <td>
+                                                                <%= acc[i].last_point %> 
+                                                            </td>
+                                                            <td>
+                                                                <%= acc[i].total %>
+                                                            </td>
+                                                            <td>
+                                                                <%= acc[i].main %>
+                                                            </td>
+                                                            <td>
+                                                                <%= acc[i].amount %>
+                                                            </td>
+                                                            <td>
+                                                                <% if(sub!=null)
+                                                                if(sub.length>0) {%>
+                                                                    <% for(var j = 0; j<sub.length; j++){%>
+                                                                        <% if(sub[j].trip_id == acc[i].trip_id) {%>
+                                                                            <%= sub[j].sub %>
+                                                                        <% break;} %>
+                                                                    <% } %>
+                                                                <% } %>
+                                                            </td>
+                                                            <td>
+                                                                <% if(total!=null)
+                                                                if(total.length>0) {%>
+                                                                    <% for(var j = 0; j<total.length; j++){%>
+                                                                        <% if(total[j].trip_id == acc[i].trip_id) {%>
+                                                                            <%if(total[j].flag=='0') {%>
+                                                                                <%= total[j].remaining %>
+                                                                            <% break; } else{%>
+                                                                                Already Paid
+                                                                            <% break; } %>
+                                                                        <% } %>
+                                                                    <% } %>
+                                                                <% } %>
+                                                            </td>
+                                                        </tr>
+                                                    <% } %>
+                                                </tbody>
+                                            </table>
+                                            <div class="">
+                                                <%if(pending!=null) 
+                                                if(pending.length>0){%>
+                                                <h3>Total To be Paid To Driver: <%=pending[0].total %></h3>
+                                                <% } %>
+                                            </div>
+                                            <form method="POST" action="/accounts/addDriverPayment">
+                                                <div class="col-md-4 col-md-4 " style="left:500px;top:-35px;">
+                                                    <input class="form-control col-md-12"  type="text" name="amount" required placeholder="Amount" required>
+                                                    <button type="submit" style="position: absolute; margin-left: 300px;top:0px;" class="btn waves-effect waves-light btn-rounded btn-info">PAY</button>
+                                                </div>                                                
+                                            </form>
+                                            
+                                        </div>
+                                    </div>
+                                <% } else{%>
+                                <h1>No trips...</h1>
+                            <% } } %>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+        <footer class="footer"> © 2019 Road Express by CodeBuckets.in</footer>        
+    </div>
+</div>
+
+<% include ../partials/footer %>

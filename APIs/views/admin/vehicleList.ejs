@@ -1,0 +1,42 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<div class="row page-titles">
+			<div class="col-md-6 col-8 align-self-center">
+				<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+					<li class="breadcrumb-item active">Placement Sheet</li>
+				</ol>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<% include ../partials/message %>
+				<div class="card-body">
+					<div class="toolbar col-md-6"></div>
+					<table id="datatable" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+						<thead>
+							<tr>
+								<th>S No.</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% for( let i = 0; i < csv.length; i++ ) { %>
+							<tr>
+								<td><%= csv[i] %></td>
+								<td><a class="btn btn-primary btn-rounded" target="_blank" href="/admin/vehicleIn/<%= csv[i] %>">View</a></td>
+							</tr>
+							<% } %>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<footer class="footer">© 2019 Road Express by CodeBuckets.in</footer>
+	</div>
+</div>
+
+<% include ../partials/footer %>

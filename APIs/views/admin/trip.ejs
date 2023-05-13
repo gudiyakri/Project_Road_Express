@@ -1,0 +1,750 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<div class="col-md-12">
+			<% include ../partials/message %>
+			<div class="dropdown col-md-6">
+				<select class="select2 mb-3 mr-2" id="stateTop">
+					<option disabled selected>Select State</option>
+					<% for( let i = 0; i < state.length; i++ ) { %>
+					<option value="<%= state[i].state %>"><%= state[i].state %></option>
+					<% } %>
+				</select>
+				<select class="select2 col-6 btn btn-info btn-round" id="cityTop">
+					<option disabled selected value>Select City</option>
+				</select>
+			</div>
+			<br />
+			<h4><% if(currentCity!=null) {%> Selected City :<%= currentCity[0].city %> <% } %></h4>
+			<br />
+			<% if(currentCity!=null) {%>
+			<h4 class="title title-up">Add Details</h4>
+			<form action="/admin/addTrip" method="POST" class="form-horizontal">
+				<div class="row">
+					<div class="col-md-5 col-md-4">
+						<h5 class="mt-4 mb-2">Company*</h5>
+						<select class="select2 col-6 btn btn-info btn-round" id="id1" name="name" required>
+							<option disabled selected value>Choose</option>
+						</select>
+					</div>
+					<% if(loadType!=null) {%>
+					<div class="col-md-5 col-md-4">
+						<h5 class="mt-4 mb-2">Type*</h5>
+						<select class="select2 col-6 btn btn-info btn-round" required name="type">
+							<option disabled selected value>Choose</option>
+							<% for( let i = 0; i < loadType.length; i++ ) { %>
+							<option value="<%=loadType[i].load_type%>"><%=loadType[i].load_type%></option>
+							<% } %>
+						</select>
+					</div>
+					<%} else{%>
+					<div class="col-md-5 col-md-4">
+						<h5 class="mt-4 mb-2">No Load Type Found</h5>
+					</div>
+					<% } %>
+				</div>
+				<div class="row">
+					<div class="col-md-6 col-md-12">
+						<h5 class="mt-4 mb-1">Load Information</h5>
+						<br />
+						<div class="row">
+							<div class="col-sm-5 nopadding">
+								<div class="form-group">
+									<input type="text" class="form-control" id="load_name0" name="load_name" placeholder="Enter name of product" />
+								</div>
+							</div>
+							<div class="col-sm-4 nopadding">
+								<div class="form-group">
+									<input type="text" class="form-control" name="load_quan" placeholder="Quantity in kg,Ton,pieces" />
+								</div>
+							</div>
+							<div class="col-sm-5 nopadding">
+								<div class="form-group">
+									<input type="text" class="form-control" name="invoice_num" placeholder="Enter invoice number" />
+								</div>
+							</div>
+							<div class="col-sm-4 nopadding">
+								<div class="form-group">
+									<select class="mb-3 mr-2 select2" name="load_type" id="load_type0">
+										<option value="Kg">Kg</option>
+										<option value="Ton">Ton</option>
+										<option value="Pieces">Pieces</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-sm-4 nopadding">
+								<div class="form-group">
+									<input type="text" class="form-control" name="load_amount" placeholder="Enter product amount" />
+								</div>
+							</div>
+							<div class="col-sm-2 nopadding">
+								<div class="form-group">
+									<div class="input-group">
+										<div class="input-group-append">
+											<button class="btn btn-success" type="button" onclick="loadAdd()"><i class="fa fa-plus"></i></button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="load_fields"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Company Mobile Number*</h5>
+						<input type="text" name="start_mob" required class="form-control col-md-12" maxlength="10" minlength="10" placeholder="Enter Mobile Number" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Destination*</h5>
+						<input type="text" name="dest" id="autocompleteDest" required class="form-control col-md-12" placeholder="Enter Destination" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Destination Mobile Number</h5>
+						<input type="text" name="end_mob" required class="form-control col-md-12" maxlength="10" minlength="10" placeholder="Enter Destination Mobile Number" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Select Source State</h5>
+						<select class="select2 col-6 btn btn-info btn-round" required id="sourceState">
+							<option disabled selected>Choose</option>
+							<% for( let i = 0; i < state.length; i++ ) { %>
+							<option value="<%= state[i].state %>"><%= state[i].state %></option>
+							<% } %>
+						</select>
+					</div>
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Select Source City</h5>
+						<select class="select2 col-6 btn btn-info btn-round" required id="sourceCity" name="city">
+							<option disabled selected>Choose</option>
+							<% for( let i = 0; i < city.length; i++ ) { %>
+							<option value="<%=city[i].id%>"><%=city[i].city%></option>
+							<% } %>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Select Destination State</h5>
+						<select class="select2 col-6 btn btn-info btn-round" required id="destState">
+							<option disabled selected>Choose</option>
+							<% for( let i = 0; i < state.length; i++ ) { %>
+							<option value="<%= state[i].state %>"><%= state[i].state %></option>
+							<% } %>
+						</select>
+					</div>
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Select Destination City</h5>
+						<select class="select2 col-6 btn btn-info btn-round" required id="destCity" name="dest_city">
+							<option disabled selected>Choose</option>
+							<% for( let i = 0; i < city.length; i++ ) { %>
+							<option value="<%=city[i].id%>"><%=city[i].city%></option>
+							<% } %>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Pickup Location</h5>
+						<input id="autocomplete" type="text" autocomplete="off" name="pickup" required class="form-control col-md-12" placeholder="Enter Pickup Location" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 col-md-12">
+						<h5 class="mt-4 mb-1">Intermediate Location</h5>
+						<br />
+						<div class="row">
+							<div class="col-sm-5 nopadding">
+								<div class="form-group">
+									<input type="text" class="form-control" id="autocompleteInter0" name="inter" placeholder="Enter Location" />
+								</div>
+							</div>
+							<div class="col-sm-4 nopadding">
+								<div class="form-group">
+									<input type="text" class="form-control" maxlength="10" minlength="10" name="inter_mob" placeholder="Mobile Number" />
+								</div>
+							</div>
+							<div class="col-sm-2 nopadding">
+								<div class="form-group">
+									<div class="input-group">
+										<div class="input-group-append">
+											<button class="btn btn-success" type="button" onclick="intermediate()"><i class="fa fa-plus"></i></button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="inter_fields"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">GOODS Price</h5>
+						<input type="text" name="totalAmount" class="form-control" placeholder="Amount" required />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-2 mb-2">Weight</h5>
+						<input type="text" name="weight" class="form-control col-md-12" placeholder="Enter Weight (KG)" required />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Vehicles Required (Minimum 1)</h5>
+						<input type="text" name="no_vehicle" class="form-control col-md-12" required placeholder="Enter No. of Vehicles Required" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Vehicle Type*</h5>
+						<select class="select2 col-6 btn btn-info btn-round" id="id2" required name="vtype">
+							<option disabled selected value>Choose</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Amount Driver*</h5>
+						<input type="number" min="0" name="amount" required class="form-control col-md-12" placeholder="Enter Amount" />
+						<input type="text" id="flagAll" name="flag" value="2" class="form-control" hidden />
+						<input type="text" id="lat_long" name="lat_long" class="form-control" required hidden />
+						<input type="text" id="last_lat_long" name="last_lat_long" class="form-control" required hidden />
+						<input type="text" id="inter_lat_long" name="inter_lat_long" class="form-control" hidden />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Amount Client*</h5>
+						<input type="number" min="0" name="clientAmount" required class="form-control col-md-12" placeholder="Enter Amount" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 col-md-12">
+						<h5 class="mt-2 mb-2">Duration</h5>
+						<div class="input-group">
+							<input type="text" class="form-control datetimepicker col-md-4" name="timef" autocomplete="off" required placeholder="DD/MM/YYYY" />
+							<div class="input-group-append">
+								<span class="input-group-text"><i class="icon-calender"></i></span>
+							</div>
+							<h5 class="mt-2 mb-2" style="margin-left: 30px">to</h5>
+							<input
+								type="text"
+								name="timet"
+								required
+								style="margin-left: 20px"
+								autocomplete="off"
+								class="form-control datetimepicker col-md-4"
+								placeholder="DD/MM/YYYY"
+							/>
+							<div class="input-group-append">
+								<span class="input-group-text"><i class="icon-calender"></i></span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 col-md-6">
+						<h5 class="mt-4 mb-2">Remark</h5>
+						<textarea name="remark" cols="30" rows="2"></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="left-side">
+						<button type="button" class="btn btn-default btn-rounded btn-danger" data-dismiss="modal">Never mind</button>
+					</div>
+					<div class="divider"></div>
+					<div class="right-side">
+						<button type="submit" style="margin-left: 25px" class="btn waves-effect waves-light btn-rounded btn-info">S.O.S</button>
+					</div>
+				</div>
+			</form>
+			<% } else {%>
+			<h2>Please Select a city..</h2>
+			<% } %>
+		</div>
+		<footer class="footer">© 2019 Road Express by CodeBuckets.in</footer>
+	</div>
+</div>
+
+<% include ../partials/footer %>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		if ("<%= currentCity %>") {
+			$("#Did").val(null);
+			let city = "<%= currentCity ? currentCity[0].id : '' %>";
+			$.ajax({
+				url: "/admin/findCompany",
+				type: "post",
+				data: { citys: city },
+				dataType: "json",
+				success: function (data) {
+					if (data.length == 0) {
+						$("#id1").empty();
+						$("#id1").append(`<option>No Comapanies in this City</option>`);
+					} else {
+						let len = data.length;
+						for (let i = 0; i < len; i++) {
+							let name = data[i].name;
+							let id = data[i].id;
+							$("#id1").append(`<option value='${id}' data-type='${data[i].rateType}' data-waitFlag='${data[i].waitFlag}'>${name}</option>`);
+						}
+					}
+				},
+			});
+		}
+	});
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		if ("<%= currentCity %>") {
+			let city = "<%= currentCity ? currentCity[0].id : '' %>";
+			$.ajax({
+				url: "/admin/vtypes",
+				type: "post",
+				data: { citys: city },
+				dataType: "json",
+				success: function (data) {
+					if (data.length == 0) {
+						$("#id2").empty();
+						$("#id2").append(`<option>No Vehicles in this City</option>`);
+					} else {
+						let len = data.length;
+						for (let i = 0; i < len; i++) {
+							let v_type = data[i].type_name;
+							$("#id2").append("<option value='" + v_type + "'>" + v_type + "</option>");
+						}
+					}
+				},
+			});
+		}
+	});
+</script>
+
+<script>
+	let interLocRoom = 1;
+
+	function intermediate() {
+		interLocRoom++;
+		let objTo = document.getElementById("inter_fields");
+		let divtest = document.createElement("div");
+		divtest.setAttribute("class", "form-group removeclass" + interLocRoom);
+		let rdiv = "removeclass" + interLocRoom;
+		divtest.innerHTML = `<div class="row"><div class="col-sm-5 nopadding"> <div class="form-group"><input type="text" class="form-control" name="inter" required id="autocompleteInter${
+			interLocRoom - 1
+		}" placeholder="Enter Location"></div></div><div class="col-sm-4 nopadding"><div class="form-group"><input type="text" class="form-control" name="inter_mob" required maxlength="10" minlength="10" placeholder="Mobile Number"></div></div><div class="col-sm-2 nopadding"><div class="form-group"><div class="input-group"><div class="input-group-append"><button class="btn btn-danger" type="button" onclick="remove_intermediate(${interLocRoom});"><i class="fa fa-minus"></i></button></div></div></div></div></div>`;
+		objTo.appendChild(divtest);
+		interloc(interLocRoom - 1);
+	}
+
+	function remove_intermediate(rid) {
+		$(".removeclass" + rid).remove();
+	}
+</script>
+
+<script>
+	$(document).ready(function () {
+		demo.initDateTimePicker();
+		if ($(".slider").length != 0) {
+			demo.initSliders();
+		}
+	});
+</script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtc_1Ie4_kMbMn_UyvwZeyLa7CgWBdAm4&libraries=places,geometry&callback=initAutocomplete"></script>
+
+<script>
+	let sCity = "",
+		dCity = "",
+		client = "",
+		vType = "",
+		noVehicle = "",
+		amounts = "",
+		type = "",
+		waitFlag = "";
+	$("select[name='city']").on("change", function () {
+		sCity = $(this).children("option:selected").val();
+		amount(sCity, dCity, client, vType, noVehicle, type, waitFlag);
+	});
+
+	$("select[name='dest_city']").on("change", function () {
+		dCity = $(this).children("option:selected").val();
+		amount(sCity, dCity, client, vType, noVehicle, type, waitFlag);
+	});
+
+	$("select[name='name']").on("change", function () {
+		client = $(this).children("option:selected").val();
+		type = $(this).children("option:selected").data("type");
+		waitFlag = $(this).children("option:selected").data("waitFlag");
+		amount(sCity, dCity, client, vType, noVehicle, type, waitFlag);
+	});
+
+	$("select[name='vtype']").on("change", function () {
+		vType = $(this).children("option:selected").val();
+		amount(sCity, dCity, client, vType, noVehicle, type, waitFlag);
+	});
+
+	$("input[name='no_vehicle']").on("input", function () {
+		noVehicle = $(this).val();
+		amount(sCity, dCity, client, vType, noVehicle, type, waitFlag);
+	});
+
+	$("input[name='inter_lat_long']").on("change", function () {
+		amount(sCity, dCity, client, vType, noVehicle, type, waitFlag);
+	});
+
+	function amount(sCity, dCity, client, vType, noVehicle, type, waitFlag) {
+		$("input[name='amount']").val("");
+		if (sCity && dCity && client && vType && (noVehicle !== "") & (type !== "") & (waitFlag !== "")) {
+			if (type == 0) {
+				$.ajax({
+					url: "/admin/amount",
+					type: "post",
+					data: { sCity, dCity, client, vType },
+					dataType: "json",
+					success: function (data) {
+						if (data.code === 1) {
+							if (data.result[0].driverAmount >= 0) {
+								let amounts = parseInt(data.result[0].driverAmount, 10) * parseInt(noVehicle, 10);
+								$("input[name='amount']").val(amounts);
+							} else {
+								Swal.fire({
+									type: "error",
+									title: "Rate Not Found",
+									text: "Rate Matrix Is not Prepared For Driver",
+									footer: "Solution : Add In Rate Matrix",
+								});
+							}
+
+							if (data.result[0].price >= 0) {
+								let amounts = parseInt(data.result[0].price, 10) * parseInt(noVehicle, 10);
+								$("input[name='clientAmount']").val(amounts);
+							} else {
+								Swal.fire({
+									type: "error",
+									title: "Rate Not Found",
+									text: "Rate Matrix Is not Prepared For the Client",
+									footer: "Solution : Add In Rate Matrix",
+								});
+							}
+						} else {
+							Swal.fire({
+								type: "error",
+								title: "Rate Not Found",
+								text: "Rate Matrix Is not Prepared For the Selected Items",
+								footer: "Solution : Add In Rate Matrix",
+							});
+						}
+					},
+				});
+			} else {
+				const directionsService = new google.maps.DirectionsService();
+
+				let start = $("input[name='lat_long']").val().split("#");
+				let last = $("input[name='last_lat_long']").val().split("#");
+				let inter = $("input[name='inter_lat_long']").val();
+				inter = inter !== "" ? inter.split("^") : "";
+
+				let origin = new google.maps.LatLng(parseFloat(start[0]), parseFloat(start[1]));
+
+				let destination = new google.maps.LatLng(parseFloat(last[0]), parseFloat(last[1]));
+
+				let wayPoints = [];
+
+				if (inter) {
+					inter.shift();
+					for (let i = 0; i < inter.length; i++) {
+						wayPoints.push({
+							location: new google.maps.LatLng(parseFloat(inter[i].split("#")[0]), parseFloat(inter[i].split("#")[1])),
+						});
+					}
+				}
+				directionsService.route(
+					{
+						origin: origin,
+						destination: destination,
+						waypoints: wayPoints,
+						optimizeWaypoints: true,
+						travelMode: google.maps.TravelMode.DRIVING,
+					},
+					(response, status) => {
+						if (status === "OK") {
+							const route = response.routes[0];
+
+							let distance = 0;
+							// For each route, display summary information.
+							for (let i = 0; i < route.legs.length; i++) {
+								distance = parseFloat(distance) + parseFloat(route.legs[i].distance.text.split(" ")[0]);
+							}
+							console.log(noVehicle, distance, sCity);
+
+							$.ajax({
+								url: "/admin/dynamicRate",
+								type: "post",
+								data: { vType, client, distance, city: sCity },
+								dataType: "json",
+								success: function (data) {
+									console.log(data);
+									if (data.code === 1) {
+										if (data.client.length > 0) {
+											let amounts = (parseFloat(data.client[0].baseFare) + parseInt(data.client[0].rate, 10) * distance) * parseInt(noVehicle, 10);
+											$("input[name='clientAmount']").val(amounts);
+										} else {
+											Swal.fire({
+												type: "error",
+												title: "Cleint Rate Not Found",
+												text: "Rate Matrix Is not Prepared For the Selected Items",
+												footer: "Solution : Add In Rate Matrix",
+											});
+										}
+										if (data.driver.length > 0) {
+											let amounts = (parseFloat(data.driver[0].baseFare) + parseInt(data.driver[0].rate, 10) * distance) * parseInt(noVehicle, 10);
+											$("input[name='amount']").val(amounts);
+										} else {
+											Swal.fire({
+												type: "error",
+												title: "Driver Rate Not Found",
+												text: "Rate Matrix Is not Prepared For the Selected Items",
+												footer: "Solution : Add In Rate Matrix",
+											});
+										}
+									} else {
+										Swal.fire({
+											type: "error",
+											title: "Error",
+											text: "Error",
+										});
+									}
+								},
+							});
+						} else {
+							window.alert("Google API request failed due to " + status + ". Please enter amount manually or refresh page and try again.");
+						}
+					}
+				);
+			}
+		}
+	}
+</script>
+
+<script>
+	let autocomplete, autocompleteDest, autocompleteInter;
+
+	function fillInAddress() {
+		// Get the place details from the autocomplete object.
+		let place = autocomplete.getPlace();
+		$("input[name='lat_long']").val(`${place.geometry.location.lat()}#${place.geometry.location.lng()}`);
+		amount(sCity, dCity, client, vType, noVehicle, type, waitFlag);
+	}
+
+	function fillInAddressDest() {
+		// Get the place details from the autocomplete object.
+		let place = autocompleteDest.getPlace();
+		$("input[name='last_lat_long']").val(`${place.geometry.location.lat()}#${place.geometry.location.lng()}`);
+		amount(sCity, dCity, client, vType, noVehicle, type, waitFlag);
+	}
+
+	function fillInAddressInter() {
+		// Get the place details from the autocomplete object.
+		let place = autocompleteInter.getPlace();
+		let old_value = $("input[name='inter_lat_long']").val();
+		$("input[name='inter_lat_long']").val(`${old_value}^${place.geometry.location.lat()}#${place.geometry.location.lng()}`);
+		amount(sCity, dCity, client, vType, noVehicle, type, waitFlag);
+	}
+
+	function initAutocomplete() {
+		// Create the autocomplete object, restricting the search predictions to
+		// geographical location types.
+		autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"), {
+			types: ["geocode"],
+		});
+
+		autocompleteDest = new google.maps.places.Autocomplete(document.getElementById("autocompleteDest"), {
+			types: ["geocode"],
+		});
+
+		autocompleteInter = new google.maps.places.Autocomplete(document.getElementById("autocompleteInter0"), {
+			types: ["geocode"],
+		});
+
+		// When the user selects an address from the drop-down, populate the
+		// address fields in the form.
+		autocomplete.addListener("place_changed", fillInAddress);
+		autocompleteDest.addListener("place_changed", fillInAddressDest);
+		autocompleteInter.addListener("place_changed", fillInAddressInter);
+	}
+	function interloc(interLocRoom) {
+		autocompleteInter = new google.maps.places.Autocomplete(document.getElementById(`autocompleteInter${interLocRoom}`), {
+			types: ["geocode"],
+		});
+		autocompleteInter.addListener("place_changed", fillInAddressInter);
+	}
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$(".select2").select2();
+		$("#stateTop").change(function () {
+			let state = $(this).children("option:selected").val();
+			stateFind(state);
+		});
+	});
+
+	$("#cityTop").change(function () {
+		let city = $(this).children("option:selected").val();
+		window.location.href = `/admin/trip/${city}`;
+	});
+
+	function stateFind(state) {
+		$.ajax({
+			url: "/admin/search",
+			type: "post",
+			data: {
+				state: state,
+			},
+			dataType: "json",
+			success: function (data) {
+				$("#cityTop").empty();
+				if (data.length == 0) {
+					$("#cityTop").empty();
+					$("#cityTop").append(`<option>No cities found</option>`);
+				} else {
+					$("#cityTop").append(new Option("Select City", "", false, false));
+
+					for (let i = 0; i < data.length; i++) {
+						if ($("#cityTop").find("option[value='" + data[i].id + "']").length) {
+							$("#cityTop").val(data[i].id);
+						} else {
+							let newOption = new Option(data[i].city, data[i].id, false, false);
+							$("#cityTop").append(newOption);
+						}
+					}
+				}
+			},
+		});
+	}
+</script>
+
+<script type="text/javascript">
+	$("#sourceState").change(function () {
+		let state = $(this).children("option:selected").val();
+		sourceStateFind(state);
+	});
+
+	function sourceStateFind(state) {
+		$.ajax({
+			url: "/admin/search",
+			type: "post",
+			data: {
+				state: state,
+			},
+			dataType: "json",
+			success: function (data) {
+				$("#sourceCity").empty();
+				if (data.length == 0) {
+					$("#sourceCity").empty();
+					$("#sourceCity").append(`<option>No cities found</option>`);
+				} else {
+					$("#sourceCity").append(new Option("Select City", "", false, false));
+
+					for (let i = 0; i < data.length; i++) {
+						if ($("#sourceCity").find("option[value='" + data[i].id + "']").length) {
+							$("#sourceCity").val(data[i].id);
+						} else {
+							let newOption = new Option(data[i].city, data[i].id, false, false);
+							$("#sourceCity").append(newOption);
+						}
+					}
+				}
+			},
+		});
+	}
+</script>
+
+<script type="text/javascript">
+	$("#destState").change(function () {
+		let state = $(this).children("option:selected").val();
+		destStateFind(state);
+	});
+
+	function destStateFind(state) {
+		$.ajax({
+			url: "/admin/search",
+			type: "post",
+			data: {
+				state: state,
+			},
+			dataType: "json",
+			success: function (data) {
+				$("#destCity").empty();
+				if (data.length == 0) {
+					$("#destCity").empty();
+					$("#destCity").append(`<option>No cities found</option>`);
+				} else {
+					$("#destCity").append(new Option("Select City", "", false, false));
+
+					for (let i = 0; i < data.length; i++) {
+						if ($("#destCity").find("option[value='" + data[i].id + "']").length) {
+							$("#destCity").val(data[i].id);
+						} else {
+							let newOption = new Option(data[i].city, data[i].id, false, false);
+							$("#destCity").append(newOption);
+						}
+					}
+				}
+			},
+		});
+	}
+</script>
+
+<script>
+	var load = 1;
+
+	function loadAdd() {
+		load++;
+		var objTo = document.getElementById("load_fields");
+		var divtest = document.createElement("div");
+		divtest.setAttribute("class", "form-group removeclass" + load);
+		var rdiv = "removeclass" + load;
+		divtest.innerHTML = `<div class="row"><div class="col-sm-5 nopadding"><div class="form-group"><input type="text" class="form-control" id="load_name${
+			load - 1
+		}" name="load_name" placeholder="Enter Name of load"></div></div><div class="col-sm-4 nopadding"><div class="form-group"><input type="text" class="form-control" name="load_quan" placeholder="Quantity in kg,Ton,pieces"></div></div>
+        <div class="col-sm-5 nopadding">
+            <div class="form-group">
+                <input type="text" class="form-control" name="invoice_num" placeholder="Enter invoice number">
+            </div>
+        </div>
+        <div class="col-sm-4 nopadding">
+            <div class="form-group">
+                <select class="mb-3 mr-2 selectCity" name="load_type" id="load_type${load - 1}">
+                    <option value="Kg">Kg</option>
+                    <option value="Ton">Ton</option>
+                    <option value="Pieces">Pieces</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-4 nopadding">
+            <div class="form-group">
+                <input type="text" class="form-control" name="load_amount" placeholder="Enter amount">
+            </div>
+        </div>
+        <div class="col-sm-2 nopadding"><div class="form-group"><div class="input-group"><div class="input-group-append"><button class="btn btn-danger" type="button" onclick="remove_loadAdd(${load});"><i class="fa fa-minus"></i></button></div></div></div></div></div>`;
+		objTo.appendChild(divtest);
+		$(`#load_type${load - 1}`).selectize({
+			create: true,
+			sortField: "text",
+		});
+	}
+
+	function remove_loadAdd(rid) {
+		$(".removeclass" + rid).remove();
+	}
+</script>

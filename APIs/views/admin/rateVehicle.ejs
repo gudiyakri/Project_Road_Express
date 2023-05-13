@@ -1,0 +1,175 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Rate Adjust</a></li>
+                    <li class="breadcrumb-item active">Vehicle Rate</li>
+                </ol>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body pb-0">
+                <form style="margin-left: 125px;">
+                    <div class="row">
+                        <div class="col-md-4 col-md-4 ml-5">
+                            <h5 class="mt-4 mb-2">Select Vehicle</h5>
+                            <select class="selectpicker mb-3 mr-2 btn-info btn-rounded" id="vehicle"
+                                data-style="btn-info">
+                                <option id="choose">Choose</option>
+                                <% for(var i = 0; i<vehicle.length; i++) {%>
+                                <option value="<%=vehicle[i].v_type%>" name="vehicleId"><%=vehicle[i].type_name%></option>
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-bordered no-wrap hide" id="table">
+                        <thead>
+                            <tr>
+                                <th>City</th>
+                                <% for(var i = 0; i<city.length; i++) {%>
+                                <th><%=city[i].city%></th>
+                                <% } %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(var j = 0; j<city.length; j++) {%>
+                            <tr>
+                                <th><%=city[j].city%></th>
+                                <% for(var i = 0; i<city.length; i++) {%>
+                                    <% if(i==j) {%>
+                                        <td>0</td>
+                                    <% }else{%>
+                                    <td id="modal1<%=city[j].id%><%=city[i].id%>" data-toggle="modal" data-target="#modal" data-end="<%=city[i].id%>"
+                                        data-start="<%=city[j].id%>"><div id="mod<%=city[j].id%><%=city[i].id%>" class='price'></div></td>
+                                    <% } %>
+                                <% } %>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal1">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel1">Select Rate</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="rateUpdate">
+                    <div class="row">
+                        <div class="col-md-4 col-md-6">
+                            <h5 class="mt-4 ">Update New Rate</h5>
+                            <input type="number" class="form-control col-md-12" name='rate' placeholder="Enter New Rate">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <footer class="footer"> © 2019 Road Express by CodeBuckets.in</footer>        
+
+    </div>
+</div>
+
+<div class="modal fade" id="success" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3>Rate Updated</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>
+
+<script>
+    var vehicle;
+        $('#vehicle').on('change',function () {
+            vehicle = $(this).children("option:selected").val();
+            matrix(vehicle);                
+        });
+        function matrix(vehicle){
+            if(vehicle){
+                // console.log(client,vehicle);
+                $.ajax({
+                    url:'/admin/matrixVehicle',
+                    type:'post',
+                    data:{vehicle},
+                    dataType:'json',
+                    success:function(data){
+                        data=JSON.stringify(data);
+                        data=JSON.parse(data);
+                        var len = data.length;
+                        // console.log(len);
+                        if(len>0){
+                            $(".price").html("");
+                            for (var i = 0; i < len; i++){
+                            <% for(var j = 0; j<city.length; j++) 
+                            for(var i = 0; i<city.length; i++) {%>
+                            if(data[i].start==$('#modal1<%=city[j].id%><%=city[i].id%>').data('start')&&data[i].end==$('#modal1<%=city[j].id%><%=city[i].id%>').data('end')){
+                                document.getElementById("mod<%=city[j].id%><%=city[i].id%>").innerHTML = `${data[i].price}`;
+                            }
+                            <% } %>
+                            }
+                            $('#table').removeClass("hide");
+                        }
+                        else{
+                            // document.getElementsByClassName('price')[7].innerHTML = ``;
+                            $(".price").html("");
+                            $('#table').removeClass("hide");
+                        }
+                    }
+                });
+            }
+        }
+</script>
+
+
+<script>
+    var start,end;
+    $('#modal').on('show.bs.modal', function (event) {
+        end = $(event.relatedTarget).attr('data-end');
+        start = $(event.relatedTarget).attr('data-start');
+        // console.log(start, end);
+    });
+    $('#rateUpdate').submit(function(event){
+        event.preventDefault();
+        var rate = $("input[name='rate']").val();
+        // console.log(rate,start,end,client,vehicle);
+        $.ajax({
+            url:'/admin/updateRateVehicle',
+            type:'post',
+            data:{rate,start,end,vehicle},
+            dataType:'json',
+            success:function(data){
+                data=JSON.stringify(data);
+                data=JSON.parse(data);
+                $("input[name='rate']").val('');
+                matrix(vehicle);
+                $('#modal').modal('hide');
+                $('#success').modal('show');
+                var audio = new Audio('/sounds/notification.mp3');
+                audio.play();
+            }
+        });
+    });
+</script>

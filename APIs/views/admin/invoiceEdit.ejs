@@ -1,0 +1,466 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<% include ../partials/message %>
+		<div class="row page-titles">
+			<div class="col-md-6 col-8 align-self-center">
+				<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+					<li class="breadcrumb-item active">Invoice Edit</li>
+				</ol>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-body pb-0">
+					<div class="row">
+						<div class="col-12">
+							<form action="/admin/createInvoice" method="POST">
+								<div class="row">
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">CONSIGNER Details</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="congisnerName"
+											value="<%= client[0].name %>"
+											placeholder="Congisner Name"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">CONSIGNER Contact number</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="congisnerPhn"
+											value="<%= client[0].mob %>"
+											placeholder="Congisner Phn"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">CONSIGNER Email</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="congisnerEmail"
+											value="<%= client[0].email %>"
+											placeholder="Congisner Email"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">CONSIGNER GST</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="congisnerGst"
+											value="<%= client[0].gst %>"
+											placeholder="GST"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">CONSIGNER Address</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="congisnerAddress"
+											value="<%= client[0].address %>"
+											placeholder="Congisner address"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">CONSIGNEE Name</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="congisneeName"
+											placeholder="Congisner Name"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">CONSIGNEE number</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="congisneePhn"
+											value="<%= load[0].end_mob %>"
+											placeholder="Congisner Phn"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">CONSIGNEE Address</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="congisneeAddress"
+											value="<%= load[0].last_point %>"
+											placeholder="Congisner Address"
+										/>
+									</div>
+								</div>
+								<br />
+								Details of goods
+								<br />
+								<div class="row">
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Invoice number</h5>
+										<input type="text" name="invoiceNumber" value="<%=
+										load[0].invoice_num ? load[0].invoice_num.split("^") : ""
+										%>" placeholder="Invoice Number" class="form-control
+										col-md-12"/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Goods category</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="category"
+											value="<%= load[0].type %>"
+											placeholder="Category"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Goods Quantity</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="quan"
+											value="<%= load[0].weight %>"
+											placeholder="Quantity"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Amount Of Goods</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="amountTotal"
+											value="<%= load[0].totalAmount %>"
+											placeholder="Amount of Goods"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Insurance Details</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="insurance"
+											placeholder="Insurance Details"
+										/>
+									</div>
+								</div>
+								<br />
+								Details of vehicle
+								<br />
+								<div class="row">
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Type of vehicle</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="vehicleType"
+											value="<%= load[0].vehicle_type %>"
+											placeholder="Vehicle Type"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Vehicle Number</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="vehicleNumber"
+											value="<%= client[0].v_num %>"
+											placeholder="Vehicle Number"
+										/>
+									</div>
+								</div>
+								<br />
+								Details of Insurance
+								<br />
+								<div class="row">
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Policy Number</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="policyNumber"
+											placeholder="Policy Number"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Product Amount</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="totalAmount"
+											value="<%= load[0].totalAmount %>"
+											placeholder="Product Amount"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Date</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="date"
+											placeholder="Date"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Risk</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="risk"
+											placeholder="Risk"
+										/>
+									</div>
+								</div>
+								<br />
+								Payment Details
+								<br />
+								<div class="row">
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">VEHICLE RENTAL COST</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="rental"
+											placeholder="VEHICLE RENTAL COST"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">TOLL TAX</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="toll"
+											placeholder="TOLL TAX "
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">LOADING/UNLOADING COST</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="loadUnload"
+											placeholder="LOADING/UNLOADING COST"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">DETENTION CHARGES</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="detention"
+											placeholder="DETENTION CHARGES "
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">SGST</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="sgst"
+											placeholder="SGST"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">CGST</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="cgst"
+											placeholder="CGST"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">IGST</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="igst"
+											placeholder="IGST"
+										/>
+									</div>
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Total</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="amount"
+											placeholder="Total Amount"
+											value="<%= load[0].amount %>"
+										/>
+									</div>
+								</div>
+								<!-- <br />
+								Shipping Details
+								<br />
+								<div class="row">
+									<input
+										class="form-control col-4"
+										type="text"
+										name="product1"
+										placeholder="Product 1"
+									/>
+									<input
+										class="form-control col-4"
+										type="text"
+										name="quantity1"
+										placeholder="Quantity 1"
+									/>
+									<input
+										class="form-control col-4"
+										type="text"
+										name="prodInvoice1"
+										placeholder="Invoice 1"
+									/>
+									<input
+										class="form-control col-4"
+										type="text"
+										name="prodAmount1"
+										placeholder="Amount 1"
+									/>
+									<input
+										class="form-control col-4"
+										type="text"
+										name="prodUnit1"
+										placeholder="Unit 1"
+									/>
+									<div class="input-group-append">
+										<button
+											class="btn btn-success ml-2"
+											type="button"
+											onclick="prod();"
+										>
+											<i class="fa fa-plus"></i>
+										</button>
+									</div>
+								</div> -->
+								<input
+									type="text"
+									id="prodLen"
+									name="prodLength"
+									value="1"
+									hidden
+								/>
+								<input
+									type="text"
+									id="prodLen"
+									name="loadId"
+									value="<%= load[0].load_id %>"
+									hidden
+								/>
+								<input
+									type="text"
+									id="prodLen"
+									name="tripId"
+									value="<%= client[0].trip_id %>"
+									hidden
+								/>
+								<div id="prod"></div>
+
+								<div class="row">
+									<div class="col-md-5">
+										<h5 class="mt-4 mb-2">Remark</h5>
+										<input
+											type="text"
+											class="form-control col-md-12"
+											name="remark"
+											placeholder="Remark"
+										/>
+									</div>
+								</div>
+								<br />
+								<button type="submit" class="btn btn-info">Submit</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer class="footer">© 2020 Road Express by CodeBuckets.in</footer>
+	</div>
+</div>
+
+<% include ../partials/footer %>
+
+<script>
+	$(function () {
+		$("#datatable").DataTable({
+			scrollY: 600,
+		});
+	});
+</script>
+
+<script>
+	let prodRoom = 1,
+		branchArr = [];
+	branchArr.push(1);
+	$("#prodLen").val(branchArr);
+
+	function prod() {
+		prodRoom++;
+		var objTo = document.getElementById("prod");
+		var div = document.createElement("div");
+		div.setAttribute("class", "form-group removeclassbranch" + prodRoom);
+		var rdiv = "removeclassbranch" + prodRoom;
+		div.innerHTML = `
+        <div class="row">
+            <input class="form-control col-4" type="text" name="product${prodRoom}" placeholder="Product ${prodRoom}" />
+			<input class="form-control col-4" type="text" name="quantity${prodRoom}" placeholder="Quantity ${prodRoom}" />
+			<input class="form-control col-4" type="text" name="prodInvoice${prodRoom}" placeholder="Invoice ${prodRoom}" />
+			<input class="form-control col-4" type="text" name="prodAmount${prodRoom}" placeholder="Amount ${prodRoom}" />
+			<input class="form-control col-4" type="text" name="prodUnit${prodRoom}" placeholder="Unit ${prodRoom}" />
+            <div class="input-group-append">
+                <button class="btn btn-danger ml-2" type="button" onclick="remove_prod(${prodRoom});"> <i class="fa fa-minus"></i> </button>
+			</div>
+        </div>
+        `;
+		branchArr.push(prodRoom);
+		$("#prodLen").val(branchArr);
+		objTo.appendChild(div);
+	}
+
+	function remove_prod(rid) {
+		$(".removeclassbranch" + rid).remove();
+		let index = branchArr.indexOf(rid);
+		if (index > -1) {
+			branchArr.splice(index, 1);
+		}
+		$("#prodLen").val(branchArr);
+	}
+</script>
+
+<script>
+	$(document).ready(function () {
+		let productList = "<%= load[0].load_name %>";
+		let productQuan = "<%= load[0].load_quan %>";
+		let productType = "<%= load[0].load_type %>";
+		let productAmount = "<%= load[0].load_amount %>";
+		let productInvoice = "<%= load[0].invoice_num %>";
+
+		let productArray = productList.split("^");
+		let quanArray = productQuan.split("^");
+		let typeArray = productType.split("^");
+		let amountArray = productAmount.split("^");
+		let invoiceArray = productInvoice.split("^");
+
+		$("input[name='product1']").val(`${productArray[0]}`);
+		$("input[name='quantity1']").val(`${quanArray[0]}`);
+		$("input[name='prodInvoice1']").val(`${invoiceArray[0]}`);
+		$("input[name='prodAmount1']").val(`${amountArray[0]}`);
+		$("input[name='prodUnit1']").val(`${typeArray[0]}`);
+
+		for (let i = 1; i < productArray.length; i++) {
+			prod();
+			$(`input[name='product${i + 1}']`).val(productArray[i]);
+			$(`input[name='quantity${i + 1}']`).val(quanArray[i]);
+			$(`input[name='prodInvoice${i + 1}']`).val(invoiceArray[i]);
+			$(`input[name='prodAmount${i + 1}']`).val(amountArray[i]);
+			$(`input[name='prodUnit${i + 1}']`).val(typeArray[i]);
+		}
+	});
+</script>

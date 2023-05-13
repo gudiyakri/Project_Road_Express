@@ -1,0 +1,1398 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+  <div class="container-fluid">
+    <div class="col-md-12">
+      <% include ../partials/message %>
+      <div class="row page-titles">
+        <div class="col-md-6 col-8 align-self-center">
+          <h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+            <li class="breadcrumb-item active">Add SOS</li>
+          </ol>
+        </div>
+      </div>
+      <div class="switchery-demo mb-4 text-right">
+          <input type="checkbox" class="js-switch" id="dark" data-color="#3d3b3b" />
+      </div>
+      <div id="map" class="map" style="height:500px"></div>
+      <hr>
+      <table class="display nowrap table table-hover table-striped table-bordered"
+        cellspacing="0" width="100%" id="datatable">
+        <thead>
+          <th>
+            Name
+          </th>
+          <th>
+            Mobile No.
+          </th>
+          <th>
+            State
+          </th>
+          <th>
+            City
+          </th>
+          <th>
+            Fleet Size
+          </th>
+          <th>
+            Check Load
+          </th>
+          <th>
+            Book Later
+          </th>
+          <th>
+            Book Now
+          </th>
+        </thead>
+        <tbody>
+          <% for(let i = 0; i<trans.length ; i++) {%>
+          <tr>
+            <td>
+              <%= trans[i].name %>
+            </td>
+            <td>
+              <%= trans[i].mob %>
+            </td>
+            <td>
+              <%= trans[i].state %>
+            </td>
+            <td>
+              <%= trans[i].sahar %>
+            </td>
+            <td>
+              <%= trans[i].fleet_size %>
+            </td>
+            <td>
+              <a class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#sos">Check Post</a>
+            </td>
+            <td>
+              <a id='<%= trans[i].id %>s' class="btn btn-info disabled bookLater" loadTrans='<%= trans[i].id %>'>Book Later</a>
+            </td>
+            <td>
+              <a id='<%= trans[i].id %>' class="btn btn-info bookNow" href="javascript:void(0)" loadTrans='<%= trans[i].id %>'>Book Now</a>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+    <footer class="footer"> © 2019 Road Express by CodeBuckets.in</footer>
+  </div>
+</div>
+<div class="modal fade" id="sos" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">View/Update Details</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <form action="/admin/UpdateSos" method="POST" class="form-horizontal">
+            <div class="row">
+              <div class="col-md-5 col-md-4">
+                <h5 class="mt-4 mb-2">Company*</h5>
+                  <input type="text" name="name" hidden>
+                  <h4><%=company[0].name%></h4>
+              </div>
+              <div class="col-md-5 col-md-4">
+                <h5 class="mt-4 mb-2">Type*</h5>
+                <select class="selectpicker mb-3 mr-2 btn btn-info btn-round" required name="type">
+                    <option disabled selected value>Choose</option>
+                    <% for(var i=0;i<loadType.length;i++) {%>
+                    <option value="<%=loadType[i].load_type%>"><%=loadType[i].load_type%></option>
+                    <% } %>
+                  </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 col-md-12">
+                <h5 class="mt-2 mb-2">Duration</h5>
+                <div class="input-group">
+                  <input type="text" class="form-control datetimepicker col-md-4" name="timef" autocomplete="off"
+                    required placeholder="DD/MM/YYYY">
+                  <div class="input-group-append">
+                    <span class="input-group-text"><i class="icon-calender"></i></span>
+                  </div>
+                  <h5 class="mt-2 mb-2" style="margin-left: 30px;">to</h5>
+                  <input type="text" name="timet" required style="margin-left: 20px;" autocomplete="off"
+                    class="form-control datetimepicker col-md-4" placeholder="DD/MM/YYYY">
+                  <div class="input-group-append">
+                    <span class="input-group-text"><i class="icon-calender"></i></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 col-md-6">
+                <h5 class="mt-4 mb-2"> Company Mobile Number*</h5>
+                <input type="text" name="start_mob" required class="form-control col-md-12"
+                  placeholder="Enter Mobile Number">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 col-md-6">
+                <h5 class="mt-4 mb-2"> Destination*</h5>
+                <input type="text" name="dest" id="autocompleteDest" required class="form-control col-md-12" readonly placeholder="Enter Destination">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 col-md-6">
+                <h5 class="mt-4 mb-2"> Destination Mobile Number*</h5>
+                <input type="text" name="end_mob" class="form-control col-md-12"
+                  placeholder="Enter Destination Mobile Number">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 col-md-6">
+                <h5 class="mt-4 mb-2">Select Source City</h5>
+                <select class="selectpicker mb-3 mr-2 btn btn-info btn-round" required name="city">
+                  <option disabled selected value>Choose</option>
+                  <% for(var i=0;i<city.length;i++) {%>
+                  <option value=<%=city[i].id%>><%=city[i].city%></option>
+                  <% } %>
+                </select>
+              </div>
+              <div class="col-md-4 col-md-6">
+                <h5 class="mt-4 mb-2">Select Destination City</h5>
+                <select class="selectpicker mb-3 mr-2 btn btn-info btn-round" required name="dest_city">
+                  <option disabled selected value>Choose</option>
+                  <% for(var i=0;i<city.length;i++) {%>
+                  <option value=<%=city[i].id%>><%=city[i].city%></option>
+                  <% } %>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 col-md-6">
+                <h5 class="mt-4 mb-2">Pickup Location</h5>
+                <input id="autocomplete" type="text"
+                  name="pickup" required class="form-control col-md-12" placeholder="Enter Pickup Location" readonly>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 col-md-12">
+                <h5 class="mt-4 mb-1">Intermediate Location</h5>
+                <br>
+                <div class="row">
+                  <div class="col-sm-5 nopadding">
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="inter_loc0" name="inter" placeholder="Enter Location" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-4 nopadding">
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="inter_mobile0" name="inter_mob"
+                        placeholder="Mobile Number" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-2 nopadding">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-append">
+                          <button class="btn btn-success" type="button" onclick="intermediate()"><i
+                              class="fa fa-plus"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="inter_fields"></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 col-md-6">
+                <h5 class="mt-2 mb-2"> Weight</h5>
+                <input type="text" name="weight" class="form-control col-md-12" placeholder="Enter Weight" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 col-md-6">
+                <h5 class="mt-4 mb-2">Vehicles Required</h5>
+                <input type="text" name="no_vehicle" class="form-control col-md-12" required
+                  placeholder="Enter No. of Vehicles Required">
+                <input type="text" id="lat_long" name="lat_long" class="form-control" hidden>
+                <input type="text" id="last_lat_long" name="last_lat_long" class="form-control" hidden>
+                <input type="text" id="inter_lat_long" name="inter_lat_long" class="form-control" hidden>
+                <input type="text" id="flag" name="flag" class="form-control" hidden>
+                <input type="text" id="Did" name="Did" class="form-control" hidden>
+                <input type="text" name="vtype" hidden>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 col-md-6">
+                <h5 class="mt-4 mb-2">Amount*<a data-toggle="modal" href="#cal"><i class="fas fa-calculator"></i></a>
+                </h5>
+                <input type="number" name="amount" required class="form-control  col-md-12" placeholder="Enter Amount">
+              </div>
+            </div>
+            <hr>
+            <!-- <br>  -->
+            <div class="modal-footer">
+              <div class="left-side">
+                <button type="button" class="btn btn-default btn-danger" data-dismiss="modal">Never mind</button>
+              </div>
+              <div class="divider"></div>
+              <div class="right-side">
+                <% if(load) {%>
+                  <button type="submit" id='loc' style="margin-left: 25px;"
+                  class="btn waves-effect waves-light btn-rounded btn-info">Update</button>
+                  <% }%>
+              </div>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="cal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content col-1">
+      <div class="modal-body">
+        <% include ../partials/cal %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="blank" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header justify-content-center">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <i class="nc-icon nc-simple-remove"></i>
+        </button>
+        <h4 class="title title-up">No Transporter</h4>
+      </div>
+      <div class="modal-body">
+        <h3>No Transporter are added for this city</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% include ../partials/footer %>
+<script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
+<script src="/plugins/jquery.easy/jquery.easing.js"></script>
+
+<script>
+  $("#datatable").DataTable();
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+        $.ajax({
+          url: '/admin/vtypes',
+          type: 'post',
+          data: {
+            citys: '<%= currentCity[0].id %>'
+          },
+          dataType: 'json',
+          success: function (data) {
+            data = JSON.stringify(data);
+            data = JSON.parse(data);
+            var len = data.length;
+            if(len == 0){
+              $('#id2').empty();
+              $("#id2").append(`<option>No Vehicle Type</option>`);
+            }
+            else{
+              for (var i = 0; i < len; i++) {
+              var v_type = data[i].type_name;
+              $("#id2").append("<option value='" + v_type + "'>" + v_type + "</option>");
+            }
+            }
+          }
+        }); 
+  });
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    demo.initDateTimePicker();
+    if ($('.slider').length != 0) {
+      demo.initSliders();
+    }
+  });
+</script>
+
+<script>
+  var room = 1;
+
+  function intermediate() {
+    room++;
+    var objTo = document.getElementById('inter_fields')
+    var divtest = document.createElement("div");
+    divtest.setAttribute("class", "form-group removeclass" + room);
+    var rdiv = 'removeclass' + room;
+    divtest.innerHTML =
+      `<div class="row"><div class="col-sm-5 nopadding"> <div class="form-group"><input type="text" class="form-control" id="inter_loc${room-1}" name="inter" placeholder="Enter Location" readonly></div></div><div class="col-sm-4 nopadding"><div class="form-group"><input type="text" class="form-control" id="inter_mobile${room-1}" name="inter_mob" placeholder="Mobile Number" readonly></div></div><div class="col-sm-2 nopadding"><div class="form-group"><div class="input-group"><div class="input-group-append"><button class="btn btn-danger" type="button" onclick="remove_intermediate(${room});"><i class="fa fa-minus"></i></button></div></div></div></div></div>`;
+    objTo.appendChild(divtest);
+    interloc(room-1);
+  }
+
+  function remove_intermediate(rid) {
+    $('.removeclass' + rid).remove();
+  }
+</script>
+
+<script>
+  var room = 1;
+
+  function intermediateAll() {
+    room++;
+    var objTo = document.getElementById('inter_fieldsAll')
+    var divtest = document.createElement("div");
+    divtest.setAttribute("class", "form-group removeclass" + room);
+    var rdiv = 'removeclass' + room;
+    divtest.innerHTML =`<div class="row"><div class="col-sm-5 nopadding"> <div class="form-group"><input type="text" class="form-control" id="inter_locAll${room-1}" name="inter" readonly="readonly" placeholder="Enter Location"></div></div><div class="col-sm-4 nopadding"><div class="form-group"><input type="text" class="form-control" id="inter_mobileAll${room-1}" readonly="readonly" name="inter_mob" placeholder="Mobile Number"></div></div><div class="col-sm-2 nopadding"><div class="form-group"><div class="input-group"><div class="input-group-append"><button class="btn btn-danger" type="button" onclick="remove_intermediateAll(${room});"><i class="fa fa-minus"></i></button></div></div></div></div></div>`;
+    objTo.appendChild(divtest);
+    interlocAll(room-1);
+  }
+
+  function remove_intermediateAll(rid) {
+    $('.removeclass' + rid).remove();
+  }
+</script>
+
+<script type="text/javascript">
+  const styleDark = [
+          {
+              "elementType": "geometry",
+              "stylers": [
+              {
+                  "color": "#242f3e"
+              }
+              ]
+          },
+          {
+              "elementType": "labels.text.fill",
+              "stylers": [
+              {
+                  "color": "#746855"
+              }
+              ]
+          },
+          {
+              "elementType": "labels.text.stroke",
+              "stylers": [
+              {
+                  "color": "#242f3e"
+              }
+              ]
+          },
+          {
+              "featureType": "administrative.country",
+              "elementType": "geometry.stroke",
+              "stylers": [
+              {
+                  "color": "#ffffff"
+              },
+              {
+                  "weight": 0.5
+              }
+              ]
+          },
+          {
+              "featureType": "administrative.land_parcel",
+              "elementType": "labels",
+              "stylers": [
+              {
+                  "visibility": "off"
+              }
+              ]
+          },
+          {
+              "featureType": "administrative.locality",
+              "elementType": "labels.text.fill",
+              "stylers": [
+              {
+                  "color": "#d59563"
+              }
+              ]
+          },
+          {
+              "featureType": "administrative.province",
+              "elementType": "geometry.stroke",
+              "stylers": [
+              {
+                  "color": "#ffffff"
+              }
+              ]
+          },
+          {
+              "featureType": "poi",
+              "elementType": "labels.text",
+              "stylers": [
+              {
+                  "visibility": "off"
+              }
+              ]
+          },
+          {
+              "featureType": "poi",
+              "elementType": "labels.text.fill",
+              "stylers": [
+              {
+                  "color": "#d59563"
+              }
+              ]
+          },
+          {
+              "featureType": "poi.business",
+              "stylers": [
+              {
+                  "visibility": "off"
+              }
+              ]
+          },
+          {
+              "featureType": "poi.park",
+              "elementType": "geometry",
+              "stylers": [
+              {
+                  "color": "#263c3f"
+              }
+              ]
+          },
+          {
+              "featureType": "poi.park",
+              "elementType": "labels.text.fill",
+              "stylers": [
+              {
+                  "color": "#6b9a76"
+              }
+              ]
+          },
+          {
+              "featureType": "road",
+              "elementType": "geometry",
+              "stylers": [
+              {
+                  "color": "#38414e"
+              }
+              ]
+          },
+          {
+              "featureType": "road",
+              "elementType": "geometry.stroke",
+              "stylers": [
+              {
+                  "color": "#212a37"
+              }
+              ]
+          },
+          {
+              "featureType": "road",
+              "elementType": "labels.icon",
+              "stylers": [
+              {
+                  "visibility": "off"
+              }
+              ]
+          },
+          {
+              "featureType": "road",
+              "elementType": "labels.text.fill",
+              "stylers": [
+              {
+                  "color": "#9ca5b3"
+              }
+              ]
+          },
+          {
+              "featureType": "road.highway",
+              "elementType": "geometry",
+              "stylers": [
+              {
+                  "color": "#746855"
+              }
+              ]
+          },
+          {
+              "featureType": "road.highway",
+              "elementType": "geometry.stroke",
+              "stylers": [
+              {
+                  "color": "#1f2835"
+              }
+              ]
+          },
+          {
+              "featureType": "road.highway",
+              "elementType": "labels.text.fill",
+              "stylers": [
+              {
+                  "color": "#f3d19c"
+              }
+              ]
+          },
+          {
+              "featureType": "road.local",
+              "elementType": "labels",
+              "stylers": [
+              {
+                  "visibility": "off"
+              }
+              ]
+          },
+          {
+              "featureType": "transit",
+              "stylers": [
+              {
+                  "visibility": "off"
+              }
+              ]
+          },
+          {
+              "featureType": "transit",
+              "elementType": "geometry",
+              "stylers": [
+              {
+                  "color": "#2f3948"
+              }
+              ]
+          },
+          {
+              "featureType": "transit.station",
+              "elementType": "labels.text.fill",
+              "stylers": [
+              {
+                  "color": "#d59563"
+              }
+              ]
+          },
+          {
+              "featureType": "water",
+              "elementType": "geometry",
+              "stylers": [
+              {
+                  "color": "#17263c"
+              }
+              ]
+          },
+          {
+              "featureType": "water",
+              "elementType": "labels.text.fill",
+              "stylers": [
+              {
+                  "color": "#515c6d"
+              }
+              ]
+          },
+          {
+              "featureType": "water",
+              "elementType": "labels.text.stroke",
+              "stylers": [
+              {
+                  "color": "#17263c"
+              }
+              ]
+          }
+          ]
+  const styleLight = [
+      {
+          "featureType": "administrative.country",
+          "elementType": "geometry.stroke",
+          "stylers": [
+          {
+              "color": "#000000"
+          },
+          {
+              "weight": 1
+          }
+          ]
+      },
+      {
+          "featureType": "administrative.land_parcel",
+          "elementType": "labels",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "administrative.province",
+          "elementType": "geometry.fill",
+          "stylers": [
+          {
+              "color": "#ed0000"
+          },
+          {
+              "lightness": "100"
+          },
+          {
+              "visibility": "on"
+          }
+          ]
+      },
+      {
+          "featureType": "administrative.province",
+          "elementType": "geometry.stroke",
+          "stylers": [
+          {
+              "color": "#ff0000"
+          },
+          {
+              "saturation": "80"
+          },
+          {
+              "lightness": "56"
+          },
+          {
+              "gamma": "0.00"
+          },
+          {
+              "visibility": "on"
+          }
+          ]
+      },
+      {
+          "featureType": "administrative.province",
+          "elementType": "labels.text.fill",
+          "stylers": [
+          {
+              "color": "#636363"
+          }
+          ]
+      },
+      {
+          "featureType": "landscape",
+          "elementType": "geometry",
+          "stylers": [
+          {
+              "color": "#e3e3e3"
+          },
+          {
+              "visibility": "on"
+          }
+          ]
+      },
+      {
+          "featureType": "landscape.man_made",
+          "stylers": [
+          {
+              "visibility": "on"
+          }
+          ]
+      },
+      {
+          "featureType": "landscape.man_made",
+          "elementType": "geometry",
+          "stylers": [
+          {
+              "visibility": "on"
+          }
+          ]
+      },
+      {
+          "featureType": "landscape.natural",
+          "elementType": "labels",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "poi",
+          "elementType": "labels.text",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "poi.business",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "poi.park",
+          "elementType": "geometry.fill",
+          "stylers": [
+          {
+              "visibility": "on"
+          }
+          ]
+      },
+      {
+          "featureType": "poi.sports_complex",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "road",
+          "stylers": [
+          {
+              "color": "#c0c0c0"
+          },
+          {
+              "weight": 0.5
+          }
+          ]
+      },
+      {
+          "featureType": "road",
+          "elementType": "labels.icon",
+          "stylers": [
+          {
+              "color": "#938db8"
+          },
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "road",
+          "elementType": "labels.text.fill",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "road",
+          "elementType": "labels.text.stroke",
+          "stylers": [
+          {
+              "color": "#ffffff"
+          }
+          ]
+      },
+      {
+          "featureType": "road.arterial",
+          "elementType": "geometry.fill",
+          "stylers": [
+          {
+              "color": "#bcbaba"
+          },
+          {
+              "visibility": "on"
+          }
+          ]
+      },
+      {
+          "featureType": "road.arterial",
+          "elementType": "labels.text.fill",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "road.highway",
+          "stylers": [
+          {
+              "color": "#a6a6a6"
+          },
+          {
+              "visibility": "on"
+          },
+          {
+              "weight": 1.5
+          }
+          ]
+      },
+      {
+          "featureType": "road.highway",
+          "elementType": "geometry.stroke",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "road.highway",
+          "elementType": "labels",
+          "stylers": [
+          {
+              "color": "#ffffff"
+          },
+          {
+              "visibility": "off"
+          },
+          {
+              "weight": 2
+          }
+          ]
+      },
+      {
+          "featureType": "road.highway",
+          "elementType": "labels.icon",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "road.highway",
+          "elementType": "labels.text.fill",
+          "stylers": [
+          {
+              "visibility": "off"
+          },
+          {
+              "weight": 2.5
+          }
+          ]
+      },
+      {
+          "featureType": "road.highway",
+          "elementType": "labels.text.stroke",
+          "stylers": [
+          {
+              "color": "#ffffff"
+          },
+          {
+              "weight": 2
+          }
+          ]
+      },
+      {
+          "featureType": "road.highway.controlled_access",
+          "elementType": "labels.text.fill",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "road.local",
+          "stylers": [
+          {
+              "color": "#b7b7bc"
+          },
+          {
+              "lightness": 35
+          },
+          {
+              "visibility": "simplified"
+          },
+          {
+              "weight": 1.5
+          }
+          ]
+      },
+      {
+          "featureType": "road.local",
+          "elementType": "labels",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "road.local",
+          "elementType": "labels.text.fill",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "transit",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "transit",
+          "elementType": "labels.icon",
+          "stylers": [
+          {
+              "visibility": "off"
+          }
+          ]
+      },
+      {
+          "featureType": "transit.line",
+          "stylers": [
+          {
+              "color": "#ffffff"
+          },
+          {
+              "visibility": "on"
+          }
+          ]
+      },
+      {
+          "featureType": "transit.line",
+          "elementType": "labels.text",
+          "stylers": [
+          {
+              "visibility": "on"
+          }
+          ]
+      },
+      {
+          "featureType": "transit.station",
+          "stylers": [
+          {
+              "visibility": "on"
+          }
+          ]
+      },
+      {
+          "featureType": "water",
+          "stylers": [
+          {
+              "color": "#c6d6d7"
+          },
+          {
+              "visibility": "on"
+          }
+          ]
+      }
+    ]
+  let styles = styleLight;
+  const firebaseConfig = {
+      apiKey: "AIzaSyAI1c0TK9xwm3aKXkrwLmPlAPWPUUABGms",
+      authDomain: "bot-dectnx.firebaseapp.com",
+      databaseURL: "https://bot-dectnx.firebaseio.com",
+      projectId: "bot-dectnx",
+      storageBucket: "bot-dectnx.appspot.com",
+      messagingSenderId: "462233025150",
+      appId: "1:462233025150:web:27a55715086746c4"
+    };
+  firebase.initializeApp(firebaseConfig);
+  let longitude;
+  let latitude; 
+  let markers =[];
+  let Did =[];
+
+    function initMap() {
+      let geocoder = new google.maps.Geocoder();
+      let address = '<%= currentCity[0].city %>';
+      geocoder.geocode({
+        'address': address
+      }, function (results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+          latitude = results[0].geometry.location.lat();
+          longitude = results[0].geometry.location.lng();
+          let uluru = {
+            lat: latitude,
+            lng: longitude
+          };
+          let map = new google.maps.Map(
+            document.getElementById('map'), {
+              zoom: 13,
+              center: uluru,
+              styles: styles,
+              streetViewControl:  false,
+            });
+          let marker = new google.maps.Marker({
+            position: uluru,
+            title: "HERE",
+            map: map,
+            infoWindow: {
+              content: '<p>City</p>'
+            }
+          });
+          $("#dark").on("change",function(event){
+            if($(this).is(':checked')){
+                styles = styleDark;
+                map.setOptions({styles: styles});
+            }else{
+                styles = styleLight;
+                map.setOptions({styles: styles});            
+            }
+          });
+          let uluruVeh = [];
+          let lati,longi,pos;
+          let lati1 = [],longi1 = [],pos1 = [];
+          google.maps.event.addListenerOnce(map,'idle',function(){
+            <% for(let i=0;i<list.length;i++) {%>
+            Did["<%=i%>"] = firebase.database().ref(`/driver_test/<%= list[i].Did%>`);
+            Did["<%=i%>"].once('value',function(snap){
+                pos = snap.val().location.split(',');
+                lati = pos[0];
+                longi = pos[1];
+                uluruVeh["<%=i%>"] = {lat:parseFloat(lati) , lng : parseFloat(longi)};
+                markers[snap.key] = new SlidingMarker({
+                position: uluruVeh["<%=i%>"],
+                map: map,
+                icon: {
+                  url:`/img/vehicle/trucks1.png#${snap.key}`,
+                  anchor: new google.maps.Point(50,90),
+                },
+                duration: 8000,
+                easing: "swing"
+                });
+                if(snap.val().d_av == '1' || snap.val().t_av == '1'){
+                  markers[snap.key].setMap(null);
+                }
+            },function(errorObject){
+                console.log(errorObject.code);
+            });
+            
+            Did["<%=i%>"].on('value',function(snap){
+              if(markers[snap.key]){
+                // console.log(snap.key);
+                if(snap.val().d_av == '1' || snap.val().t_av == '1'){
+                  markers[snap.key].setMap(null);
+                }
+                else if(snap.val().d_av == '0' && snap.val().t_av == '0'){
+                  markers[snap.key].setMap(map);
+                }
+                pos = snap.val().location.split(',');
+                lati1[snap.key] = pos[0];
+                longi1[snap.key] = pos[1];
+                // console.log(snap.key);
+                var prevPos = markers[snap.key].getPosition();
+                markers[snap.key].setPosition({lat:parseFloat(lati1[snap.key]) , lng : parseFloat(longi1[snap.key])});
+                $(`img[src="${markers[snap.key].getIcon().url}"]`).css({
+                  '-webkit-transform' : 'rotate('+ google.maps.geometry.spherical.computeHeading(prevPos, markers[snap.key].getPosition()) +'deg)',
+                  '-moz-transform' : 'rotate('+ google.maps.geometry.spherical.computeHeading(prevPos, markers[snap.key].getPosition()) +'deg)',
+                  '-ms-transform' : 'rotate('+ google.maps.geometry.spherical.computeHeading(prevPos, markers[snap.key].getPosition()) +'deg)',
+                  'transform' : 'rotate('+ google.maps.geometry.spherical.computeHeading(prevPos, markers[snap.key].getPosition()) +'deg)',
+                  '-webkit-transition' : 'all 1s',
+                  '-moz-transition' : 'all 1s',
+                  '-ms-transition' : 'all 1s',
+                  'transition' : 'all 1s',
+                });
+              }
+            },function(errorObject){
+              console.log(errorObject.code);
+            });
+            <% } %>
+          });
+        }
+      });
+    }
+</script>
+
+
+<script type="text/javascript">
+  $("#datatable").on("click", ".bookLater", function(){
+    const transId = $(this).attr('loadTrans');
+    const load_id = '<%= load %>';
+    $.ajax({
+      url: '/admin/book',
+      type: 'post',
+      data: {
+        load_id,
+        transId
+      },
+      dataType: 'json',
+      success: function (data) {
+        $(`#${transId}s`).addClass("disabled");
+        $(`#${transId}`).addClass("disabled");
+        
+        $.ajax({
+          url: '/admin/send_not',
+          type: 'post',
+          data: {
+            transId,
+            load_id
+          },
+          dataType: 'json',
+          success: function (data) {
+          }
+        });
+        sossent();
+      }
+    });
+  });
+    
+  function sossent() {
+    var audio = new Audio('/sounds/notification.mp3');
+    Swal.fire("Successfull!", "S.O.S Has Been Sent!", "success");
+    audio.play();
+  }
+</script>
+
+<script type="text/javascript">
+  $("#datatable").on("click", ".bookNow", function(){
+    const transId = $(this).attr('loadTrans');
+    const load_id = '<%= load %>';
+
+    $(`#${transId}s`).addClass("disabled");
+    $(`#${transId}`).addClass("disabled");
+
+    $.ajax({
+      url: '/admin/send_not',
+      type: 'post',
+      data: {
+        transId,
+        load_id
+      },
+      dataType: 'json',
+      success: function (data) {
+      }
+    });
+    sossent();
+  });
+    
+  function sossent() {
+    let audio = new Audio('/sounds/notification.mp3');
+    Swal.fire("Successfull!", "S.O.S Has Been Sent!", "success");
+    audio.play();
+  }
+</script>
+
+<script>
+  $("#sosTrans").on("click",function(){
+    let city = '<%=currentCity[0].id%>';
+    let load_id = '<%= load %>';
+      $.ajax({
+        url: '/admin/send_not_trans',
+        type: 'post',
+        data: {
+          city,load_id
+        },
+        dataType: 'json',
+        success: function (data) {
+          $('#sosTrans').addClass("disabled");
+          sossent();
+        }
+      });
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+        const load_id = '<%= load %>';
+        $.ajax({
+          url: '/admin/autofill',
+          type: 'post',
+          data: {
+            load_id
+          },
+          dataType: 'json',
+          success: function (data) {
+            if (data.code == 1) {
+              $("input[name='name']").val(data.result[0].fromc);
+              $("select[name='type']").val(data.result[0].type);
+              $("select[class='id1']").val(data.result[0].fromc);
+              $("input[name='timef']").val(data.result[0].timef);
+              $("input[name='timet']").val(data.result[0].timet);
+              $("input[name='flag']").val(data.result[0].flag);
+              $("input[name='start_mob']").val(data.result[0].start_mob);
+              $("input[name='dest']").val(data.result[0].last_point);
+              $("input[name='end_mob']").val(data.result[0].end_mob);
+              $("select[name='city']").val(data.result[0].city);
+              $("input[name='weight']").val(data.result[0].weight);
+              $("input[name='amount']").val(data.result[0].amount);
+              $("input[name='no_vehicle']").val(data.result[0].no_vehicle);
+              $("input[name='pickup']").val(data.result[0].pickup_location);
+              $("input[name='lat_long']").val(data.result[0].lat_long);
+              $("input[name='last_lat_long']").val(data.result[0].last_lat_long);
+              $("select[name='dest_city']").val(data.result[0].dest_city);
+              let inters_mob = JSON.parse(data.result[0].inter_mob);
+              let intermediate_locs = data.result[0].intermediate_loc;
+              
+              if (data.result[0].inter_mob[0] == `"`) {
+                $("input[name='inter']").val(intermediate_locs);
+                $("input[name='inter_mob']").val(inters_mob);
+                let geocoder = new google.maps.Geocoder();
+                let address = intermediate_locs;
+                geocoder.geocode({
+                  'address': address
+                }, function (results, status) {
+                  if (status == google.maps.GeocoderStatus.OK) {
+                    latitude = results[0].geometry.location.lat();
+                    longitude = results[0].geometry.location.lng();
+                    let last_lat = latitude;
+                    let last_long = longitude;
+                    let old_value = $("input[name='inter_lat_long']").val();
+                    $("input[name='inter_lat_long']").val(`${old_value}^${last_lat}#${last_long}`);
+                  }
+                });
+              } else {
+                for (let i = 0; i < inters_mob.length - 1; i++) {
+                  intermediate();
+                }
+                for (let i = 0; i < inters_mob.length; i++) {
+                  $(`input[id='inter_loc${i}']`).val(intermediate_locs[i]);
+                  $(`input[id='inter_mobile${i}']`).val(inters_mob[i]);
+                  $(`input[id='inter_locAll${i}']`).val(intermediate_locs[i]);
+                  $(`input[id='inter_mobileAll${i}']`).val(inters_mob[i]);
+                  let geocoder = new google.maps.Geocoder();
+                  let address = intermediate_locs[i];
+                  geocoder.geocode({
+                    'address': address
+                  }, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                      latitude = results[0].geometry.location.lat();
+                      longitude = results[0].geometry.location.lng();
+                      let last_lat = latitude;
+                      let last_long = longitude;
+                      let old_value = $("input[name='inter_lat_long']").val();
+                      $("input[name='inter_lat_long']").val(`${old_value}^${last_lat}#${last_long}`);
+                    }
+                  });
+                }
+              }
+            }
+          }
+        }); 
+  });
+</script>
+
+<script>
+  let sCity,dCity,client,vType,noVehicle,amounts;
+  $("select[name='city']").on('change',function () {
+      sCity = $(this).children("option:selected").val();
+      amount(sCity,dCity,client,vType,noVehicle);
+  });
+  $("select[name='dest_city']").on('change',function () {
+      dCity = $(this).children("option:selected").val();
+      amount(sCity,dCity,client,vType,noVehicle);
+  });
+  $("select[name='name']").on('change',function () {
+      client = $(this).children("option:selected").val();
+      amount(sCity,dCity,client,vType,noVehicle);
+  });
+  $("select[name='vtype']").on('change',function () {
+      vType = $(this).children("option:selected").val();
+      amount(sCity,dCity,client,vType,noVehicle);  
+  });
+  $("input[name='no_vehicle']").on("change",function(){
+      noVehicle = $(this).val();
+      amount(sCity,dCity,client,vType,noVehicle);
+  });
+
+  function amount(sCity,dCity,client,vType,noVehicle){
+      if(sCity&&dCity&&client&&vType&&noVehicle){
+          $.ajax({
+              url:'/admin/amount',
+              type:'post',
+              data:{sCity,dCity,client,vType},
+              dataType:'json',
+              success:function(data){
+                
+                  if(data.code==1){
+                      amounts = parseInt(data.result[0].price,10) * parseInt(noVehicle,10);
+                      $("input[name='amount']").val(amounts);
+                  }
+                  else{
+                      Swal.fire({
+                          type: 'error',
+                          title: 'Rate Not Found',
+                          text: 'Rate Matrix Is not Prepared For the Selected Items',
+                          footer: 'Solution : Add In Rate Matrix'
+                      });
+                      $('#sosAll').modal('hide');
+                      $('#sos').modal('hide');
+                  }
+              }
+          });
+      }
+  }
+</script>
+
+<script>
+    let autocomplete,autocompleteDest,autocompleteInter;  
+    function fillInAddress() {
+      let place = autocomplete.getPlace();
+      $("input[name='lat_long']").val(`${place.geometry.location.lat()}#${place.geometry.location.lng()}`);
+    }
+
+    function fillInAddressDest() {
+      let place = autocompleteDest.getPlace();
+      $("input[name='last_lat_long']").val(`${place.geometry.location.lat()}#${place.geometry.location.lng()}`);
+    }
+
+    function fillInAddressInter() {
+      let place = autocompleteInter.getPlace();
+      let old_value = $("input[name='inter_lat_long']").val();
+    $("input[name='inter_lat_long']").val(`${old_value}^${place.geometry.location.lat()}#${place.geometry.location.lng()}`);
+    }
+  
+    function initAutocomplete() {
+      autocomplete = new google.maps.places.Autocomplete(
+        document.getElementById('autocomplete'), {
+          types: ['geocode']
+        });
+        autocomplete = new google.maps.places.Autocomplete(
+        document.getElementById('autocompleteAll'), {
+          types: ['geocode']
+        });
+
+        autocompleteDest = new google.maps.places.Autocomplete(
+        document.getElementById('autocompleteDest'), {
+          types: ['geocode']
+        });
+
+        autocompleteDest = new google.maps.places.Autocomplete(
+        document.getElementById('autocompleteDestAll'), {
+          types: ['geocode']
+        });
+        
+        autocompleteInter = new google.maps.places.Autocomplete(
+        document.getElementById('inter_loc0'), {
+          types: ['geocode']
+        });
+
+        autocompleteInter = new google.maps.places.Autocomplete(
+        document.getElementById('inter_locAll0'), {
+          types: ['geocode']
+        });
+  
+      autocomplete.addListener('place_changed', fillInAddress);
+      autocompleteDest.addListener('place_changed', fillInAddressDest);
+      autocompleteInter.addListener('place_changed', fillInAddressInter);
+    }
+    function interloc(room){
+        autocompleteInter = new google.maps.places.Autocomplete(
+        document.getElementById(`inter_loc${room}`), {
+          types: ['geocode']
+        });
+      autocompleteInter.addListener('place_changed', fillInAddressInter);
+    }
+    function interlocAll(room){
+        autocompleteInter = new google.maps.places.Autocomplete(
+        document.getElementById(`inter_locAll${room}`), {
+          types: ['geocode']
+        });
+      autocompleteInter.addListener('place_changed', fillInAddressInter);
+    }
+</script>
+
+<script>
+    function initialize(){
+      initMap();
+      initAutocomplete();
+    }
+</script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtc_1Ie4_kMbMn_UyvwZeyLa7CgWBdAm4&callback=initialize&libraries=places&libraries=geometry">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marker-animate-unobtrusive/0.2.8/vendor/markerAnimate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marker-animate-unobtrusive/0.2.8/SlidingMarker.min.js"></script>
+
+<script>
+  jQuery(document).ready(function() {
+    // Switchery
+    let elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+    $('.js-switch').each(function() {
+        new Switchery($(this)[0], $(this).data());
+    });
+  });
+</script>

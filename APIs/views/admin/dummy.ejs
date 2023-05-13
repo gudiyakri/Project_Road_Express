@@ -1,0 +1,97 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<div class="col-md-12">
+			<% include ../partials/message %>
+			<div class="row page-titles">
+				<div class="col-md-6 col-8 align-self-center">
+					<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+						<li class="breadcrumb-item active">Dummy</li>
+					</ol>
+				</div>
+			</div>
+
+			<hr />
+			<table id="datatable" class="table display table-bordered table-striped col-12">
+				<thead>
+					<th>Name</th>
+					<th>Mobile No.</th>
+					<th>State</th>
+					<th>City</th>
+					<th>Type</th>
+					<th>Transporter</th>
+					<th>Transporter's Mobile No.</th>
+					<th>Book Now</th>
+				</thead>
+				<tbody>
+					<% for(let i = 0; i < driver.length ;i++) {%>
+					<tr>
+						<td><%= driver[i].d_name %></td>
+						<td><%= driver[i].phn %></td>
+						<td><%= driver[i].state %></td>
+						<td><%= driver[i].sahar %></td>
+						<td><%= driver[i].v_type %></td>
+						<td><%= driver[i].name %></td>
+						<td><%= driver[i].mob %></td>
+						<td>
+							<a id="<%= driver[i].Did %>" class="btn btn-info" loadDriver="<%= driver[i].Did %>">Book Now</a>
+						</td>
+					</tr>
+					<% } %>
+				</tbody>
+			</table>
+		</div>
+		<footer class="footer">© 2019 Road Express by CodeBuckets.in</footer>
+	</div>
+</div>
+
+<% include ../partials/footer %>
+
+<script type="text/javascript">
+	<%if (driver) {%>
+	    <%for (let i = 0; i < driver.length; i++) {%>
+	           $('#<%= driver[i].Did %>').click(function () {
+	               let loadD = $('#<%= driver[i].Did %>').attr('loadDriver');
+	               let load_id = '<%= load[0].load_id %>';
+	               $('#<%= driver[i].Did %>s').addClass("disabled");
+	               $('#<%= driver[i].Did %>').addClass("disabled");
+	               $.ajax({
+	                   url: '/admin/send_not',
+	                   type: 'post',
+	                   data: {
+	                   loadD,
+	                   load_id
+	                   },
+	                   dataType: 'json',
+	                   success: function (data) {
+	                   // console.log(data);
+	                   }
+	               });
+	               sossent();
+	           });
+	       <% } %>
+	   <% } %>
+	function sossent() {
+	       let audio = new Audio('/sounds/notification.mp3');
+	       Swal.fire("Successfull!", "S.O.S Has Been Sent!", "success");
+	       audio.play();
+	}
+</script>
+
+<script>
+	$(document).ready(function () {
+		let table = $("#datatable").DataTable({
+			lengthMenu: [
+				[10, 25, 50, -1],
+				[10, 25, 50, "All"],
+			],
+			scrollY: 600,
+			fixedHeader: {
+				header: true,
+			},
+		});
+	});
+</script>

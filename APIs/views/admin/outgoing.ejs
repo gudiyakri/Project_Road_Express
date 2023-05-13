@@ -1,0 +1,937 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+    <div class="container-fluid">
+        <% include ../partials/message %>
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <h3 class="text-themecolor mb-0 mt-0">Survelliance</h3>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+                    <li class="breadcrumb-item active">Outgoing</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="dropdown">
+                <button class="dropdown-toggle btn btn-primary btn-round btn-block col-md-2" type="button"
+                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <% if(currentCity!=null) {%>
+                    <%= currentCity[0].city %>
+                    <% } else {%>
+                    Select City
+                    <% } %>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    <div class="dropdown-header">Select</div>
+                    <% for(var i = 0; i<city.length ; i++) {%>
+                    <a class="dropdown-item" href="/survellance/outgoing/<%= city[i].id %>"><%= city[i].city %></a>
+                    <% } %>
+                </div>
+                <% if(currentCity==null) {%>
+                <h1>PLease Select a City to Continue...</h1>
+                <% } %>
+            </div>
+            <div class="switchery-demo mb-4 text-right">
+                <input type="checkbox" class="js-switch" id="dark" data-color="#3d3b3b" />
+            </div>
+            <div id="mapAll" class="map" style="height:500px"></div>
+            <div class="card">
+                <div class="card-body pb-0">
+                    <div class="row">
+                        <% if(trip!=null)
+                        if(trip.length) {%>
+                    <h2>Ongoing Trips</h2>
+                        <table id="datatable" class="display table table-hover table-striped table-bordered"
+                            cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Start Time</th>
+                                    <th>Driver Name</th>
+                                    <th>Vehicle Number</th>
+                                    <th>Source City</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Track</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Start Time</th>
+                                    <th>Driver Name</th>
+                                    <th>Vehicle Number</th>
+                                    <th>Source City</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Track</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <% for(var i = 0; i<trip.length ; i++) {%>
+                                <tr>
+                                    <td>
+                                        <%= trip[i].name %>
+                                    </td>
+                                    <td>
+                                        <%= trip[i].start_time %>
+                                    </td>
+                                    <td>
+                                        <%= trip[i].d_name %>
+                                    </td>
+                                    <td>
+                                        <%= trip[i].v_num %>
+                                    </td>
+                                    <td>
+                                        <%= currentCity[0].city %>
+                                    </td>
+                                    <td>
+                                        <%= trip[i].type %>
+                                    </td>
+                                    <td>
+                                        <%= trip[i].amount %>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-primary btn-rounded" data-toggle="modal"
+                                            data-driver="<%=trip[i].Did%>" data-id="<%=trip[i].trip_id%>"
+                                            data-target="#track">Track</a>
+                                    </td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                        <% } else{%>
+                            <h2>No Outgoing Trips From This City</h2>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="modal fade" id="track" tabindex="-1" role="dialog" aria-labelledby="mapmodal1">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel1">View Vehicle</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="mapTrack" class="map" style="height:500px"></div>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<% include ../partials/footer %>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtc_1Ie4_kMbMn_UyvwZeyLa7CgWBdAm4&libraries=geometry">
+</script>
+<script src="/plugins/jquery.easy/jquery.easing.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marker-animate-unobtrusive/0.2.8/vendor/markerAnimate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marker-animate-unobtrusive/0.2.8/SlidingMarker.min.js"></script>
+
+<script>
+    SlidingMarker.initializeGlobally();
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
+
+<script>
+    $(function () {
+        $('#datatable').DataTable({
+            scrollY: 600,
+        });
+     });
+</script>
+
+<script>
+    <% if(currentCity){%>
+        $(document).ready(function(){
+            initMap();
+        });
+    <% } %>
+</script>
+
+<script>
+        styleDark = [
+            {
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#242f3e"
+                }]
+            },
+            {
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#746855"
+                }]
+            },
+            {
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#242f3e"
+                }]
+            },
+            {
+                "featureType": "administrative.country",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                        "color": "#ffffff"
+                    },
+                    {
+                        "weight": 0.5
+                    }
+                ]
+            },
+            {
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "administrative.locality",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#d59563"
+                }]
+            },
+            {
+                "featureType": "administrative.province",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#ffffff"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#d59563"
+                }]
+            },
+            {
+                "featureType": "poi.business",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#263c3f"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#6b9a76"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#38414e"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#212a37"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "labels.icon",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#9ca5b3"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#746855"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#1f2835"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#f3d19c"
+                }]
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "labels",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "transit",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "transit",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#2f3948"
+                }]
+            },
+            {
+                "featureType": "transit.station",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#d59563"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#17263c"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#515c6d"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#17263c"
+                }]
+            }
+        ]
+        styleLight = [
+            {
+                "featureType": "administrative.country",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                        "color": "#000000"
+                    },
+                    {
+                        "weight": 1
+                    }
+                ]
+            },
+            {
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "administrative.province",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                        "color": "#ed0000"
+                    },
+                    {
+                        "lightness": "100"
+                    },
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "administrative.province",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                        "color": "#ff0000"
+                    },
+                    {
+                        "saturation": "80"
+                    },
+                    {
+                        "lightness": "56"
+                    },
+                    {
+                        "gamma": "0.00"
+                    },
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "administrative.province",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#636363"
+                }]
+            },
+            {
+                "featureType": "landscape",
+                "elementType": "geometry",
+                "stylers": [{
+                        "color": "#e3e3e3"
+                    },
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "landscape.man_made",
+                "stylers": [{
+                    "visibility": "on"
+                }]
+            },
+            {
+                "featureType": "landscape.man_made",
+                "elementType": "geometry",
+                "stylers": [{
+                    "visibility": "on"
+                }]
+            },
+            {
+                "featureType": "landscape.natural",
+                "elementType": "labels",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "poi.business",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "visibility": "on"
+                }]
+            },
+            {
+                "featureType": "poi.sports_complex",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "road",
+                "stylers": [{
+                        "color": "#c0c0c0"
+                    },
+                    {
+                        "weight": 0.5
+                    }
+                ]
+            },
+            {
+                "featureType": "road",
+                "elementType": "labels.icon",
+                "stylers": [{
+                        "color": "#938db8"
+                    },
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "road",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#ffffff"
+                }]
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                        "color": "#bcbaba"
+                    },
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "stylers": [{
+                        "color": "#a6a6a6"
+                    },
+                    {
+                        "visibility": "on"
+                    },
+                    {
+                        "weight": 1.5
+                    }
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "labels",
+                "stylers": [{
+                        "color": "#ffffff"
+                    },
+                    {
+                        "visibility": "off"
+                    },
+                    {
+                        "weight": 2
+                    }
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "labels.icon",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                        "visibility": "off"
+                    },
+                    {
+                        "weight": 2.5
+                    }
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                        "color": "#ffffff"
+                    },
+                    {
+                        "weight": 2
+                    }
+                ]
+            },
+            {
+                "featureType": "road.highway.controlled_access",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "road.local",
+                "stylers": [{
+                        "color": "#b7b7bc"
+                    },
+                    {
+                        "lightness": 35
+                    },
+                    {
+                        "visibility": "simplified"
+                    },
+                    {
+                        "weight": 1.5
+                    }
+                ]
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "labels",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "transit",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "transit",
+                "elementType": "labels.icon",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "transit.line",
+                "stylers": [{
+                        "color": "#ffffff"
+                    },
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "transit.line",
+                "elementType": "labels.text",
+                "stylers": [{
+                    "visibility": "on"
+                }]
+            },
+            {
+                "featureType": "transit.station",
+                "stylers": [{
+                    "visibility": "on"
+                }]
+            },
+            {
+                "featureType": "water",
+                "stylers": [{
+                        "color": "#c6d6d7"
+                    },
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            }
+        ]
+        styles = styleLight;
+        const firebaseConfig = {
+            apiKey: "AIzaSyAI1c0TK9xwm3aKXkrwLmPlAPWPUUABGms",
+            authDomain: "bot-dectnx.firebaseapp.com",
+            databaseURL: "https://bot-dectnx.firebaseio.com",
+            projectId: "bot-dectnx",
+            storageBucket: "bot-dectnx.appspot.com",
+            messagingSenderId: "462233025150",
+            appId: "1:462233025150:web:27a55715086746c4"
+        };
+        firebase.initializeApp(firebaseConfig);
+        var icon = {
+            path: 'M29.395,0H17.636c-3.117,0-5.643,3.467-5.643,6.584v34.804c0,3.116,2.526,5.644,5.643,5.644h11.759   c3.116,0,5.644-2.527,5.644-5.644V6.584C35.037,3.467,32.511,0,29.395,0z M34.05,14.188v11.665l-2.729,0.351v-4.806L34.05,14.188z    M32.618,10.773c-1.016,3.9-2.219,8.51-2.219,8.51H16.631l-2.222-8.51C14.41,10.773,23.293,7.755,32.618,10.773z M15.741,21.713   v4.492l-2.73-0.349V14.502L15.741,21.713z M13.011,37.938V27.579l2.73,0.343v8.196L13.011,37.938z M14.568,40.882l2.218-3.336   h13.771l2.219,3.336H14.568z M31.321,35.805v-7.872l2.729-0.355v10.048L31.321,35.805',
+            scale: 0.4,
+            fillColor: "#427af4",
+            fillOpacity: 1,
+            strokeWeight: 1,
+        };
+        var database = firebase.database();
+        var path = [];
+        $("#track").on('show.bs.modal', function (event) {
+            var trip = $(event.relatedTarget).attr('data-id');
+            var Dids = $(event.relatedTarget).attr('data-driver');
+            var map;
+            Did = firebase.database().ref(`/driver/${Dids}`);
+            Did.once('value', function (snap) {
+                pos = snap.val().location.split(',');
+                lati = pos[0];
+                longi = pos[1];
+                uluruVeh = {
+                    lat: parseFloat(lati),
+                    lng: parseFloat(longi)
+                };
+                map = new google.maps.Map(
+                document.getElementById('mapTrack'), {
+                    zoom: 13,
+                    center: uluruVeh,
+                    styles: styles,
+                });
+                $("#dark").on("change",function(event){
+                    if($(this).is(':checked')){
+                        styles = styleDark;
+                        map.setOptions({styles: styles});
+                    }else{
+                        styles = styleLight;
+                        map.setOptions({styles: styles});
+                    }
+                });
+                markers = new SlidingMarker({
+                    position: uluruVeh,
+                    map: map,
+                    icon: {
+                        url:`/img/vehicle/trucks1.png#${snap.ref.path.o[1]}`,
+                        scaledSize: new google.maps.Size(60, 80),
+                    },
+                    duration: 8000,
+                    easing: "swing"
+                });
+            }, function (errorObject) {
+                console.log(errorObject.code);
+            });
+            // google.maps.event.addListenerOnce(map,'idle',function(){
+                Did.on('value', function (snap) {
+                    pos = snap.val().location.split(',');
+                    lati = pos[0];
+                    longi = pos[1];
+                    // console.log(markers[snap.ref.path.o[1]],snap.ref.path.o[1]);
+                    var prevPos = markers.getPosition();
+                    $.get('https://roads.googleapis.com/v1/snapToRoads', {
+                        interpolate: true,
+                        key: 'AIzaSyAtc_1Ie4_kMbMn_UyvwZeyLa7CgWBdAm4',
+                        path: snap.val().location
+                    }, function(data) {
+                        markers.setPosition({lat:parseFloat(data.snappedPoints[0].location.latitude) , lng : parseFloat(data.snappedPoints[0].location.longitude)});
+                        // markers.setIcon({
+                        //     path: 'M29.395,0H17.636c-3.117,0-5.643,3.467-5.643,6.584v34.804c0,3.116,2.526,5.644,5.643,5.644h11.759   c3.116,0,5.644-2.527,5.644-5.644V6.584C35.037,3.467,32.511,0,29.395,0z M34.05,14.188v11.665l-2.729,0.351v-4.806L34.05,14.188z    M32.618,10.773c-1.016,3.9-2.219,8.51-2.219,8.51H16.631l-2.222-8.51C14.41,10.773,23.293,7.755,32.618,10.773z M15.741,21.713   v4.492l-2.73-0.349V14.502L15.741,21.713z M13.011,37.938V27.579l2.73,0.343v8.196L13.011,37.938z M14.568,40.882l2.218-3.336   h13.771l2.219,3.336H14.568z M31.321,35.805v-7.872l2.729-0.355v10.048L31.321,35.805',
+                        //     scale: 0.4,
+                        //     fillColor: "#427af4",
+                        //     fillOpacity: 1,
+                        //     strokeWeight: 1,
+                        //     rotation:google.maps.geometry.spherical.computeHeading(prevPos, markers.getPosition()),
+                        // });
+                        $(`img[src="${markers.getIcon().url}"]`).css(
+                            {'-webkit-transform' : 'rotate('+ google.maps.geometry.spherical.computeHeading(prevPos, markers.getPosition()) +'deg)',
+                            '-moz-transform' : 'rotate('+ google.maps.geometry.spherical.computeHeading(prevPos, markers.getPosition()) +'deg)',
+                            '-ms-transform' : 'rotate('+ google.maps.geometry.spherical.computeHeading(prevPos, markers.getPosition()) +'deg)',
+                            'transform' : 'rotate('+ google.maps.geometry.spherical.computeHeading(prevPos, markers.getPosition()) +'deg)',
+                            '-webkit-transition' : 'all 1s',
+                            '-moz-transition' : 'all 1s',
+                            '-ms-transition' : 'all 1s',
+                            'transition' : 'all 1s',
+                        });
+                    });
+                    google.maps.event.addListener(markers, 'animationposition_changed', function () {
+                        map.setCenter(markers.getAnimationPosition());
+                    });
+                }, function (errorObject) {
+                    console.log(errorObject.code);
+                });
+            // });
+        });
+            var longitude;
+            var latitude;
+            let marker =[];
+            let DidAll =[];
+            function initMap(){
+            <%if (trip != null) {%>
+              var geocoder = new google.maps.Geocoder();
+              var address = '<%= currentCity[0].city %>';
+              geocoder.geocode({
+                'address': address
+              }, function (results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                  latitude = results[0].geometry.location.lat();
+                  longitude = results[0].geometry.location.lng();
+                  var uluru = {
+                    lat: latitude,
+                    lng: longitude
+                  };
+                  let mapAll = new google.maps.Map(
+                    document.getElementById('mapAll'), {
+                      zoom: 10,
+                      center: uluru,
+                      styles:styles
+                    });
+                    $("#dark").on("change",function(event){
+                        if($(this).is(':checked')){
+                            styles = styleDark;
+                            mapAll.setOptions({styles: styles});
+                        }else{
+                            styles = styleLight;
+                            mapAll.setOptions({styles: styles});
+                        }
+                    });
+                    var marker = new google.maps.Marker({
+                    position: uluru,
+                    title: "HERE",
+                    map: mapAll,
+                    });
+                  let uluruVeh = [];
+                  let latiAll,longiAll,posAll;
+                  let lati1 = [],longi1 = [],pos1 = [];
+                  google.maps.event.addListenerOnce(mapAll,'idle',function(){
+                    <% for(var i=0;i<trip.length;i++) {%>
+                    DidAll[<%=i%>] = firebase.database().ref(`/driver/<%= trip[i].Did%>`);
+                    DidAll[<%=i%>].once('value',function(snap){
+                        posAll = snap.val().location.split(',');
+                        latiAll = posAll[0];
+                        longiAll = posAll[1];
+                        uluruVeh[<%=i%>] = {lat:parseFloat(latiAll) , lng : parseFloat(longiAll)};
+                        // console.log(snap.ref.path.o[1]);
+                        marker[snap.ref.path.o[1]] = new SlidingMarker({
+                        position: uluruVeh[<%=i%>],
+                        map: mapAll,
+                        icon: {
+                            url:`/img/vehicle/trucks1.png#${snap.ref.path.o[1]}`,
+                            scaledSize: new google.maps.Size(60, 80),
+                        },
+                        duration: 8000,
+                        easing: "swing"
+                        });
+                    },function(errorObject){
+                        console.log(errorObject.code);
+                    });
+                    
+                    DidAll[<%=i%>].on('child_changed',function(snap){
+                        posAll = snap.val().split(',');
+                        lati1[snap.ref.path.o[1]] = posAll[0];
+                        longi1[snap.ref.path.o[1]] = posAll[1];
+                        var prevPos = marker[snap.ref.path.o[1]].getPosition();
+                        marker[snap.ref.path.o[1]].setPosition({lat:parseFloat(lati1[snap.ref.path.o[1]]) , lng : parseFloat(longi1[snap.ref.path.o[1]])});
+                        // marker[snap.ref.path.o[1]].setIcon({
+                        //     // url:'/img/vehicle/truck.svg',
+                        //     path: 'M29.395,0H17.636c-3.117,0-5.643,3.467-5.643,6.584v34.804c0,3.116,2.526,5.644,5.643,5.644h11.759   c3.116,0,5.644-2.527,5.644-5.644V6.584C35.037,3.467,32.511,0,29.395,0z M34.05,14.188v11.665l-2.729,0.351v-4.806L34.05,14.188z    M32.618,10.773c-1.016,3.9-2.219,8.51-2.219,8.51H16.631l-2.222-8.51C14.41,10.773,23.293,7.755,32.618,10.773z M15.741,21.713   v4.492l-2.73-0.349V14.502L15.741,21.713z M13.011,37.938V27.579l2.73,0.343v8.196L13.011,37.938z M14.568,40.882l2.218-3.336   h13.771l2.219,3.336H14.568z M31.321,35.805v-7.872l2.729-0.355v10.048L31.321,35.805',
+                        //     scale: 0.4,
+                        //     fillColor: "#427af4",
+                        //     fillOpacity: 1,
+                        //     strokeWeight: 1,
+                        //     rotation:google.maps.geometry.spherical.computeHeading(prevPos, marker[snap.ref.path.o[1]].getPosition()),
+                        // });
+                        $(`img[src="${marker[snap.ref.path.o[1]].getIcon().url}"]`).css(
+                            {'-webkit-transform' : 'rotate('+ google.maps.geometry.spherical.computeHeading(prevPos, marker[snap.ref.path.o[1]].getPosition()) +'deg)',
+                            '-moz-transform' : 'rotate('+ google.maps.geometry.spherical.computeHeading(prevPos, marker[snap.ref.path.o[1]].getPosition()) +'deg)',
+                            '-ms-transform' : 'rotate('+ google.maps.geometry.spherical.computeHeading(prevPos, marker[snap.ref.path.o[1]].getPosition()) +'deg)',
+                            'transform' : 'rotate('+ google.maps.geometry.spherical.computeHeading(prevPos, marker[snap.ref.path.o[1]].getPosition()) +'deg)',
+                            '-webkit-transition' : 'all 1s',
+                            '-moz-transition' : 'all 1s',
+                            '-ms-transition' : 'all 1s',
+                            'transition' : 'all 1s',
+                        });
+                    },function(errorObject){
+                            console.log(errorObject.code);
+                        });
+                    <% } %>
+                  });
+                }
+              });
+            <% } %>
+        }
+</script>
+
+<script>
+    jQuery(document).ready(function() {
+            // Switchery
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+        $('.js-switch').each(function() {
+            new Switchery($(this)[0], $(this).data());
+        });
+        // For select 2
+        // $(".select2").select2();
+        // $('.selectpicker').selectpicker();
+        //Bootstrap-TouchSpin
+        $(".vertical-spin").TouchSpin({
+            verticalbuttons: true
+        });
+        var vspinTrue = $(".vertical-spin").TouchSpin({
+            verticalbuttons: true
+        });
+        if (vspinTrue) {
+            $('.vertical-spin').prev('.bootstrap-touchspin-prefix').remove();
+        }
+        $("input[name='tch1']").TouchSpin({
+            min: 0,
+            max: 100,
+            step: 0.1,
+            decimals: 2,
+            boostat: 5,
+            maxboostedstep: 10,
+            postfix: '%'
+        });
+        $("input[name='tch2']").TouchSpin({
+            min: -1000000000,
+            max: 1000000000,
+            stepinterval: 50,
+            maxboostedstep: 10000000,
+            prefix: '$'
+        });
+        $("input[name='tch3']").TouchSpin();
+        $("input[name='tch3_22']").TouchSpin({
+            initval: 40
+        });
+        $("input[name='tch5']").TouchSpin({
+            prefix: "pre",
+            postfix: "post"
+        });
+        // For multiselect
+        $('#pre-selected-options').multiSelect();
+        $('#optgroup').multiSelect({
+            selectableOptgroup: true
+        });
+        $('#public-methods').multiSelect();
+        $('#select-all').click(function() {
+            $('#public-methods').multiSelect('select_all');
+            return false;
+        });
+        $('#deselect-all').click(function() {
+            $('#public-methods').multiSelect('deselect_all');
+            return false;
+        });
+        $('#refresh').on('click', function() {
+            $('#public-methods').multiSelect('refresh');
+            return false;
+        });
+        $('#add-option').on('click', function() {
+            $('#public-methods').multiSelect('addOption', {
+                value: 42,
+                text: 'test 42',
+                index: 0
+            });
+            return false;
+        });
+    });
+</script>

@@ -1,0 +1,256 @@
+<% include ../../partials/header %> <% include ../../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<% include ../../partials/message %>
+		<div class="row page-titles">
+			<div class="col-md-6 col-8 align-self-center">
+				<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+					<li class="breadcrumb-item active">MIS</li>
+				</ol>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-body pb-0">
+					<div class="row">
+						<div class="col-md-4">
+							<div class="form">
+								<input
+									type="text"
+									name="timef"
+									id="timef"
+									class="form-control singledate"
+									placeholder="DD/MM/YYYY"
+									autocomplete="off"
+								/>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form">
+								<input
+									type="text"
+									name="timet"
+									id="timet"
+									class="form-control singledate"
+									placeholder="DD/MM/YYYY"
+									autocomplete="off"
+								/>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form">
+								<button type="button" id="process" class="btn btn-info">
+									Process
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="table-responsive m-t-40">
+							<table
+								id="datatable"
+								class="table display table-bordered table-striped"
+								style="width: 100%"
+							>
+								<thead>
+									<tr>
+										<th>DATE</th>
+										<th>CLIENT NAME</th>
+										<th>VEHICLE TYPE</th>
+										<th>LOADING POINT</th>
+										<th>UNLOADING POINT</th>
+										<th>VEHICLE NO</th>
+										<th>TPT NAME</th>
+										<th>DRIVER NAME</th>
+										<th>CLIENT FARE</th>
+										<th>DRIVER FARE</th>
+										<th>PROFIT</th>
+										<th>UNLOADING</th>
+										<th>DETENTION</th>
+										<th>RETURN FARE</th>
+										<th>DIESEL</th>
+										<th>ADV BY CLIENT</th>
+										<th>ADV BY ROAD EXP</th>
+										<th>CLIENT FINAL</th>
+										<th>POD STATUS</th>
+										<th>DRV DUES</th>
+										<th>CLIENT DUES</th>
+										<th>DRV PAYMENT STATUS</th>
+										<th>DRV PAYMENT DATE</th>
+										<th>CLIENT PAYMENT STATUS</th>
+										<th>INVOICE NO</th>
+										<th>LR NO.</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<% include ../../partials/footer %>
+<script src="/plugins/dropify/dist/js/dropify.min.js"></script>
+<script src="/plugins/datatables/dataTables.buttons.min.js"></script>
+<script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
+<script src="/plugins/datatables/jszip.min.js"></script>
+<script src="/plugins/datatables/pdfmake.min.js"></script>
+<script src="/plugins/datatables/vfs_fonts.js"></script>
+<script src="/plugins/datatables/buttons.html5.min.js"></script>
+<script src="/plugins/datatables/buttons.colVis.min.js"></script>
+<script src="/plugins/datatables/dataTables.responsive.min.js"></script>
+<script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
+
+<script>
+	$(".singledate").daterangepicker({
+		singleDatePicker: true,
+		showDropdowns: true,
+		locale: {
+			format: "DD/MM/YYYY",
+		},
+		autoUpdateInput: false,
+	});
+
+	let date = "";
+
+	$("#timef").on("apply.daterangepicker", function (e, picker) {
+		date = picker.startDate.format("DD/MM/YYYY");
+		$("#timef").val(date);
+	});
+
+	$("#timet").on("apply.daterangepicker", function (e, picker) {
+		date = picker.startDate.format("DD/MM/YYYY");
+		$("#timet").val(date);
+	});
+
+	const dataTab = $("#datatable").DataTable({
+		dom: "Bfrtip",
+		buttons: ["excelHtml5", "pdfHtml5"],
+	});
+
+	$("#process").on("click", function () {
+		const timet = $("#timet").val();
+		const timef = $("#timef").val();
+		if (timet && timef) {
+			$.ajax({
+				url: "/admin/mis",
+				type: "post",
+				data: {
+					timef: timef,
+					timet: timet,
+					clientId: "<%= clientId %>",
+				},
+				dataType: "json",
+				success: function (data) {
+					console.log(data);
+					dataTab.clear().draw();
+					if (data.code == "1") {
+						for (let i = 0; i < data.data.length; i++) {
+							let distance = 0;
+							if (data.data[i].deviceId) {
+								$.ajax({
+									url: "http://128.199.17.156:8082/api/reports/trips",
+									dataType: "json",
+									headers: {
+										"Content-Type": "application/json",
+										"Authorization": `Basic YWRtaW46YWRtaW4=`,
+									},
+									type: "GET",
+									data: {
+										deviceId: data.data[i].deviceId,
+										from: moment(timef, "DD/MM/YYYY").toISOString(),
+										to:
+											timef === timet
+												? moment(timet, "DD/MM/YYYY")
+														.add(1, "days")
+														.toISOString()
+												: moment(timet, "DD/MM/YYYY").toISOString(),
+									},
+									success: function (trips) {
+										for (let i = 0; i < trips.length; i++) {
+											distance += trips[i].distance;
+										}
+									},
+								});
+							} else {
+								distance = data.data[i].distance;
+							}
+							dataTab.row
+								.add([
+									`${data.data[i].date}`,
+									`${data.data[i].client}`,
+									`${data.data[i].v_type}`,
+									`${data.data[i].pickup_location}`,
+									`${data.data[i].last_point}`,
+									`${data.data[i].v_num}`,
+									`${data.data[i].trans}`,
+									`${data.data[i].driver}`,
+									`${data.data[i].clientAmount}`,
+									`${data.data[i].amount}`,
+									`${data.data[i].clientAmount - data.data[i].amount}`,
+									`${data.data[i].unloading ? data.data[i].unloading : ""}`,
+									`${data.data[i].detention ? data.data[i].detention : ""}`,
+									`${data.data[i].returnFare ? data.data[i].returnFare : ""}`,
+									`${data.data[i].diesel ? data.data[i].diesel : ""}`,
+									`${data.data[i].clientAdv ? data.data[i].clientAdv : ""}`,
+									`${data.data[i].roadAdv ? data.data[i].roadAdv : ""}`,
+									`${data.data[i].clientFinal}`,
+									`${data.data[i].pod ? data.data[i].pod : "Pending"}`,
+									`
+                                        ${
+											parseFloat(data.data[i].amount) -
+											parseFloat(
+												data.data[i].clientAdv ? data.data[i].clientAdv : 0
+											) -
+											parseFloat(
+												data.data[i].roadAdv ? data.data[i].roadAdv : 0
+											) -
+											parseFloat(
+												data.data[i].clientFinal
+													? data.data[i].clientFinal
+													: 0
+											)
+										}`,
+									`
+                                        ${
+											parseFloat(data.data[i].clientAmount) -
+											parseFloat(
+												data.data[i].clientAdv ? data.data[i].clientAdv : 0
+											) -
+											parseFloat(
+												data.data[i].clientFinal
+													? data.data[i].clientFinal
+													: 0
+											)
+										}
+                                    `,
+									`${
+										data.data[i].driverPayStatus
+											? data.data[i].driverPayStatus
+											: ""
+									}`,
+									`${
+										data.data[i].driverPayDate ? data.data[i].driverPayDate : ""
+									}`,
+									`${
+										data.data[i].clientPayStatus
+											? data.data[i].clientPayStatus
+											: ""
+									}`,
+									`${data.data[i].invoice ? data.data[i].invoice : ""}`,
+									`${data.data[i].lrNo ? data.data[i].lrNo : ""}`,
+								])
+								.draw();
+						}
+					}
+				},
+			});
+		}
+	});
+</script>

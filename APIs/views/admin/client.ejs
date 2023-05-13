@@ -1,0 +1,361 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<% include ../partials/message %>
+		<div class="row page-titles">
+			<div class="col-md-6 col-8 align-self-center">
+				<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+					<li class="breadcrumb-item active">Clients</li>
+				</ol>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-body pb-0">
+					<div class="row">
+						<div class="table-responsive m-t-40">
+							<table id="datatable" class="table display table-bordered table-striped col-lg-12">
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>City</th>
+										<th>State</th>
+										<th>Mobile</th>
+										<th>E-mail</th>
+										<th>Designation</th>
+										<th>Employee Id</th>
+										<th>Surge Charge</th>
+										<th>G.S.T Number</th>
+                                        <th>Rate Matrix Type</th>
+										<th>Wait Charge</th>
+										<th>Profile Pic</th>
+										<th>Edit</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% for( let i = 0; i < users.length; i++ ) { %>
+									<tr>
+										<td><%= users[i].name %></td>
+										<td><%= users[i].sahar %></td>
+										<td><%= users[i].state %></td>
+										<td><%= users[i].mob %></td>
+										<td><%= users[i].email %></td>
+										<td><%= users[i].designation %></td>
+										<td><%= users[i].employee_id %></td>
+										<td><%= users[i].surge_charge %></td>
+										<td><%= users[i].gst %></td>
+                                        <td><%= users[i].rateType === 0 ? "Static" : "Dynamic" %></td>
+										<td><%= users[i].waitFlag === 0 ? "No Wait Charge" : "Wait Charge" %></td>
+										<td>
+											<a href="https://admin.roadexpress.in/images/userProf/<%= users[i].profile %>"
+												><img src="/images/userProf/<%= users[i].profile %>" style="width: 50px; height: 60px" alt="User Profile"
+											/></a>
+										</td>
+										<td>
+											<a class="btn btn-outline-default btn-round" data-toggle="modal" data-user="<%=users[i].id%>" data-target="#updateClient"> Edit </a>
+										</td>
+										<td>
+											<% if(users[i].managerFlag === 1) {%>
+											<a href="/admin/addSub/<%=users[i].id %>" class="btn btn-info"> Add branch </a>
+											<% } else {%> Not a manager <% } %>
+										</td>
+									</tr>
+									<% } %>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer class="footer">© 2019 Road Express by CodeBuckets.in</footer>
+	</div>
+</div>
+
+<div class="modal fade" id="updateClient" tabindex="-1" role="dialog" aria-labelledby="mapmodal1">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="exampleModalLabel1">Update Client Info</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" method="POST" action="/admin/updateClient" style="margin-left: 125px" enctype="multipart/form-data">
+					<div class="row">
+						<div class="col-md-4 col-md-6">
+							<h5 class="mt-4 mb-2">Name</h5>
+							<input type="text" class="form-control col-md-12" name="uname" placeholder="Name" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-5 col-md-4">
+							<h5 class="mt-4 mb-2">Select state</h5>
+							<select class="select2 mb-3 mr-2 btn btn-info btn-round state" name="ustate" data-size="10" title="Choose State" required>
+								<% for( let i = 0; i < state.length; i++ ) { %>
+								<option value="<%= state[i].state %>"><%= state[i].state %></option>
+								<% } %>
+							</select>
+						</div>
+						<div class="col-md-5 col-md-4">
+							<h5 class="mt-4 mb-2">Select City</h5>
+							<select class="select2 mb-3 mr-2 btn btn-info btn-round id1" id="id1" name="ucity" required>
+								<option value="0">Choose City</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-md-6">
+							<h5 class="mt-4 mb-2">Mobile Number</h5>
+							<input type="number" class="form-control col-md-12" name="umob" placeholder="Mobile Number" maxlength="10" minlength="10" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-md-6">
+							<h5 class="mt-4 mb-2">Address</h5>
+							<input type="text" class="form-control col-md-12" name="uadd" placeholder="Address" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-md-6">
+							<h5 class="mt-4 mb-2">E-mail</h5>
+							<input type="email" class="form-control col-md-12" name="uemail" placeholder="Email" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-md-6">
+							<h5 class="mt-4 mb-2">Designation</h5>
+							<input type="text" class="form-control col-md-12" name="udesignation" placeholder="Designation" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-md-6">
+							<h5 class="mt-4 mb-2">Employee Id</h5>
+							<input type="text" class="form-control col-md-12" name="uemployee_id" placeholder="Employee Id" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-md-6">
+							<h5 class="mt-4 mb-2">Surge Charge</h5>
+							<input type="number" class="form-control col-md-12" name="usurge_charge" placeholder="Surge Charge" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-md-6">
+							<h5 class="mt-4 mb-2">G.S.T Number</h5>
+							<input type="text" class="form-control col-md-12" name="ugst" placeholder="G.S.T Number" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-md-6">
+							<h5 class="mt-4 mb-2">Update Password</h5>
+							<input type="password" class="form-control col-md-12" name="upassword" placeholder="Password" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<h5 class="mt-4 mb-2">Select Type</h5>
+							<select class="select2 col-12 btn-info btn-rounded" name="manager" required>
+								<option value="0">Default</option>
+								<option value="1">Manager</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<h5 class="mt-4 mb-2">Select Rate matrix Type</h5>
+							<select class="select2 col-12 btn-info btn-rounded" name="rateMatrix" required>
+								<option value="0">Static</option>
+								<option value="1">Dynamic</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<h5 class="mt-4 mb-2">Select Wait Charge Type</h5>
+							<select class="select2 col-12 btn-info btn-rounded" name="waitFlag" required>
+								<option value="0">No Wait Charge</option>
+								<option value="1">Wait Charge</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 col-md-6">
+							<div class="card">
+								<div class="card-body">
+									<h5 class="card-title">Profile Pic</h5>
+									<input type="file" name="uprofilePic" accept="image/*" class="dropify" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<input type="text" name="user" hidden />
+					<br />
+					<br />
+					<button type="submit" style="margin-left: 250px" class="btn waves-effect waves-light btn-rounded btn-info">Update</button>
+				</form>
+				<hr />
+			</div>
+		</div>
+	</div>
+</div>
+
+<% include ../partials/footer %>
+<script src="/plugins/dropify/dist/js/dropify.min.js"></script>
+<script src="/plugins/datatables/dataTables.buttons.min.js"></script>
+<script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
+<script src="/plugins/datatables/jszip.min.js"></script>
+<script src="/plugins/datatables/pdfmake.min.js"></script>
+<script src="/plugins/datatables/vfs_fonts.js"></script>
+<script src="/plugins/datatables/buttons.html5.min.js"></script>
+<script src="/plugins/datatables/buttons.colVis.min.js"></script>
+<script src="/plugins/datatables/dataTables.responsive.min.js"></script>
+<script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
+
+<script>
+	$(function () {
+		$("#datatable").DataTable({
+			scrollY: 600,
+			scrollX: true,
+		});
+	});
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$(".select2").select2();
+		$(".state").change(function () {
+			let state = $(this).children("option:selected").val();
+			stateFind(state);
+		});
+	});
+
+	function stateFind(state) {
+		$.ajax({
+			url: "/admin/search",
+			type: "post",
+			data: {
+				state: state,
+			},
+			dataType: "json",
+			success: function (data) {
+				data = JSON.stringify(data);
+				data = JSON.parse(data);
+				var len = data.length;
+				if (len > 0) {
+					$(".id1").empty();
+					for (var i = 0; i < len; i++) {
+						var cid = data[i].id;
+						var city = data[i].city;
+						//console.log(city);
+						$(".id1").append("<option value='" + cid + "'>" + city + "</option>");
+					}
+				} else {
+					$(".id1").empty();
+					$(".id1").append("<option value='0'>Choose City</option>");
+				}
+			},
+		});
+	}
+
+	function stateCity(state, cityS) {
+		$.ajax({
+			url: "/admin/search",
+			type: "post",
+			data: {
+				state: state,
+			},
+			dataType: "json",
+			success: function (data) {
+				data = JSON.stringify(data);
+				data = JSON.parse(data);
+				var len = data.length;
+				if (len > 0) {
+					$(".id1").empty();
+					for (var i = 0; i < len; i++) {
+						var cid = data[i].id;
+						var city = data[i].city;
+						//console.log(city);
+						$(".id1").append("<option value='" + cid + "'>" + city + "</option>");
+					}
+					$("#id1").val(cityS);
+					$("#id1").trigger("change");
+				} else {
+					$(".id1").empty();
+					$(".id1").append("<option value='0'>Choose City</option>");
+				}
+			},
+		});
+	}
+</script>
+
+<script>
+	$("#updateClient").on("show.bs.modal", function (event) {
+		user_id = $(event.relatedTarget).attr("data-user");
+		$.ajax({
+			url: "/admin/autoClient",
+			type: "post",
+			data: {
+				user: user_id,
+			},
+			dataType: "json",
+			success: function (data) {
+				if (data.code === 1) {
+					$("input[name='uname']").val(data.result[0].name);
+					$("select[name='ustate']").val(data.result[0].state);
+					$("select[name='ustate']").trigger("change");
+					stateCity(data.result[0].state, data.result[0].city);
+					$("select[name='ucity']").val(data.result[0].city);
+					$("select[name='ucity']").trigger("change");
+					$("input[name='umob']").val(data.result[0].mob);
+					$("input[name='uadd']").val(data.result[0].address);
+					$("input[name='uemail']").val(data.result[0].email);
+					$("input[name='udesignation']").val(data.result[0].designation);
+					$("input[name='uemployee_id']").val(data.result[0].employee_id);
+					$("input[name='usurge_charge']").val(data.result[0].surge_charge);
+					$("input[name='ugst']").val(data.result[0].gst);
+					$("input[name='user']").val(user_id);
+					$("select[name='manager']").val(data.result[0].managerFlag);
+					$("select[name='manager']").trigger("change");
+					$("select[name='rateMatrix']").val(data.result[0].rateType).trigger("change");
+					$("select[name='waitFlag']").val(data.result[0].waitFlag).trigger("change");
+				}
+			},
+		});
+	});
+</script>
+
+<script>
+	$(document).ready(function () {
+		// Basic
+		$(".dropify").dropify();
+
+		var drEvent = $("#input-file-events").dropify();
+
+		drEvent.on("dropify.beforeClear", function (event, element) {
+			return confirm('Do you really want to delete "' + element.file.name + '" ?');
+		});
+
+		drEvent.on("dropify.afterClear", function (event, element) {
+			alert("File deleted");
+		});
+
+		drEvent.on("dropify.errors", function (event, element) {
+			console.log("Has Errors");
+		});
+
+		var drDestroy = $("#input-file-to-destroy").dropify();
+		drDestroy = drDestroy.data("dropify");
+		$("#toggleDropify").on("click", function (e) {
+			e.preventDefault();
+			if (drDestroy.isDropified()) {
+				drDestroy.destroy();
+			} else {
+				drDestroy.init();
+			}
+		});
+	});
+</script>

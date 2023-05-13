@@ -1,0 +1,201 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+  <div class="container-fluid">
+    <div class="row page-titles">
+      <div class="col-md-6 col-8 align-self-center">
+        <h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+          <li class="breadcrumb-item active">Placement Sheet</li>
+        </ol>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <% include ../partials/message %>
+        <div class="card">
+          <div class="card-body">
+            <div class="toolbar col-md-6">
+              <div class="row">
+                <div class="input-group col-4">
+                  <input type="text" class="form-control datepicker time" id="start" name="start"
+                    placeholder="Start Date">
+                  <span class="input-group-text"><i class="icon-calender"></i></span>
+                </div>
+                <div class="input-group col-4">
+                  <input type="text" class="form-control datepicker time" id="end" name="end" placeholder="End Date">
+                  <span class="input-group-text"><i class="icon-calender"></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive m-t-40">
+              <table id="datatable" class="table display table-bordered table-striped col-lg-12">
+                  <thead>
+                    <tr>
+                      <th>S No.</th>
+                      <th>Client's Name</th>
+                      <th>Vehicle Type</th>
+                      <th>PickUp Location</th>
+                      <th>Intermediate Location</th>
+                      <th>Destination</th>
+                      <th>Start Time</th>
+                      <th>No. of Vehicles Requeted</th>
+                      <th>No. of Vehicles Alloted</th>
+                      <th class="disabled-sorting text-right">Actions</th>
+                      <th class="disabled-sorting text-right">Cancel</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for(let i = 0; i<load.length ; i++) {%>
+                    <tr>
+                      <td>
+                        <%= i+1 %>
+                      </td>
+                      <td>
+                        <%= load[i].name %>
+                      </td>
+                      <td>
+                        <%= load[i].vehicle_type %>
+                      </td>
+                      <td>
+                        <%= load[i].pickup_location %>
+                      </td>
+                      <td>
+                        <div id="inter<%=load[i].load_id%>"></div>
+                      </td>
+                      <td>
+                        <%= load[i].last_point %>
+                      </td>
+                      <td>
+                        <%= load[i].timef %>
+                      </td>
+                      <td>
+                        <%= load[i].no_vehicle %>
+                      </td>
+                      <td>
+                        <% if((load[i].count==0) || (!load[i].count)) {%>
+                        0
+                        <% } else{%>
+                        <%= load[i].count %>
+                        <% } %>
+                      </td>
+                      <td>
+                        <a class="btn btn-info" href="/admin/sos/<%= load[i].city %>/<%= load[i].load_id %>">BOOK</a>
+                      </td>
+                      <td>
+                        <button class="btn btn-outline-default btn-round"
+                          onclick="cancel('<%= load[i].load_id %>')">Cancel</button>
+                      </td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+            </div>
+            <a href="/admin/dummy" class="btn btn-info">Dummy Booking</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer"> © 2019 Road Express by CodeBuckets.in</footer>
+
+  </div>
+</div>
+
+
+<% include ../partials/footer %>
+
+<script src="/js/moment.js"></script>
+<script src="https://cdn.datatables.net/fixedheader/3.1.5/js/dataTables.fixedHeader.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    demo.initDateTimePicker();
+    let table = $('#datatable').DataTable({
+      "lengthMenu": [
+        [10, 25, 50, -1],
+        [10, 25, 50, "All"]
+      ],
+      scrollY: 600,
+      scrollX: true,
+      fixedHeader: {
+			header: true,
+		},
+    });
+    $('.time').on("dp.change", function () {
+      table.draw();
+    });
+    $.fn.dataTable.ext.search.push(
+      function (settings, data, dataIndex) {
+        let min = $('#start').val();
+        let max = $('#end').val();
+        let createdAt = data[6].split(" ")[0]; // Our date column in the table
+        let startDate = moment(min, "DD/MM/YYYY").subtract('1', 'days');
+        let endDate = moment(max, "DD/MM/YYYY").add('1', 'days');
+        let diffDate = moment(createdAt, "DD/MM/YYYY");
+        //console.log(startDate);
+        if (
+          (min == "" || max == "") ||
+          (diffDate.isBetween(startDate, endDate))
+
+
+        ) {
+          return true;
+        }
+        return false;
+      }
+    );
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    <% for (var i = 0; i < load.length; i++) { %>
+      var inters = '<%=load[i].intermediate_loc %>'.replace('[', '').replace(']', '').replace(/&#34;/g, '').replace(
+        /[^a-zA-Z0-9]/g, ' ');
+      $('#inter<%=load[i].load_id%>').html(inters);
+      <% } %>
+  });
+</script>
+
+<script>
+  function cancel(load) {
+    Swal.fire({
+      title: 'Please Enter The Reason...',
+      input: 'text',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Proceed',
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      $.ajax({
+          url: '/admin/cancelLoad',
+          type: 'post',
+          data: {
+            reason : result.value,
+            load : load
+          },
+          dataType: 'text',
+          success: function (data) {
+            data = JSON.parse(data);
+            console.log(data);
+            if(data.code == "1"){
+              Swal.fire("Canceled!", "Load Was Canceled", "success")
+              window.location.href = `/admin/placement`;
+            }
+            else{
+              Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                footer: "Can't cancel this load right now..."
+              })
+            }
+          }
+        })
+    })
+  }
+</script>

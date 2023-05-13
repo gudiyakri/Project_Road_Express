@@ -1,0 +1,144 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+    <div class="container-fluid">
+        <% include ../partials/message %>
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+                    <li class="breadcrumb-item active">Add City</li>
+                </ol>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body pb-0">
+                    <ul class="nav nav-tabs customtab2" role="tablist">
+                        <li class="nav-item col-md-6 text-center"> <a class="nav-link active" data-toggle="tab"
+                                href="#add" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span>
+                                <span class="hidden-xs-down">Add Favourites</span></a> </li>
+                        <li class="nav-item col-md-6 text-center"> <a class="nav-link" data-toggle="tab" href="#view"
+                                role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span>View
+                                    Favourites</span></a> </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="add" role="tabpanel">
+                                <form method="POST" action="/admin/addFavs" class="form-horizontal"
+                                    style="margin-left: 125px;">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h5 class="mt-4 mb-2">Vehicel Number</h5>
+                                            <input class="form-control col-md-12" type="text" id="v_num" name="v_num"
+                                                placeholder="Enter Vehicle Numner" autocomplete="off" required>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <button type="submit"
+                                        class="btn waves-effect waves-light btn-rounded btn-info">Submit</button>
+                                </form>
+                        </div>
+                        <div class="tab-pane" id="view" role="tabpanel">
+                            <div class="row">
+                                <table id="datatable" class="display table table-hover table-striped table-bordered"
+                                    cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>S No.</th>
+                                            <th>Vehicle Number</th>
+                                            <th>R.C. Front Pic</th>
+                                            <th>R.C. Back Pic</th>
+                                            <th>Vehicle Pic</th>
+                                            <th>Permit</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>S No.</th>
+                                            <th>Vehicle Number</th>
+                                            <th>R.C. Front Pic</th>
+                                            <th>R.C. Back Pic</th>
+                                            <th>Vehicle Pic</th>
+                                            <th>Permit</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        <% if(list)
+                                        if(list.length) {%>
+                                            <% for(var i=0;i<list.length; i++) {%>
+                                                <tr>
+                                                    <td>
+                                                        <%= i+1 %>
+                                                    </td>
+                                                    <td>
+                                                        <%= list[i].v_num %>
+                                                    </td>
+                                                    <td>
+                                                        <a href="http://admin.roadexp.codebuckets.in/images/rc_front/<%= list[i].pic_rc_front %>">View</a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="http://admin.roadexp.codebuckets.in/images/rc_back/<%= list[i].pic_rc_back %>">View</a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="http://admin.roadexp.codebuckets.in/images/vehicle/<%= list[i].pic_v %>">View</a>
+                                                    </td>
+                                                    <td>
+                                                        <%= list[i].permit_type %>
+                                                        <a href="http://admin.roadexp.codebuckets.in/images/permit_pic/<%= list[i].permit_pic %>">View</a>
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer"> © 2019 Road Express by CodeBuckets.in</footer>
+    </div>
+</div>
+
+
+<% include ../partials/footer %>
+
+<script src="/js/typeahead.bundle.js"></script>
+
+<script type="text/javascript">
+    var v_num = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('v_num'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url: '/admin/searchV_num?key=%QUERY',
+            wildcard: '%QUERY'
+        }
+    });
+
+    $('#v_num').typeahead(null, {
+        name: 'v_num',
+        valueKey: 'v_num',
+        displayKey: function (obj) {
+            if (obj == null) {
+
+            } else {
+                return obj;
+            }
+        },
+        source: v_num
+    });
+</script>
+
+<script>
+    $(function () {
+        $('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+            $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+        });
+        $('#datatable').DataTable({
+            scrollY: 600,
+        });
+    });
+</script>

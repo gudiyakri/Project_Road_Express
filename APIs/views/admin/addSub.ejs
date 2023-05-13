@@ -1,0 +1,183 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+    <div class="container-fluid">
+        <% include ../partials/message %>
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+                    <li class="breadcrumb-item active">Add Sub Branches</li>
+                </ol>
+            </div>
+        </div>
+        <div class="col-md-11">
+            <div class="card">
+                <div class="card-body pb-0">
+                    <div class="p-3">
+                        <form class="form-horizontal" style="margin-left: 125px;" method="POST" action="/admin/addSub"
+                            enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-4 col-md-6">
+                                    <h5 class="mt-4 mb-2">Branch Head</h5>
+                                    <span class="form-control col-md-12"><%= client[0].name %></span>
+                                    <input type="text" class="form-control col-md-12"
+                                        name="clientId"
+                                    value="<%= client[0].id %>" hidden>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 col-md-4">
+                                    <h5 class="mt-4 mb-2">Select state</h5>
+                                    <select class="select2 mb-3 mr-2 btn-info btn-rounded" id="state" name="state"
+                                        title="Choose State" required>
+                                        <%for(let i = 0; i<state.length ; i++) {%>
+                                        <option value="<%= state[i].state %>"><%= state[i].state %></option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="col-md-5 col-md-4">
+                                    <h5 class="mt-4 mb-2">Select City</h5>
+                                    <select class="select2 mb-3 mr-2 btn-info btn-rounded" id="id1" name="city"
+                                        required>
+                                        <option disabled selected value>Choose</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-md-6">
+                                    <h5 class="mt-4 mb-2">Mobile Number</h5>
+                                    <input type="number" class="form-control col-md-12"
+                                        placeholder="Enter Mobile Number" maxlength="10" minlength="10" name="mob"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-md-6">
+                                    <h5 class="mt-4 mb-2">Name</h5>
+                                    <input type="text" class="form-control  col-md-12" placeholder="Enter Name"
+                                        name="name" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-md-6">
+                                    <h5 class="mt-4 mb-2">Address</h5>
+                                    <input type="text" class="form-control col-md-12" placeholder="Enter Address"
+                                        name="address" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-md-6">
+                                    <h5 class="mt-4 mb-2">Email</h5>
+                                    <input type="email" class="form-control col-md-12" placeholder="Enter Email-Id"
+                                        name="email" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-md-6">
+                                    <h5 class="mt-4 mb-2">Password</h5>
+                                    <input type="Password" class="form-control col-md-12" placeholder="Enter Password"
+                                        name="password" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-md-6">
+                                    <h5 class="mt-4 mb-2">G.S.T Number</h5>
+                                    <input type="text" class="form-control col-md-12" placeholder="Enter G.S.T Number"
+                                        name="gst" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-md-6">
+                                    <h5 class="mt-4 mb-2">Designation</h5>
+                                    <input type="text" class="form-control col-md-12" placeholder="Enter Designation"
+                                        name="desig" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-md-6">
+                                    <h5 class="mt-4 mb-2">Employee Id</h5>
+                                    <input type="text" class="form-control col-md-12" placeholder="Enter Employee Id"
+                                        name="emp_id" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-md-6">
+                                    <h5 class="mt-4 mb-2">Surger Charge</h5>
+                                    <input type="number" class="form-control col-md-12" placeholder="Enter Surge Charge"
+                                        name="surge_charge" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Profile Pic</h5>
+                                            <input type="file" name="profilePic" accept="image/*" class="dropify" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <button type="submit" style="margin-left: 250px;"
+                                class="btn waves-effect waves-light btn-rounded btn-info">ADD</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer"> © 2020 Road Express by <a href="https://codebuckets.in/">Codebuckets</a></footer>
+    </div>
+</div>
+
+<% include ../partials/footer %>
+<script src="/plugins/dropify/dist/js/dropify.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".select2").select2();
+        $("#state").change(function () {
+            let state = $(this).children("option:selected").val();
+
+            $.ajax({
+                url: '/admin/search',
+                type: 'post',
+                data: {
+                    state: state
+                },
+                dataType: 'json',
+                success: function (data) {
+                    let len = data.length;
+
+                    $("#id1").empty();
+
+                    for (let i = 0; i < len; i++) {
+                        let cid = data[i].id;
+                        let city = data[i].city;
+                        //console.log(city);
+                        $("#id1").append("<option value='" + cid + "'>" + city +
+                            "</option>");
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Basic
+        $('.dropify').dropify();
+
+        $('#toggleDropify').on('click', function (e) {
+            e.preventDefault();
+            if (drDestroy.isDropified()) {
+                drDestroy.destroy();
+            } else {
+                drDestroy.init();
+            }
+        })
+    });
+</script>

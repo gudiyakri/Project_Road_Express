@@ -1,0 +1,741 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+    <div class="container-fluid">
+        <% include ../partials/message %>
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+                    <li class="breadcrumb-item active">Vehicles info</li>
+                </ol>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body pb-0">
+                <ul class="nav nav-tabs customtab2" role="tablist">
+                    <li class="nav-item col-md-4 text-center "> <a class="nav-link active" data-toggle="tab"
+                            href="#transInfo" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span
+                                class="hidden-xs-down">Transporter Info</span></a>
+                    <li class="nav-item col-md-4 text-center"> <a class="nav-link" data-toggle="tab" href="#typeVehicle"
+                            role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span
+                                class="hidden-xs-down">Types of Vehicles</span></a> </li>
+                    <li class="nav-item col-md-4 text-center"> <a class="nav-link" data-toggle="tab" href="#allVehicle"
+                        role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span
+                            class="hidden-xs-down">All Vehicles</span></a> </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane p-3 active" id="transInfo" role="tabpanel">
+                        <div class="card-body">
+                            <h4 class="card-title">Transporter Information</h4>
+                            <div class="dropdown">
+                                <select class="select2 mb-3 mr-2 btn btn-info btn-round" title="Select Transporter" id="transSelect">
+                                    <option>Choose</option>
+                                    <% for(let i = 0; i<trans.length ; i++) {%>
+                                    <option href="/admin/vehicles/<%= trans[i].id %>"> <%= trans[i].id %> - <%= trans[i].name %>/<%= trans[i].sahar %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="table-responsive">
+                                <% if(vehicles!=null)
+                                      if(vehicles.length) {%>
+                                        <p class="card-category"><%= vehicles[0].name %>'s' Info</p>
+                                <table class="display nowrap table table-hover table-striped table-bordered"
+                                    cellspacing="0" width="100%">
+                                    <thead class="bg-inverse text-white">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>State</th>
+                                            <th>City</th>
+                                            <th>Expected Fleet Size</th>
+                                            <th>Current Fleet Size</th>
+                                            <th>Mobile No.</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <%= vehicles[0].name %>
+                                            </td>
+                                            <td>
+                                                <%= vehicles[0].state %>
+                                            </td>
+                                            <td>
+                                                <%= vehicles[0].sahar %>
+                                            </td>
+                                            <td>
+                                                <%= vehicles[0].fleet_size %>
+                                            </td>
+                                            <td>
+                                                <% if(vehicles[0].v_num) {%>
+                                                <%= vehicles.length %>
+                                                <%} else {%>
+                                                0 <%}%>
+                                              </td>
+                                              <td class="text-right">
+                                                  <%= vehicles[0].mob %>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <% if(vehicles[0].v_type!=null) {%>
+                                            <table class="table">
+                                                <thead class="bg-info text-white">
+                                                    <th>
+                                                        Vehicle Type
+                                                    </th>
+                                                    <th>
+                                                        Vehicle Number
+                                                    </th>
+                                                    <th>
+                                                        RC Front
+                                                    </th>
+                                                    <th>
+                                                        RC Back
+                                                    </th>
+                                                    <th>
+                                                        Vehicle Pic
+                                                    </th>
+                                                    <th>
+                                                        Insurance Munber
+                                                    </th>
+                                                    <th>
+                                                        Permit Type
+                                                    </th>
+                                                    <th>
+                                                        Verification Status
+                                                    </th>
+                                                    <th>
+                                                        Action
+                                                    </th>
+                                                </thead>
+                                                <tbody>
+                                                    <% for(let i = 0; i<vehicles.length ; i++) {%>
+                                                    <tr>
+                                                        <td>
+                                                            <%= vehicles[i].v_type %>
+                                                        </td>
+                                                        <td>
+                                                            <%= vehicles[i].v_num %>
+                                                        </td>
+                                                        <td>
+                                                            <a
+                                                                href="/admin/display/front/<%= vehicles[i].pic_rc_front %>"><img
+                                                                    src="/images/rc_front/<%= vehicles[i].pic_rc_front %>"
+                                                                    style="width:50px;height:60px;"></a>
+                                                        </td>
+                                                        <td>
+                                                            <a
+                                                                href='/admin/display/back/<%= vehicles[i].pic_rc_back %>'><img
+                                                                    src="/images/rc_back/<%= vehicles[i].pic_rc_back %>"
+                                                                    style="width:50px;height:60px;"></a>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/admin/display/vehicle/<%= vehicles[i].pic_v %>"><img
+                                                                    src="/images/vehicle/<%= vehicles[i].pic_v %>"
+                                                                    style="width:50px;height:60px;"></a>
+                                                        </td>
+                                                        <td>
+                                                            <%= vehicles[i].insurance_num %>
+                                                        </td>
+                                                        <td>
+                                                            <%= vehicles[i].permit_type %>
+                                                        </td>
+                                                        <td>
+                                                            <% if(vehicles[i].verif_flag==0) {%>
+                                                            <button class="btn btn-outline-default btn-round"
+                                                                onclick="validVehicle('<%= vehicles[i].v_id %>','<%= vehicles[i].t_id %>')">Validate
+                                                                Vehicle!</button>
+                                                            <% } else {%>
+                                                            Verified
+                                                            <% } %>
+                                                        </td>
+                                                        <td>
+                                                            <a class="btn btn-outline-default btn-round" data-toggle="modal" data-vehicle="<%=vehicles[i].v_id%>"
+                                                                    data-target="#updateVehicle">Edit</a>
+                                                        </td>
+                                                    </tr>
+                                                    <% } %>
+                                                </tbody>
+                                            </table>
+                                        </tr>
+                                        <% } %>
+                                    </tbody>
+                                    <% } else {%>
+                                    <h3>No Vehicles Added</h3>
+                                    <% } %>
+                                </table>
+                                <button id="mapmodal1" data-toggle="modal" data-target="#addVehicle" type="button"
+                                    style="margin-left: 850px;" class="btn btn-info btn-circle"><i
+                                        class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane  p-3" id="typeVehicle" role="tabpanel">
+                        <div class="card-body">
+                            <h4 class="card-title">Vehicles</h4>
+                            <div class="table-responsive m-t-40">
+                                <table id="myTable" class="table table-bordered table-striped">
+                                    <thead class="bg-inverse text-white">
+                                        <tr>
+                                            <th>Vehicle Type</th>
+                                            <th>Dimmension</th>
+                                            <th>Max Load</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for(var i = 0; i<type.length ; i++) {%>
+                                        <tr>
+                                            <td>
+                                                <%= type[i].type_name %>
+                                            </td>
+                                            <td>
+                                                <%= type[i].dimension %>
+                                            </td>
+                                            <td>
+                                                <%= type[i].capacity %>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                                <button id="mapmodal1" data-toggle="modal" data-target="#addFleet" type="button"
+                                    style="margin-left: 850px;" class="btn btn-info btn-circle"><i
+                                        class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane  p-3" id="allVehicle" role="tabpanel">
+                        <div class="card-body">
+                            <h4 class="card-title">Vehicles</h4>
+                            <div class="table-responsive m-t-40">
+                                <table id="datatable" class="table table-bordered table-striped">
+                                    <thead class="bg-inverse text-white">
+                                        <tr>
+                                            <th>Transporter Name</th>
+                                            <th>Transporter Number</th>
+                                            <th>Vehicle Type</th>
+                                            <th>Vehicle Number</th>
+                                            <th>Insurance Number</th>
+                                            <th>Permit Type</th>
+                                            <th>Verification Status</th>
+                                            <th>RC Front</th>
+                                            <th>RC Back</th>
+                                            <th>Vehicle</th>
+                                            <th>Action</th>
+                                            <th>View Full</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for(var i = 0; i<allVehicles.length ; i++) {%>
+                                        <tr>
+                                            <td>
+                                                <%= allVehicles[i].name %>
+                                            </td>
+                                            <td>
+                                                <%= allVehicles[i].mob %>
+                                            </td>
+                                            <td>
+                                                <%= allVehicles[i].v_type %>
+                                            </td>
+                                            <td>
+                                                <%= allVehicles[i].v_num %>
+                                            </td>
+                                            <td>
+                                                <%= allVehicles[i].insurance_num %>
+                                            </td>
+                                            <td>
+                                                <%= allVehicles[i].permit_type %>
+                                            </td>
+                                            <td>
+                                                <% if(allVehicles[i].verif_flag==0) {%>
+                                                <button class="btn btn-outline-default btn-round"
+                                                    onclick="validVehicle('<%= allVehicles[i].v_id %>','<%= allVehicles[i].t_id %>')">Validate
+                                                    Vehicle!</button>
+                                                <% } else {%>
+                                                Verified
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <a
+                                                    href="/admin/display/front/<%= allVehicles[i].pic_rc_front %>"><img
+                                                        src="/images/rc_front/<%= allVehicles[i].pic_rc_front %>"
+                                                        style="width:50px;height:60px;"></a>
+                                            </td>
+                                            <td>
+                                                <a
+                                                    href='/admin/display/back/<%= allVehicles[i].pic_rc_back %>'><img
+                                                        src="/images/rc_back/<%= allVehicles[i].pic_rc_back %>"
+                                                        style="width:50px;height:60px;"></a>
+                                            </td>
+                                            <td>
+                                                <a href="/admin/display/vehicle/<%= allVehicles[i].pic_v %>"><img
+                                                        src="/images/vehicle/<%= allVehicles[i].pic_v %>"
+                                                        style="width:50px;height:60px;"></a>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-outline-default btn-round" data-toggle="modal" data-vehicle="<%=allVehicles[i].v_id%>"
+                                                        data-target="#updateVehicle">Edit</a>
+                                            </td>
+                                            <td>
+                                                <a href="/admin/vehicleInfo/<%= allVehicles[i].v_id %>">View More</a>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade bs-example-modal-lg" id="addVehicle" tabindex="-1" role="dialog"
+                        aria-labelledby="mapmodal1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content ">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="exampleModalLabel1">Add Vehicle</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body ">
+                                    <form action="/admin/addVehicle" method="POST" class="form-horizontal"
+                                        enctype="multipart/form-data">
+                                        <div class="row" style="margin-left: 100px">
+                                            <div class="col-md-6 col-md-4">
+                                                <h5 class="mt-4 mb-2">Vehicle Type</h5>
+                                                <select class="selectpicker mb-3 mr-2 btn btn-info btn-round"
+                                                    required name="type" title="Choose Vehicle Type">
+                                                    <%for(var i = 0; i<type.length ; i++) {%>
+                                                    <option value="<%= type[i].type_name %>"
+                                                        name="<%= type[i].type_name %>"><%= type[i].type_name %>
+                                                    </option>
+                                                    <% } %>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-left: 100px">
+                                            <div class="col-md-6 col-md-4">
+                                                <h5 class="mt-2 mb-2">Vehicle Number</h5>
+                                                <input type="text" class="form-control col-md-12" name="vehicle_num"
+                                                    required placeholder="Enter Vehicle Number">
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-left: 100px">
+                                            <div class="col-md-6 col-md-4">
+                                                <h5 class="mt-4 mb-2">R.C. Expiration Date</h5>
+                                                <div class="input-group">
+                                                    <input type="text" name="rc_exp" required
+                                                        class="form-control datepicker" placeholder="DD/MM/YYYY">
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text"><i
+                                                                class="icon-calender"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-left: 100px">
+                                            <div class="col-md-6 col-md-4">
+                                                <h5 class="mt-4 mb-2">Insurance Number</h5>
+                                                <input type="text" name="insurance_num" required
+                                                    class="form-control  col-md-12"
+                                                    placeholder="Enter Insurance Number">
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-left: 100px">
+                                            <div class="col-md-6 col-md-4">
+                                                <h5 class="mt-4 mb-2">Permit Type</h5>
+                                                <select class="selectpicker mb-3 mr-2 btn btn-info btn-round"
+                                                    name="permit">
+                                                    <option value="ALL" name="ALL">ALL INDIA</option>
+                                                    <option value="STATE" name="STATE">STATE</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-sm-4 col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Vehicle pic</h5>
+                                                        <input type="file" name="pic_v" accept="image/*" class="dropify"
+                                                            required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">RC Front pic</h5>
+                                                        <input type="file" name="pic_rc_front" accept="image/*"
+                                                            class="dropify" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">RC Back pic</h5>
+                                                        <input type="file" name="pic_rc_back" accept="image/*"
+                                                            class="dropify" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Insurance Pic</h5>
+                                                        <input type="file" name="insurance_pic" accept="image/*"
+                                                            class="dropify" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Permit Pic</h5>
+                                                        <input type="file" name="permit_pic" accept="image/*"
+                                                            class="dropify" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-success">Add</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade bs-example-modal-lg" id="addFleet" tabindex="-1" role="dialog"
+                        aria-labelledby="mapmodal1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content ">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="exampleModalLabel1">Add Vehicle Type</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body ">
+                                    <form class="form-horizontal" id="typesForm">
+                                        <div class="row" style="margin-left: 100px">
+                                            <div class="col-md-6 col-md-4">
+                                                <h5 class="mt-2 mb-2">Fleet Type Name</h5>
+                                                <input type="text" class="form-control col-md-12" name="fleetType"
+                                                    required placeholder="Enter Fleet Type Name">
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-left: 100px">
+                                            <div class="col-md-6 col-md-4">
+                                                <h5 class="mt-4 mb-2">Capacity</h5>
+                                                <div class="input-group">
+                                                    <input type="number" name="capacity" required class="form-control"
+                                                        placeholder="Enter Capacity">
+                                                    <label class="col-ls-3 label-on-right">
+                                                        <code>kg</code>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-left: 100px">
+                                            <div class="col-md-12">
+                                                <h5 class="mt-4 mb-2">Size</h5>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <input type="number" name="l" required class="form-control"
+                                                                placeholder="L">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <input type="number" name="b" required class="form-control"
+                                                                placeholder="B">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <input type="number" name="h" required class="form-control"
+                                                                placeholder="H">
+                                                        </div>
+                                                    </div>
+                                                    <label class="col-ls-3 label-on-right">
+                                                        <code>cm</code>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <div class="left-side">
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Never
+                                                    mind</button>
+                                            </div>
+                                            <div class="divider"></div>
+                                            <div class="right-side">
+                                                <button id="typesButton" class="btn btn-success">Add</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="updateVehicle" tabindex="-1" role="dialog" aria-labelledby="mapmodal1">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="exampleModalLabel1">Update Vehicle Info</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="form-horizontal" method="POST" action="/admin/updateVehicle" enctype="multipart/form-data"
+                                        style="margin-left: 125px;">
+                                        <div class="row">
+                                            <div class="col-md-6 col-md-4">
+                                                <h5 class="mt-4 mb-2">Vehicle Type</h5>
+                                                <select class="selectpicker mb-3 mr-2 btn btn-info btn-round"
+                                                    name="utype" title="Choose Vehicle Type">
+                                                    <%for(var i = 0; i<type.length ; i++) {%>
+                                                    <option value="<%= type[i].type_name %>"><%= type[i].type_name %>
+                                                    </option>
+                                                    <% } %>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-md-4">
+                                                <h5 class="mt-4 mb-2">R.C. Expiration Date</h5>
+                                                <div class="input-group">
+                                                    <input type="text" name="urc_exp" 
+                                                        class="form-control datepicker" placeholder="DD/MM/YYYY">
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text"><i
+                                                                class="icon-calender"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-md-4">
+                                                <h5 class="mt-4 mb-2">Insurance Number</h5>
+                                                <input type="text" name="uinsurance_num"
+                                                    class="form-control  col-md-12"
+                                                    placeholder="Enter Insurance Number">
+                                                <input type="text" name="vehicle" hidden>
+                                                <input type="text" name="v_num" hidden>
+                                                <input type="text" name="tId" hidden>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-md-4">
+                                                <h5 class="mt-4 mb-2">Permit Type</h5>
+                                                <select class="selectpicker mb-3 mr-2 btn btn-info btn-round"
+                                                    name="upermit">
+                                                    <option value="ALL">ALL INDIA</option>
+                                                    <option value="STATE">STATE</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Vehicle pic</h5>
+                                                        <input type="file" name="upic_v" accept="image/*" class="dropify"
+                                                         />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">RC Front pic</h5>
+                                                        <input type="file" name="upic_rc_front" accept="image/*"
+                                                            class="dropify" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">RC Back pic</h5>
+                                                        <input type="file" name="upic_rc_back" accept="image/*"
+                                                            class="dropify" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Insurance Pic</h5>
+                                                        <input type="file" name="uinsurance_pic" accept="image/*"
+                                                            class="dropify" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-sm-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Permit Pic</h5>
+                                                        <input type="file" name="upermit_pic" accept="image/*"
+                                                            class="dropify" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <button type="submit" style="margin-left: 250px;"
+                                            class="btn waves-effect waves-light btn-rounded btn-info">Update</button>
+                                    </form>
+                                    <hr>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer"> © 2019 Road Express by CodeBuckets.in</footer>
+    </div>
+</div>
+
+<% include ../partials/footer %>
+<script src="/plugins/dropify/dist/js/dropify.min.js"></script>
+<script src="/plugins/sweetalert2/sweet-alert.init.js"></script>
+<script src="/plugins/datatables/dataTables.buttons.min.js"></script>
+<script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
+<script src="/plugins/datatables/jszip.min.js"></script>
+<script src="/plugins/datatables/pdfmake.min.js"></script>
+<script src="/plugins/datatables/vfs_fonts.js"></script>
+<script src="/plugins/datatables/buttons.html5.min.js"></script>
+<script src="/plugins/datatables/buttons.colVis.min.js"></script>
+<script src="/plugins/datatables/dataTables.responsive.min.js"></script>
+<script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#typesButton').click(function (event) {
+            event.preventDefault()
+            var inputs = $('#typesForm').serializeArray()
+            //   console.log(inputs);
+            $.ajax({
+                url: '/admin/addFleet',
+                type: 'post',
+                data: {
+                    fleetType: inputs[0].value,
+                    capacity: inputs[1].value,
+                    l: inputs[2].value,
+                    b: inputs[3].value,
+                    h: inputs[4].value
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data == 'duplicate') {
+                        var error_msg = 'Vehicle Already Added';
+                    } else {
+                        var success_msg = 'Vehicle Added';
+                        $('#myTable').append(
+                            `<tr><td>${inputs[0].value}</td><td>${inputs[2].value}x${inputs[3].value}x${inputs[4].value}</td><td>${inputs[1].value}</td></tr>`
+                        );
+                        $('#addFleet').modal('hide');
+                        var audio = new Audio('/sounds/notification.mp3');
+                        audio.play();
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+            $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+        });
+        $(".select2").select2();
+        $('#myTable').DataTable({
+            scrollY: 600,
+        });
+        $('#datatable').DataTable({
+            dom: "Bfrtip",
+            buttons: [
+                {
+                    extend: "csvHtml5",
+                    title: "Vehicles",
+                },
+                {
+                    extend: "excelHtml5",
+                    title: "Vehicles",
+                }
+            ],
+            scrollY: 600,
+            scrollX:true,
+        });
+        // initialise Datetimepicker and Sliders
+        demo.initDateTimePicker();
+        if ($('.slider').length != 0) {
+            demo.initSliders();
+        }
+    });
+</script>
+
+
+<script>
+    function validVehicle(v_id, id) {
+        Swal.fire({
+            title: "Verify Vehicle!!",
+            text: "Do you want to verify?",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then(function (result) {
+            if (result.value === true) {
+                window.location.href = `/admin/updateV/${v_id}/${id}`;
+            }
+        });
+        let audio = new Audio('/sounds/notification.mp3');
+        audio.play();
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.dropify').dropify();
+    });
+</script>
+
+<script>
+    document.getElementById('transSelect').onchange = function() {
+    window.location.href = this.children[this.selectedIndex].getAttribute('href');
+}
+</script>
+
+<script>
+    $('#updateVehicle').on('show.bs.modal', function (event) {
+        let vId = $(event.relatedTarget).attr('data-vehicle');
+        $.ajax({
+            url: '/admin/autoVehicle',
+            type: 'post',
+            data: {
+                vId
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                $("select[name='utype']").val(data.result[0].v_type);
+                $("input[name='urc_exp']").val(data.result[0].rc_exp);
+                $("input[name='uinsurance_num']").val(data.result[0].insurance_num);
+                $("input[name='upermit']").val(data.result[0].permit_type);
+                $("input[name='v_num']").val(data.result[0].v_num);
+                $("input[name='vehicle']").val(vId);
+                $("input[name='t_id']").val(data.result[0].t_id);
+            }
+        });
+    });
+</script>

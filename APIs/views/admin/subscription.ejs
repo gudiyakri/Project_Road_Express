@@ -1,0 +1,266 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<div class="row page-titles">
+			<div class="col-md-6 col-8 align-self-center">
+				<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Subscription</a></li>
+				</ol>
+			</div>
+		</div>
+		<div class="card">
+			<% include ../partials/message %>
+			<div class="card-body pb-0">
+				<ul class="nav nav-tabs customtab2" role="tablist">
+					<li class="nav-item col-md-6 text-center">
+						<a class="nav-link active" data-toggle="tab" href="#add" role="tab"
+							><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Add Subscription</span></a
+						>
+					</li>
+					<li class="nav-item col-md-6 text-center">
+						<a class="nav-link" data-toggle="tab" href="#view" role="tab"
+							><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">View Subscription</span></a
+						>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="add" role="tabpanel">
+						<form class="form-horizontal" method="POST" action="/admin/subscription">
+							<div class="row">
+								<div class="col-md-4 col-md-4">
+									<h5 class="mt-4 mb-2">Select Client</h5>
+									<select class="select2 mb-3 mr-2 btn-info btn-rounded" name="client" id="client" required>
+										<% for( let i = 0; i < client.length; i++ ) { if (client[i].id === select) { %>
+										<option value="<%=client[i].id%>" selected><%=client[i].name%></option>
+										<% } else { %>
+										<option value="<%=client[i].id%>"><%=client[i].name%></option>
+										<% } } %>
+									</select>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4 col-md-6">
+									<h5 class="mt-4 mb-2">Vehicle Number</h5>
+									<select class="select2 col-12" id="vehicle" name="vehicle" data-style="btn-info btn-outline-info" multiple="multiple"></select>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4 col-md-6">
+									<h5 class="mt-4 mb-2">Select Date</h5>
+									<div class="input-group">
+										<input type="text" class="form-control daterange" id="date" name="date" placeholder="Select Date" autocomplete="off" required />
+										<div class="input-group-append">
+											<span class="input-group-text" id="calender"><i class="icon-calender"></i></span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4 col-md-6">
+									<h5 class="mt-4 mb-2">KM Allowed</h5>
+									<input type="text" name="km" class="form-control col-md-12" placeholder="Enter KM Limit" autocomplete="off" required />
+								</div>
+								<div class="col-md-4 col-md-6">
+									<h5 class="mt-4 mb-2">Rate After Allowed/KM</h5>
+									<input type="text" name="rate" class="form-control col-md-12" placeholder="Enter Rate" autocomplete="off" required />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4 col-md-6">
+									<h5 class="mt-4 mb-2">Amount</h5>
+									<input type="text" name="amount" class="form-control col-md-12" placeholder="Enter Amount" autocomplete="off" required />
+								</div>
+							</div>
+							<button type="submit" class="btn waves-effect waves-light btn-info mt-2">ADD</button>
+						</form>
+						<hr />
+					</div>
+					<div class="tab-pane" id="view" role="tabpanel">
+						<table id="datatable" class="display table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+							<thead>
+								<tr>
+									<th>Client</th>
+									<th>Vehicle Number</th>
+									<th>Transporter</th>
+									<th>Date</th>
+									<th>KM</th>
+									<th>Rate / KM</th>
+									<th>Travelled</th>
+									<th>Amount</th>
+									<th>Edit</th>
+								</tr>
+							</thead>
+							<tbody>
+								<% for( let i = 0; i < subscriptions.length; i++ ) { %>
+								<tr>
+									<td><%= subscriptions[i].user %></td>
+									<td><%= subscriptions[i].v_num %></td>
+									<td><%= subscriptions[i].name %></td>
+									<td><%= subscriptions[i].fromDate %> - <%= subscriptions[i].toDate %></td>
+									<td><%= subscriptions[i].km %></td>
+									<td><%= subscriptions[i].rate %>/KM</td>
+									<td><%= subscriptions[i].travelled ? subscriptions[i].travelled : 0 %></td>
+									<td><%= subscriptions[i].amount %></td>
+									<th>
+										<a data-toggle="modal" data-target="#modal" data-id="<%= subscriptions[i].id %>" class="btn btn-info">Edit</a>
+									</th>
+								</tr>
+								<% } %>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal1">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="exampleModalLabel1">Edit</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" action="/admin/updateSub" method="POST">
+					<div class="row">
+						<div class="col-md-8">
+							<h5 class="mt-4">Update Date</h5>
+							<div class="input-group">
+								<input
+									type="text"
+									class="form-control daterange"
+									id="updateDate"
+									name="updateDate"
+									required
+									placeholder="Select Date"
+									autocomplete="off"
+									required
+								/>
+								<div class="input-group-append">
+									<span class="input-group-text" id="calender"><i class="icon-calender"></i></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-8">
+							<h5 class="mt-4">Update KM</h5>
+							<input type="text" class="form-control col-md-12" name="updateKm" placeholder="Update KM" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-8">
+							<h5 class="mt-4">Update Rate</h5>
+							<input type="text" class="form-control col-md-12" name="updateRate" placeholder="Update Rate" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-8">
+							<h5 class="mt-4">Update Amount</h5>
+							<input type="text" class="form-control col-md-12" name="updateAmount" placeholder="Update Amount" required />
+							<input type="text" class="form-control col-md-12" name="id" required hidden />
+							<input type="text" class="form-control col-md-12" name="clientId" required hidden />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-success">Update</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<% include ../partials/footer %>
+
+<script type="text/javascript">
+	$("#client").select2({
+		placeholder: "Select Client",
+	});
+
+	$("#vehicle").select2({
+		placeholder: "Select vehicle",
+		ajax: {
+			url: "/admin/vehicleList",
+			type: "post",
+			delay: 50,
+			data: function (params) {
+				let query = {
+					search: params.term,
+					page: params.page || 1,
+				};
+
+				// Query parameters will be ?search=[term]&page=[page]
+				return query;
+			},
+			processResults: function (data, params) {
+				params.page = params.page || 1;
+
+				return {
+					results: data.data,
+					pagination: {
+						more: params.page * 10 < data.total,
+					},
+				};
+			},
+		},
+	});
+</script>
+
+<script>
+	$(".daterange").daterangepicker({
+		locale: {
+			format: "DD/MM/YYYY",
+		},
+		autoApply: true,
+	});
+
+	$("#datatable").DataTable({
+		scrollY: 400,
+		order: [],
+	});
+
+	$('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+		$($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+	});
+
+	$("#modal").on("show.bs.modal", function (event) {
+		const id = $(event.relatedTarget).attr("data-id");
+		$.ajax({
+			url: "/admin/subDetails",
+			type: "post",
+			data: {
+				id: id,
+			},
+			dataType: "json",
+			success: function (data) {
+				if (data.code === 1) {
+					$("#updateDate").data("daterangepicker").setStartDate(data.data[0].fromDate);
+					$("#updateDate").data("daterangepicker").setEndDate(data.data[0].toDate);
+					$("input[name='updateKm']").val(data.data[0].km);
+					$("input[name='updateRate']").val(data.data[0].rate);
+					$("input[name='updateAmount']").val(data.data[0].amount);
+					$("input[name='id']").val(id);
+					$("input[name='clientId']").val(data.data[0].clientId);
+				}
+			},
+		});
+	});
+</script>
+
+<script>
+	const url = document.location.toString();
+	if (url.match("#")) {
+		$('.nav-tabs a[href="#' + url.split("#")[1] + '"]').tab("show");
+	}
+
+	// Change hash for page-reload
+	$(".nav-tabs a").on("shown.bs.tab", function (e) {
+		window.location.hash = e.target.hash;
+	});
+</script>

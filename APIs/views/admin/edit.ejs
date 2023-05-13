@@ -1,0 +1,340 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<div class="col-md-12">
+			<div class="row page-titles">
+				<div class="col-md-6 col-8 align-self-center">
+					<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="javascript:void(0)">Accouts</a></li>
+						<li class="breadcrumb-item active">Client Wise</li>
+					</ol>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card-body pb-0">
+					<form action="/accounts/edit" method="post">
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Date*</h5>
+								<input type="text" class="form-control datepicker" name="date" value="<%= data[0].date %>" required placeholder="DD/MM/YYYY" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Client Name*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="client"
+									placeholder="Client Name"
+									readonly
+									value="<%= data[0].client%>"
+									required
+								/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Vehicle Type*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="v_type"
+									placeholder="Vehicle Type"
+									readonly
+									value="<%= data[0].v_type%>"
+									required
+								/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Loading Point*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="pickup_location"
+									placeholder="Loading Point"
+									readonly
+									value="<%= data[0].pickup_location%>"
+									required
+								/>
+							</div>
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Unloading Point*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="last_point"
+									placeholder="Unloading Point"
+									readonly
+									value="<%= data[0].last_point%>"
+									required
+								/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Vehicle No.*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="v_num"
+									placeholder="Vehicle No."
+									readonly
+									value="<%= data[0].v_num%>"
+									required
+								/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Transporter Name*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="trans"
+									placeholder="Transporter Name"
+									readonly
+									value="<%= data[0].trans%>"
+									required
+								/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Driver Name*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="driver"
+									placeholder="Driver Name"
+									readonly
+									value="<%= data[0].driver%>"
+									required
+								/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Client Amount*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="clientAmount"
+									placeholder="Client Amount"
+									readonly
+									value="<%= data[0].clientAmount%>"
+									required
+								/>
+							</div>
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Driver Amount*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="amount"
+									placeholder="Driver Amount"
+									readonly
+									value="<%= data[0].amount%>"
+									required
+								/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Unloading*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="unloading"
+									placeholder="Unloading"
+									value="<%= data[0].unloading%>"
+								/>
+							</div>
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Detention*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="detention"
+									placeholder="Detention"
+									value="<%= data[0].detention%>"
+								/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Return Fare*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="returnFare"
+									placeholder="Return Fare"
+									value="<%= data[0].returnFare%>"
+								/>
+							</div>
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Diesel*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="diesel"
+									placeholder="Diesel"
+									value="<%= data[0].diesel%>"
+								/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">ADV by Client*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="clientAdv"
+									placeholder="ADV by Client"
+									readonly
+									value="<%= data[0].clientAdv%>"
+								/>
+							</div>
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">ADV by RoadEXP*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="roadAdv"
+									placeholder="ADV by RoadEXP"
+									value="<%= data[0].roadAdv%>"
+								/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">POD Status*</h5>
+								<select
+									class="select2 mb-3 mr-2 btn btn-info btn-round"
+									id="pod"
+									name="pod"
+									title="Choose pod"
+									required
+								>
+									<option value="NOT RECEIVED" <%= data[0].pod === "NOT RECEIVED" ? "selected" : ""%> >NOT RECEIVED</option>
+									<option value="RECEIVED" <%= data[0].pod === "RECEIVED" ? "selected" : ""%>>RECEIVED</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Driver Dues*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="drvDue"
+									readonly
+									placeholder="Driver Dues"
+									value="<%=parseFloat(data[0].amount) -
+										parseFloat(data[0].clientAdv ?
+										data[0].clientAdv : 0) -
+										parseFloat(data[0].roadAdv ?
+										data[0].roadAdv : 0) -
+										parseFloat(data[0].clientFinal ?
+										data[0].clientFinal : 0)%>"
+								/>
+							</div>
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Client Dues*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="cliDues"
+									readonly
+									placeholder="Client Dues"
+									value="<%=parseFloat(data[0].clientAmount) -
+										parseFloat(data[0].clientAdv ?
+										data[0].clientAdv : 0) -
+										parseFloat(data[0].clientFinal ?
+										data[0].clientFinal : 0)%>"
+								/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Driver Pay Status*</h5>
+								<select
+									class="select2 mb-3 mr-2 btn btn-info btn-round"
+									id="driverPayStatus"
+									name="driverPayStatus"
+									required
+								>
+									<option value="DUES" <%= data[0].driverPayStatus === "DUES" ? "selected" : ""%> >DUES</option>
+									<option value="PAID" <%= data[0].driverPayStatus === "PAID" ? "selected" : ""%>>PAID</option>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Client Pay Status*</h5>
+								<select
+									class="select2 mb-3 mr-2 btn btn-info btn-round"
+									id="clientPayStatus"
+									name="clientPayStatus"
+									required
+								>
+									<option value="DUES" <%= data[0].clientPayStatus === "DUES" ? "selected" : ""%> >DUES</option>
+									<option value="RECEIVED" <%= data[0].clientPayStatus === "RECEIVED" ? "selected" : ""%>>RECEIVED</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">Invoice*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="invoice"
+									placeholder="Invoice"
+									
+									value="<%= data[0].invoice%>"
+								/>
+							</div>
+							<div class="col-md-6">
+								<h5 class="mt-4 mb-2">LR No.*</h5>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="lrNo"
+									placeholder="LR No."
+									value="<%= data[0].lrNo%>"
+								/>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="tripId"
+									hidden
+									value="<%= data[0].tripId%>"
+								/>
+								<input
+									class="form-control col-md-12"
+									type="text"
+									name="client_Id"
+									hidden
+									value="<%= data[0].client_Id%>"
+								/>
+
+							</div>
+						</div>
+						<br>
+						<button type="submit" class="btn waves-effect waves-light btn-info">ADD</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<footer class="footer">© 2021 Road Express by CodeBuckets.in</footer>
+	</div>
+</div>
+
+<% include ../partials/footer %>
+
+<script>
+	demo.initDateTimePicker();
+</script>

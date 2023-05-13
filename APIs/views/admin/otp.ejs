@@ -1,0 +1,90 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+    <div class="container-fluid">
+        <% include ../partials/message %>
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+                    <li class="breadcrumb-item active">Update OTP</li>
+                </ol>
+            </div>
+        </div>
+        <div class="col-md-11">
+            <div class="card">
+                <div class="card-body pb-0">
+                    <div class="p-3">
+                        <div class="float-right">
+                            <h3 id="cMas">Current Master OTP: <%= otp %></h3>
+                        </div>
+                        <form class="form-horizontal" style="margin-left: 125px;" id="update">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 class="mt-4 mb-2">New Master OTP</h5>
+                                    <input type="text" name="otp" class="form-control col-md-12"
+                                        placeholder="Enter New Master OTP" autocomplete="off" required>
+                                </div>
+                            </div>
+                            <br>
+                            <button type="submit" style="margin-left: 250px;"
+                                class="btn waves-effect waves-light btn-rounded btn-info">Update</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer"> © 2019 Road Express by CodeBuckets.in</footer>                
+    </div>
+</div>
+
+<div class="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h3>New Master OTP and Current Master OTP cannot be same...</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="success" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h3>Master OTP changed</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<% include ../partials/footer %>
+<script src="/js/typeahead.bundle.js"></script>
+
+<script type="text/javascript">
+    $('#update').submit(function (event) {
+        event.preventDefault();
+        var newOtp = $("input[name='otp']").val();
+        if(newOtp!=<%= otp %>){
+            $.ajax({
+            url: '/admin/createMaster',
+            type: 'post',
+            data: {otp:newOtp},
+            dataType: 'json',
+            success: function (data) {
+                data = JSON.stringify(data);
+                data = JSON.parse(data);
+                if (data.code == 1) {
+                    $('#cMas').html(`Current Master OTP: ${newOtp}`);
+                    $('#success').modal('show');
+                }
+            }
+        });
+        }
+        else{
+            $('#error').modal('show');
+        }
+    });
+</script>

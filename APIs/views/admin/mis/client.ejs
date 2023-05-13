@@ -1,0 +1,77 @@
+<% include ../../partials/header %> <% include ../../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<% include ../../partials/message %>
+		<div class="row page-titles">
+			<div class="col-md-6 col-8 align-self-center">
+				<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+					<li class="breadcrumb-item active">MIS</li>
+				</ol>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-body pb-0">
+					<div class="row">
+						<div class="table-responsive m-t-40">
+							<table
+								id="datatable"
+								class="table display table-bordered table-striped"
+								style="width: 100%"
+							>
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>City</th>
+										<th>State</th>
+										<th>Mobile</th>
+										<th>E-mail</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% for( let i = 0; i < users.length; i++ ) { %>
+									<tr>
+										<td><%= users[i].name %></td>
+										<td><%= users[i].sahar %></td>
+										<td><%= users[i].state %></td>
+										<td><%= users[i].mob %></td>
+										<td><%= users[i].email %></td>
+										<td>
+											<a href="/admin/mis/<%= users[i].id %>">View</a>
+										</td>
+									</tr>
+									<% } %>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<% include ../../partials/footer %>
+<script src="/plugins/dropify/dist/js/dropify.min.js"></script>
+<script src="/plugins/datatables/dataTables.buttons.min.js"></script>
+<script src="/plugins/datatables/buttons.bootstrap4.min.js"></script>
+<script src="/plugins/datatables/jszip.min.js"></script>
+<script src="/plugins/datatables/pdfmake.min.js"></script>
+<script src="/plugins/datatables/vfs_fonts.js"></script>
+<script src="/plugins/datatables/buttons.html5.min.js"></script>
+<script src="/plugins/datatables/buttons.colVis.min.js"></script>
+<script src="/plugins/datatables/dataTables.responsive.min.js"></script>
+<script src="/plugins/datatables/responsive.bootstrap4.min.js"></script>
+
+<script>
+	$(function () {
+		$("#datatable").DataTable({
+			scrollY: 600,
+			scrollX: true,
+		});
+	});
+</script>

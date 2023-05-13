@@ -1,0 +1,248 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+  <div class="container-fluid">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <% include ../partials/message %>
+          <h2 class="card-title">Add Driver/Transporter</h2>
+          <form class="form-horizontal" method="POST" action="/admin/addSelf" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-md-4">
+                <h5 class="mt-4 mb-2">Transporter Name</h5>
+                <input type="text" class="form-control" name="trans" placeholder="Transporter Name" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <h5 class="mt-4 mb-2">Name</h5>
+                <input type="text" class="form-control col-md-12" name="name" placeholder="Name" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5 col-md-4">
+                <h5 class="mt-4 mb-2">Select State</h5>
+                <select class="select2 btn btn-info btn-round" id="state" name="state" data-size="10"
+                  title="Choose State" required>
+                  <%for(var i = 0; i<state.length ; i++) {%>
+                  <option value="<%= state[i].state %>"><%= state[i].state %></option>
+                  <% } %>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+                <h5 class="mt-4 mb-2">Select City</h5>
+                <select id="id1" name="city" class="select2 btn btn-info btn-round" required>
+                  <option disabled selected value>Choose</option>                
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+                <h5 class="mt-4 mb-2">Birthday</h5>
+                <div class="form-group">
+                  <input type="text" class="form-control datepicker" name="birthday" placeholder="DD/MM/YYYY" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+                <h5 class="mt-4 mb-2">Mobile No.</h5>
+                <div class="form-group">
+                  <input type="text" class="form-control" maxlength="10" minlength="10" name="phn" placeholder="Mobile Number" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+                <h5 class="mt-4 mb-2">Expected Fleet Size</h5>
+                <div class="form-group">
+                  <input type="text" class="form-control" name="fleet" placeholder="Fleet" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+                <h5 class="mt-4 mb-2">Bank Account No.</h5>
+                <div class="form-group">
+                  <input type="text" class="form-control" name="bankAcc" placeholder="Bank Account Number" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <h5 class="mt-4 mb-2">Account Holder Name*</h5>
+                    <div class="form-group">
+                      <input type="text" class="form-control" name="acc_name" placeholder="Account Holder Name" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                  <h5 class="mt-4 mb-2">IFSC Code*</h5>
+                  <div class="form-group">
+                    <input type="text" class="form-control" name="ifsc" placeholder="Ifsc Code" required>
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+                <h5 class="mt-4 mb-2">Email</h5>
+                <div class="form-group">
+                  <input type="email" class="form-control" name="email" placeholder="Email" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+                <h5 class="mt-4 mb-2">Password</h5>
+                <div class="form-group">
+                  <input type="password" class="form-control" name="password" placeholder="Password" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">Profile Pic</h5>
+                    <!--  <label for="input-file-now">Your so fresh input file — Default version</label> -->
+                    <input type="file" name="prof_pic" required class="dropify" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">Driver's License Front Pic</h5>
+                    <!--  <label for="input-file-now">Your so fresh input file — Default version</label> -->
+                    <input type="file" name="dl_pic_front" required class="dropify" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">Driver's License Back Pic</h5>
+                    <!--  <label for="input-file-now">Your so fresh input file — Default version</label> -->
+                    <input type="file" name="dl_pic_back" required class="dropify" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">Aadhaar</h5>
+                    <!--  <label for="input-file-now">Your so fresh input file — Default version</label> -->
+                    <input type="file" name="aadhar_front_pic" required class="dropify" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer ">
+              <div class="row">
+                <div class="col-md-9">
+                  <button type="submit" style="margin-left: 250px;"
+                    class="btn waves-effect waves-light btn-rounded btn-info">ADD</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <footer class="footer"> © 2019 Road Express by CodeBuckets.in</footer>        
+
+  </div>
+</div>
+
+
+
+
+<% include ../partials/footer %>
+<script src="/js/typeahead.bundle.js"></script>
+<script src="/plugins/dropify/dist/js/dropify.min.js"></script>
+
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $(".select2").select2();
+    $("#state").change(function () {
+      var state = $(this).children("option:selected").val();
+      $.ajax({
+        url: '/admin/search',
+        type: 'post',
+        data: {
+          state: state
+        },
+        dataType: 'json',
+        success: function (data) {
+          data = JSON.stringify(data);
+          data = JSON.parse(data);
+          var len = data.length;
+          $("#id1").empty();
+          for (var i = 0; i < len; i++) {
+            var cid = data[i].id;
+            var city = data[i].city;
+            $("#id1").append("<option value='" + cid + "'>" + city + "</option>");
+          }
+        }
+      });
+    });
+  });
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    demo.initDateTimePicker();
+    if ($('.slider').length != 0) {
+      demo.initSliders();
+    }
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    // Basic
+    $('.dropify').dropify();
+
+    // Translated
+    $('.dropify-fr').dropify({
+      messages: {
+        default: 'Glissez-déposez un fichier ici ou cliquez',
+        replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+        remove: 'Supprimer',
+        error: 'Désolé, le fichier trop volumineux'
+      }
+    });
+
+    // Used events
+    var drEvent = $('#input-file-events').dropify();
+
+    drEvent.on('dropify.beforeClear', function (event, element) {
+      return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+    });
+
+    drEvent.on('dropify.afterClear', function (event, element) {
+      alert('File deleted');
+    });
+
+    drEvent.on('dropify.errors', function (event, element) {
+      console.log('Has Errors');
+    });
+
+    var drDestroy = $('#input-file-to-destroy').dropify();
+    drDestroy = drDestroy.data('dropify')
+    $('#toggleDropify').on('click', function (e) {
+      e.preventDefault();
+      if (drDestroy.isDropified()) {
+        drDestroy.destroy();
+      } else {
+        drDestroy.init();
+      }
+    })
+  });
+</script>

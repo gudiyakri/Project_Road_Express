@@ -1,0 +1,43 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div id="map" class="map" style="height: 500px"></div>
+		</div>
+		<footer class="footer">© 2019 Road Express by CodeBuckets.in</footer>
+	</div>
+</div>
+
+<% include ../partials/footer %>
+
+<script type="text/javascript">
+	var longitude;
+	var latitude;
+	// Initialize and add the map
+	function initMap() {
+		var geocoder = new google.maps.Geocoder();
+		var address = "<%= city[0].city %>";
+		geocoder.geocode({ address: address }, function (results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				latitude = results[0].geometry.location.lat();
+				longitude = results[0].geometry.location.lng();
+				// The location of Uluru
+				var uluru = { lat: latitude, lng: longitude };
+				// The map, centered at Uluru
+				var map = new google.maps.Map(document.getElementById("map"), {
+					zoom: 13,
+					center: uluru,
+				});
+				// The marker, positioned at Uluru
+				var marker = new google.maps.Marker({ position: uluru, map: map });
+			}
+		});
+	}
+</script>
+
+<script
+	async
+	defer
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtc_1Ie4_kMbMn_UyvwZeyLa7CgWBdAm4&callback=initMap"
+></script>

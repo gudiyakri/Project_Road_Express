@@ -1,0 +1,119 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Operations</a></li>
+                    <li class="breadcrumb-item active">Placement Sheet</li>
+                </ol>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <% include ../partials/message %>
+                    <div class="card">
+                        <div class="card-body pb-0">
+                            <h2>Vehicles</h2>
+                            <table id="datatable" class="display nowrap table table-hover table-striped table-bordered"
+                                cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>S No.</th>
+                                        <th>Vehicle Number</th>
+                                        <th>Vehicle Type</th>
+                                        <th>R.C. Expire</th>
+                                        <th>Verify Date</th>
+                                        <th>Permit Type</th>
+                                        <th>Transporter Name</th>
+                                        <th>Transporter Number</th>
+                                        <th>Driver Name</th>
+                                        <th>Driver Number</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for(var i = 0; i<vehicle.length ; i++) {%>
+                                    <tr>
+                                        <td>
+                                            <%= i+1 %>
+                                        </td>
+                                        <td>
+                                            <%= vehicle[i].v_num %>
+                                        </td>
+                                        <td>
+                                            <%= vehicle[i].v_type %>
+                                        </td>
+                                        <td>
+                                            <%= vehicle[i].rc_exp %>
+                                        </td>
+                                        <td>
+                                            <% if (vehicle[i].verif_flag_date) { %>
+                                                <%= vehicle[i].verif_flag_date %>
+                                            <% } else { %>
+                                                Not Verified.
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <%= vehicle[i].permit_type %>
+                                        </td>
+                                        <td>
+                                            <%= vehicle[i].name %>
+                                        </td>
+                                        <td>
+                                            <%= vehicle[i].mob %>
+                                        </td>
+                                        <td>
+                                            <% if (vehicle[i].d_name) { %>
+                                                <%= vehicle[i].d_name %>
+                                            <% } else { %>
+                                                Driver not assigned.
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if (vehicle[i].phn) { %>
+                                                <%= vehicle[i].phn %>
+                                            <% } else { %>
+                                                Driver not assigned.
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer"> © 2019 Road Express by CodeBuckets.in</footer>
+
+    </div>
+</div>
+
+
+<% include ../partials/footer %>
+
+<script src="/js/moment.js"></script>
+
+<script>
+    $(document).ready(function () {
+        demo.initDateTimePicker();
+        $('#datatable').DataTable({
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            responsive: true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search Clients",
+            },
+            scrollY: 600,
+            scrollX:true,
+        });
+    });
+</script>

@@ -1,0 +1,1224 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<div class="col-md-12">
+			<div class="row page-titles">
+				<div class="col-md-6 col-8 align-self-center">
+					<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="javascript:void(0)">Accouts</a></li>
+						<li class="breadcrumb-item active">Client Wise</li>
+					</ol>
+				</div>
+			</div>
+			<div class="dropdown">
+				<button
+					class="dropdown-toggle btn btn-primary btn-round btn-block col-md-2"
+					type="button"
+					id="dropdownMenuButton"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false"
+				>
+					<% if(currentClient!=null) {%> <%= currentClient[0].name %> <% } else {%> Select
+					Client <% } %>
+				</button>
+				<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+					<div class="dropdown-header">Select</div>
+					<% for( let i = 0; i < client.length; i++ ) { %>
+					<a class="dropdown-item" href="/accounts/clientWise/<%= client[i].id %>"
+						><%= client[i].name %></a
+					>
+					<% } %>
+				</div>
+				<% if(currentClient==null) {%>
+				<h1>PLease Select a Client to Continue...</h1>
+				<% } %>
+			</div>
+			<br />
+			<% if(currentClient!= null) {%>
+			<div class="card">
+				<div class="card-body pb-0">
+					<ul class="nav nav-tabs customtab2" role="tablist">
+						<li class="nav-item col-md-4 text-center">
+							<a class="nav-link active" data-toggle="tab" href="#trip" role="tab"
+								><span class="hidden-sm-up"><i class="ti-home"></i></span>
+								<span class="hidden-xs-down">Trip Wise</span></a
+							>
+						</li>
+						<li class="nav-item col-md-4 text-center">
+							<a class="nav-link" data-toggle="tab" href="#payment" role="tab"
+								><span class="hidden-sm-up"><i class="ti-user"></i></span>
+								<span class="hidden-xs-down">Payment</span></a
+							>
+						</li>
+						<li class="nav-item col-md-4 text-center">
+							<a class="nav-link" data-toggle="tab" href="#ledger" role="tab"
+								><span class="hidden-sm-up"><i class="ti-email"></i></span>
+								<span class="hidden-xs-down">Ledger</span></a
+							>
+						</li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="trip" role="tabpanel">
+							<% if(history!=null) {%> <% if(history.length>0) {%>
+							<div class="p-3">
+								<div class="table-responsive">
+									<table
+										class="display nowrap table table-hover table-striped table-bordered"
+										cellspacing="0"
+										width="100%"
+									>
+										<thead>
+											<tr>
+												<th>DATE</th>
+												<th>CLIENT NAME</th>
+												<th>VEHICLE TYPE</th>
+												<th>LOADING POINT</th>
+												<th>UNLOADING POINT</th>
+												<th>VEHICLE NO</th>
+												<th>TPT NAME</th>
+												<th>DRIVER NAME</th>
+												<th>CLIENT FARE</th>
+												<th>DRIVER FARE</th>
+												<th>PROFIT</th>
+												<th>UNLOADING</th>
+												<th>DETENTION</th>
+												<th>RETURN FARE</th>
+												<th>DIESEL</th>
+												<th>ADV BY CLIENT</th>
+												<th>ADV BY ROAD EXP</th>
+												<th>CLIENT FINAL</th>
+												<th>POD STATUS</th>
+												<th>DRV DUES</th>
+												<th>CLIENT DUES</th>
+												<th>DRV PAYMENT STATUS</th>
+												<th>DRV PAYMENT DATE</th>
+												<th>CLIENT PAYMENT STATUS</th>
+												<th>INVOICE NO</th>
+												<th>LR NO.</th>
+												<th>ACTION</th>
+											</tr>
+										</thead>
+										<tbody>
+											<% for( let i = 0; i < history.length; i++ ) { %>
+											<tr>
+												<td><%=history[i].date%></td>
+												<td><%=history[i].client%></td>
+												<td><%=history[i].v_type%></td>
+												<td><%=history[i].pickup_location%></td>
+												<td><%=history[i].last_point%></td>
+												<td><%=history[i].v_num%></td>
+												<td><%=history[i].trans%></td>
+												<td><%=history[i].driver%></td>
+												<td><%=history[i].clientAmount%></td>
+												<td><%=history[i].amount%></td>
+												<td>
+													<%=history[i].clientAmount - history[i].amount%>
+												</td>
+												<td><%=history[i].unloading%></td>
+												<td><%=history[i].detention%></td>
+												<td><%=history[i].returnFare%></td>
+												<td><%=history[i].diesel%></td>
+												<td><%=history[i].clientAdv%></td>
+												<td><%=history[i].roadAdv%></td>
+												<td><%=history[i].clientFinal%></td>
+												<td><%=history[i].pod%></td>
+												<td>
+													<%=parseFloat(history[i].amount) -
+													parseFloat(history[i].clientAdv ?
+													history[i].clientAdv : 0) -
+													parseFloat(history[i].roadAdv ?
+													history[i].roadAdv : 0) -
+													parseFloat(history[i].clientFinal ?
+													history[i].clientFinal : 0)%>
+												</td>
+												<td>
+													<%=parseFloat(history[i].clientAmount) -
+													parseFloat(history[i].clientAdv ?
+													history[i].clientAdv : 0) -
+													parseFloat(history[i].clientFinal ?
+													history[i].clientFinal : 0)%>
+												</td>
+												<td><%=history[i].driverPayStatus%></td>
+												<td><%=history[i].driverPayDate%></td>
+												<td><%=history[i].clientPayStatus%></td>
+												<td><%=history[i].invoice%></td>
+												<td><%=history[i].lrNo%></td>
+												<td>
+													<a
+														href="/accounts/edit/<%= history[i].tripId %>"
+														>Edit</a
+													>
+												</td>
+											</tr>
+											<% } %>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<% } else{%>
+							<h1>No trips...</h1>
+							<% } } %>
+						</div>
+						<div class="tab-pane p-3" id="payment" role="tabpanel">
+							<% if(adv!=null) {%> <% if(adv.length>0) {%>
+							<div class="table-responsive">
+								<table
+									class="display nowrap table table-hover table-striped table-bordered"
+									cellspacing="0"
+									width="100%"
+								>
+									<thead>
+										<tr>
+											<th>Advance Amount</th>
+											<th>Date and Time</th>
+											<th>Mode</th>
+										</tr>
+									</thead>
+									<tbody>
+										<% for( let i = 0; i < adv.length; i++ ) { %>
+										<tr>
+											<td><%=adv[i].adv%></td>
+											<td><%=adv[i].date_1%></td>
+											<% if(adv[i].mode==0){%>
+											<td>Cash</td>
+											<% } else if(adv[i].mode==1) {%>
+											<td>Cheque No.:- <%=adv[i].cheque%></td>
+											<% } else{%>
+											<td>Online Transaction Id:-<%=adv[i].online%></td>
+											<% } %>
+										</tr>
+										<% } %>
+									</tbody>
+								</table>
+							</div>
+							<% } else{%>
+							<h1>No Payment...</h1>
+							<% } } %>
+						</div>
+
+						<div class="tab-pane p-3" id="ledger" role="tabpanel">
+							<div id="ledger"></div>
+							<%if(ledger!=null) if(ledger.length){%>
+							<ol>
+								<% for( let i = 0; i < ledger.length; i++ ) { %> <%
+								if(ledger[i].flag==0) {%>
+								<li>
+									<h6>
+										Amount Paid to Driver In Advance(<%= ledger[i].start_time
+										%>: <%=ledger[i].pickup_location %> )<strong
+											>Driver:</strong
+										>
+										<%= ledger[i].d_name %> <strong>Vehicle Number:</strong> <%=
+										ledger[i].v_num %>:
+										<div class="float-right"><%= ledger[i].amount %></div>
+									</h6>
+								</li>
+								<% } %> <% if(ledger[i].flag==1) {%>
+								<li>
+									<h6>
+										Amount Deducted From Advance:
+										<div class="float-right"><%= ledger[i].amount %></div>
+									</h6>
+								</li>
+								<% } %> <% if(ledger[i].flag==2) {%>
+								<li>
+									<h6>
+										Amount Paid to Driver At End(<%= ledger[i].final_endtime %>:
+										<%=ledger[i].last_point %> ) <strong>Driver:</strong> <%=
+										ledger[i].d_name %> <strong>Vehicle Number:</strong> <%=
+										ledger[i].v_num %>:
+										<div class="float-right"><%= ledger[i].amount %></div>
+									</h6>
+								</li>
+								<% } %> <% } %>
+							</ol>
+							<% } %>
+							<button id="print" class="float-right btn btn-info">
+								Download As PDF
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<% } %>
+		</div>
+		<footer class="footer">© 2019 Road Express by CodeBuckets.in</footer>
+	</div>
+</div>
+
+<div
+	class="modal fade"
+	id="info"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="ModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="exampleModalLabel1">Info</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div id="pics"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade"
+	id="pay"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="ModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="exampleModalLabel1">Info</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div id="paymentInfo"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="trackMap" tabindex="-1" role="dialog" aria-labelledby="mapmodal1">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="exampleModalLabel1">Route</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div id="mapTrack" class="map" style="height: 500px"></div>
+				<hr />
+			</div>
+		</div>
+	</div>
+</div>
+
+<% include ../partials/footer %>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
+	integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
+	crossorigin="anonymous"
+></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+
+<script>
+	<% if(history) {%>
+	    var l = [];
+	$("#info").on('show.bs.modal',function(event){
+	var trip = $(event.relatedTarget).attr('data-id');
+	var number = $(event.relatedTarget).attr('data-number');
+	$.ajax({
+	    url:'/accounts/info',
+	    type:'post',
+	    dataType:'json',
+	    data:{trip:trip},
+	    success:function(data){
+	        data = JSON.stringify(data);
+	        data = JSON.parse(data);
+	        var l2 = `Start Loading &nbsp<img src="/images/start_time_pic/${data[0].start_time_pic}"style="width:200px;height:200px;margin:20px 50px"><br>`;
+	        $('#pics').append(l2);
+	        if(data[0].intermediate_pic){
+	            var lebel = 'Intermediate Location<br>';
+	            $('#pics').append(lebel);
+	            var inters = data[0].intermediate_pic.split('#');
+	            for(var i = 1; i<inters.length;i++){
+	                l[i] = ` Intermediate Unloading${i}. &nbsp<img src="/images/intermediate_pic/${inters[i]}"style="width:100px;height:100px;margin:20px 50px">`;
+	                $('#pics').append(l[i]);
+	            }
+	        }
+	        var l1 = `<br>End Unloading &nbsp<img src="/images/end_pic/${data[0].end_pic}"style="width:200px;height:200px;margin:20px 50px"></<img>`;
+	        var l4 = `POD &nbsp<img src="/images/pod/${data[0].pic_pathee}"style="width:200px;height:200px;margin:20px 50px"></<img><br>`;
+	        var l5 = `Signature &nbsp<img src="/images/signature/${data[0].signature}"style="width:200px;height:200px;margin:20px 50px"><br>`;
+	        $('#pics').append(l1);
+	        $('#pics').append(l4);
+	        $('#pics').append(l5);
+	        $('#pics').append('<button id="printPics" class="float-right btn btn-info">Download As PDF</button>');
+	        var docs = new jsPDF('p', 'pt','a4',true);
+	        var specialElementHandlers = {
+	            '#editor': function (element, renderer) {
+	                return true;
+	            }
+	        };
+	        $('#printPics').click(function () {
+	            // doc.fromHTML($('#pics').html(), 15, 15, {
+	            //     'width': 170,
+	            //         'elementHandlers': specialElementHandlers
+	            // });
+	            html2canvas($("#pics"), {
+	                useCORS : true,
+	                onrendered: function(canvas) {
+	                var imgData = canvas.toDataURL('image/png');
+	                docs.addImage(imgData, 'JPEG', 15, 0, 611, 816);
+	                docs.save('<%= currentClient[0].name %>.pdf');
+	                }
+	            });
+	            // doc.save('<%= currentClient[0].name %>.pdf');
+	        });
+	    }
+	});
+	});
+	$("#info").on('hide.bs.modal',function(){
+	    $("#pics").empty();
+	});
+	<% } %>
+</script>
+
+<script>
+	<% if(history) {%>
+	$("#pay").on('show.bs.modal',function(event){
+	var trip = $(event.relatedTarget).attr('data-id');
+	$.ajax({
+	    url:'/accounts/paymentInfo',
+	    type:'post',
+	    dataType:'json',
+	    data:{trip:trip},
+	    success:function(data){
+	        data = JSON.stringify(data);
+	        data = JSON.parse(data);
+	        var len = data.length;
+	        var l1 = `<h3>Total Amount :${data[0].total}</h3>`;
+	        $('#paymentInfo').append(l1);
+	        for( var i=0; i<len; i++){
+	            if(data[i].flag == 0){
+	                var l2 = `<h3> Amount Paid to driver:${data[i].amount}</h3>`;
+	                $('#paymentInfo').append(l2);
+	            }
+	            if(data[i].flag == 1){
+	                var l3 = `<h3> Amount Deducted from advance:${data[i].amount}</h3>`;
+	                $('#paymentInfo').append(l3);
+	            }
+	            if(data[i].flag == 2){
+	                var l4 = `<h3> Amount paid at the end :${data[i].amount}</h3>`;
+	                $('#paymentInfo').append(l4);
+	            }
+	        }
+	    }
+	})
+	});
+	$("#pay").on('hide.bs.modal',function(){
+	    $("#paymentInfo").empty();
+	});
+	<% } %>
+</script>
+
+<script>
+	<% if(currentClient!=null) {%>
+	$(document).ready(function(){
+	    var c_id = '<%=currentClient[0].id%>';
+	    $.ajax({
+	        url:'/accounts/ledgerRem',
+	        type:'post',
+	        data:{client:c_id},
+	        dataType:'json',
+	        success:function(data){
+	            data = JSON.stringify(data);
+	            data = JSON.parse(data);
+	            var len = data.length;
+	            var l1 = `<h3> Remaining:${data[0].rem} </h3>`
+	            $('#ledger').append(l1);
+	        }
+	    });
+	});
+	<% } %>
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtc_1Ie4_kMbMn_UyvwZeyLa7CgWBdAm4"></script>
+
+<script>
+	styleDark = [
+		{
+			elementType: "geometry",
+			stylers: [
+				{
+					color: "#242f3e",
+				},
+			],
+		},
+		{
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					color: "#746855",
+				},
+			],
+		},
+		{
+			elementType: "labels.text.stroke",
+			stylers: [
+				{
+					color: "#242f3e",
+				},
+			],
+		},
+		{
+			featureType: "administrative.country",
+			elementType: "geometry.stroke",
+			stylers: [
+				{
+					color: "#ffffff",
+				},
+				{
+					weight: 0.5,
+				},
+			],
+		},
+		{
+			featureType: "administrative.land_parcel",
+			elementType: "labels",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "administrative.locality",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					color: "#d59563",
+				},
+			],
+		},
+		{
+			featureType: "administrative.province",
+			elementType: "geometry.stroke",
+			stylers: [
+				{
+					color: "#ffffff",
+				},
+			],
+		},
+		{
+			featureType: "poi",
+			elementType: "labels.text",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "poi",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					color: "#d59563",
+				},
+			],
+		},
+		{
+			featureType: "poi.business",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "poi.park",
+			elementType: "geometry",
+			stylers: [
+				{
+					color: "#263c3f",
+				},
+			],
+		},
+		{
+			featureType: "poi.park",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					color: "#6b9a76",
+				},
+			],
+		},
+		{
+			featureType: "road",
+			elementType: "geometry",
+			stylers: [
+				{
+					color: "#38414e",
+				},
+			],
+		},
+		{
+			featureType: "road",
+			elementType: "geometry.stroke",
+			stylers: [
+				{
+					color: "#212a37",
+				},
+			],
+		},
+		{
+			featureType: "road",
+			elementType: "labels.icon",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "road",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					color: "#9ca5b3",
+				},
+			],
+		},
+		{
+			featureType: "road.highway",
+			elementType: "geometry",
+			stylers: [
+				{
+					color: "#746855",
+				},
+			],
+		},
+		{
+			featureType: "road.highway",
+			elementType: "geometry.stroke",
+			stylers: [
+				{
+					color: "#1f2835",
+				},
+			],
+		},
+		{
+			featureType: "road.highway",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					color: "#f3d19c",
+				},
+			],
+		},
+		{
+			featureType: "road.local",
+			elementType: "labels",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "transit",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "transit",
+			elementType: "geometry",
+			stylers: [
+				{
+					color: "#2f3948",
+				},
+			],
+		},
+		{
+			featureType: "transit.station",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					color: "#d59563",
+				},
+			],
+		},
+		{
+			featureType: "water",
+			elementType: "geometry",
+			stylers: [
+				{
+					color: "#17263c",
+				},
+			],
+		},
+		{
+			featureType: "water",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					color: "#515c6d",
+				},
+			],
+		},
+		{
+			featureType: "water",
+			elementType: "labels.text.stroke",
+			stylers: [
+				{
+					color: "#17263c",
+				},
+			],
+		},
+	];
+	styleLight = [
+		{
+			featureType: "administrative.country",
+			elementType: "geometry.stroke",
+			stylers: [
+				{
+					color: "#000000",
+				},
+				{
+					weight: 1,
+				},
+			],
+		},
+		{
+			featureType: "administrative.land_parcel",
+			elementType: "labels",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "administrative.province",
+			elementType: "geometry.fill",
+			stylers: [
+				{
+					color: "#ed0000",
+				},
+				{
+					lightness: "100",
+				},
+				{
+					visibility: "on",
+				},
+			],
+		},
+		{
+			featureType: "administrative.province",
+			elementType: "geometry.stroke",
+			stylers: [
+				{
+					color: "#ff0000",
+				},
+				{
+					saturation: "80",
+				},
+				{
+					lightness: "56",
+				},
+				{
+					gamma: "0.00",
+				},
+				{
+					visibility: "on",
+				},
+			],
+		},
+		{
+			featureType: "administrative.province",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					color: "#636363",
+				},
+			],
+		},
+		{
+			featureType: "landscape",
+			elementType: "geometry",
+			stylers: [
+				{
+					color: "#e3e3e3",
+				},
+				{
+					visibility: "on",
+				},
+			],
+		},
+		{
+			featureType: "landscape.man_made",
+			stylers: [
+				{
+					visibility: "on",
+				},
+			],
+		},
+		{
+			featureType: "landscape.man_made",
+			elementType: "geometry",
+			stylers: [
+				{
+					visibility: "on",
+				},
+			],
+		},
+		{
+			featureType: "landscape.natural",
+			elementType: "labels",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "poi",
+			elementType: "labels.text",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "poi.business",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "poi.park",
+			elementType: "geometry.fill",
+			stylers: [
+				{
+					visibility: "on",
+				},
+			],
+		},
+		{
+			featureType: "poi.sports_complex",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "road",
+			stylers: [
+				{
+					color: "#c0c0c0",
+				},
+				{
+					weight: 0.5,
+				},
+			],
+		},
+		{
+			featureType: "road",
+			elementType: "labels.icon",
+			stylers: [
+				{
+					color: "#938db8",
+				},
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "road",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "road",
+			elementType: "labels.text.stroke",
+			stylers: [
+				{
+					color: "#ffffff",
+				},
+			],
+		},
+		{
+			featureType: "road.arterial",
+			elementType: "geometry.fill",
+			stylers: [
+				{
+					color: "#bcbaba",
+				},
+				{
+					visibility: "on",
+				},
+			],
+		},
+		{
+			featureType: "road.arterial",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "road.highway",
+			stylers: [
+				{
+					color: "#a6a6a6",
+				},
+				{
+					visibility: "on",
+				},
+				{
+					weight: 1.5,
+				},
+			],
+		},
+		{
+			featureType: "road.highway",
+			elementType: "geometry.stroke",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "road.highway",
+			elementType: "labels",
+			stylers: [
+				{
+					color: "#ffffff",
+				},
+				{
+					visibility: "off",
+				},
+				{
+					weight: 2,
+				},
+			],
+		},
+		{
+			featureType: "road.highway",
+			elementType: "labels.icon",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "road.highway",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					visibility: "off",
+				},
+				{
+					weight: 2.5,
+				},
+			],
+		},
+		{
+			featureType: "road.highway",
+			elementType: "labels.text.stroke",
+			stylers: [
+				{
+					color: "#ffffff",
+				},
+				{
+					weight: 2,
+				},
+			],
+		},
+		{
+			featureType: "road.highway.controlled_access",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "road.local",
+			stylers: [
+				{
+					color: "#b7b7bc",
+				},
+				{
+					lightness: 35,
+				},
+				{
+					visibility: "simplified",
+				},
+				{
+					weight: 1.5,
+				},
+			],
+		},
+		{
+			featureType: "road.local",
+			elementType: "labels",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "road.local",
+			elementType: "labels.text.fill",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "transit",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "transit",
+			elementType: "labels.icon",
+			stylers: [
+				{
+					visibility: "off",
+				},
+			],
+		},
+		{
+			featureType: "transit.line",
+			stylers: [
+				{
+					color: "#ffffff",
+				},
+				{
+					visibility: "on",
+				},
+			],
+		},
+		{
+			featureType: "transit.line",
+			elementType: "labels.text",
+			stylers: [
+				{
+					visibility: "on",
+				},
+			],
+		},
+		{
+			featureType: "transit.station",
+			stylers: [
+				{
+					visibility: "on",
+				},
+			],
+		},
+		{
+			featureType: "water",
+			stylers: [
+				{
+					color: "#c6d6d7",
+				},
+				{
+					visibility: "on",
+				},
+			],
+		},
+	];
+	styles = styleLight;
+	var path = [],
+		marker = [];
+	var pathx = [];
+	var placeIdArray = [];
+	var polylines = [];
+	var snappedCoordinates = [];
+	$("#trackMap").on("show.bs.modal", function (event) {
+		var trip = $(event.relatedTarget).attr("data-id");
+		$.ajax({
+			url: "/accounts/latlo",
+			type: "post",
+			data: { trip: trip },
+			dataType: "json",
+			success: function (data) {
+				if (data.code == "1") {
+					// console.log(data);
+					pos = data.result[0].lat_long.split("#");
+					lati = pos[0];
+					longi = pos[1];
+					from = {
+						lat: parseFloat(lati),
+						lng: parseFloat(longi),
+					};
+					post = data.result[0].last_lat_long.split("#");
+					latit = post[0];
+					longit = post[1];
+					to = {
+						lat: parseFloat(latit),
+						lng: parseFloat(longit),
+					};
+					// function initMap(){
+					map = new google.maps.Map(document.getElementById("mapTrack"), {
+						zoom: 13,
+						center: from,
+						styles: styles,
+						streetViewControl: false,
+					});
+					fromMark = new google.maps.Marker({
+						position: from,
+						map: map,
+					});
+					toMark = new google.maps.Marker({
+						position: to,
+						map: map,
+					});
+					var interLen = data.result[0].inter_lat_long.split("^");
+					if (interLen.length > 1) {
+						for (var i = 1; i < interLen.length; i++) {
+							posI = interLen[i].split("#");
+							latiI = posI[0];
+							longiI = posI[1];
+							inter = {
+								lat: parseFloat(latiI),
+								lng: parseFloat(longiI),
+							};
+							marker[i] = new google.maps.Marker({
+								position: inter,
+								map: map,
+							});
+						}
+					}
+					$.ajax({
+						url: "/accounts/path_gen",
+						type: "post",
+						data: { trip: trip },
+						dataType: "json",
+						success: function (data) {
+							console.log(data);
+							var cords = data.result[0].gps_val.split("^");
+							for (var i = 0; i < cords.length; i++) {
+								var latlo = cords[i].split(",");
+								path[i] = { lat: parseFloat(latlo[0]), lng: parseFloat(latlo[1]) };
+							}
+							var arr = [];
+							for (var i = 0; i < cords.length; i++) {
+								var c = 0;
+								arr = [];
+								while (c < 100 && c < cords.length) {
+									if (i < cords.length) {
+										arr.push(cords[i]);
+										i++;
+									} else {
+										break;
+									}
+									c++;
+								}
+								pathx.push(arr);
+							}
+							for (var i = 0; i < pathx.length; i++) {
+								$.get(
+									"https://roads.googleapis.com/v1/snapToRoads",
+									{
+										interpolate: true,
+										key: "AIzaSyAtc_1Ie4_kMbMn_UyvwZeyLa7CgWBdAm4",
+										path: pathx[i].join("|"),
+									},
+									function (data) {
+										processSnapToRoadResponse(data);
+										drawSnappedPolyline();
+									}
+								);
+							}
+							function processSnapToRoadResponse(data) {
+								snappedCoordinates = [];
+								placeIdArray = [];
+								for (var i = 0; i < data.snappedPoints.length; i++) {
+									var latlng = new google.maps.LatLng(
+										data.snappedPoints[i].location.latitude,
+										data.snappedPoints[i].location.longitude
+									);
+									snappedCoordinates.push(latlng);
+									placeIdArray.push(data.snappedPoints[i].placeId);
+								}
+							}
+							function drawSnappedPolyline() {
+								var snappedPolyline = new google.maps.Polyline({
+									path: snappedCoordinates,
+									geodesic: true,
+									strokeColor: "#295CFF",
+									strokeOpacity: 1.0,
+									strokeWeight: 4,
+									geodesic: true,
+								});
+								snappedPolyline.setMap(map);
+								polylines.push(snappedPolyline);
+							}
+						},
+					});
+					// }
+				}
+			},
+		});
+	});
+	$("#trackMap").on("hide.bs.modal", function () {
+		//   Path.setMap(null);
+		path = [];
+		pathx = [];
+	});
+
+	$("#dark").on("change", function (event) {
+		if ($(this).is(":checked")) {
+			styles = styleDark;
+			map.setOptions({ styles: styles });
+		} else {
+			styles = styleLight;
+			map.setOptions({ styles: styles });
+		}
+	});
+</script>
+
+<script>
+	var doc = new jsPDF();
+	var specialElementHandlers = {
+	    '#editor': function (element, renderer) {
+	        return true;
+	    }
+	};
+
+	$('#print').click(function () {
+	    doc.fromHTML($('#ledger').html(), 15, 15, {
+	        'width': 170,
+	            'elementHandlers': specialElementHandlers
+	    });
+	    <% if(currentClient!=null) {%>
+	        doc.save('<%= currentClient[0].name %>.pdf');
+	    <% } %>
+	});
+</script>

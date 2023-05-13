@@ -1,0 +1,167 @@
+<body class=" fix-header fix-sidebar card-no-border " data-image="/img/img1.jpg">
+    <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" /> </svg>
+    </div>
+    <div id="main-wrapper">
+        <header class="topbar">
+            <nav class="navbar top-navbar navbar-expand-md navbar-light">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/admin/">
+                        <b>
+                            <img src="" class="dark-logo" />
+                        </b>
+                        <span>
+                            <img src="/img/RoadExpress.png" alt="homepage" height="40" width="100" class="dark-logo" />
+                        </span>
+                    </a>
+                </div>
+                <div class="navbar-collapse">
+                    <ul class="navbar-nav mr-auto mt-md-0 ">
+                        <li class="nav-item"> <a
+                                class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark"
+                                href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
+                        <li class="nav-item"> <a
+                                class="nav-link sidebartoggler hidden-sm-down text-muted waves-effect waves-dark"
+                                href="javascript:void(0)"><i class="icon-arrow-left-circle"></i></a> </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="#" id="2"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
+                                    class="mdi mdi-email"></i>
+                                <div class="notify"> <span class="heartbit"></span> <span class="point"></span> </div>
+                            </a>
+                            <div class="dropdown-menu mailbox animated bounceInDown" aria-labelledby="2">
+                                <ul>
+                                    <li>
+                                        <div class="drop-title">Driver Notifications</div>
+                                    </li>
+                                    <li>
+                                        <div class="message-center">
+                                            <h5 id="default">No New Notifications</h5>
+                                            <div id="loadLink"></div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav my-lg-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="#"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img
+                                    src="/img/users/user.png" alt="user" class="profile-pic" /></a>
+                            <div class="dropdown-menu dropdown-menu-right animated flipInY">
+                                <ul class="dropdown-user">
+                                    <li>
+                                        <div class="dw-user-box">
+                                            <div class="u-img"><img src="/img/users/user.png" alt="user"></div>
+                                            <div class="u-text">
+                                                <h4>Road Express</h4>
+                                                <h6>Admin</h6>
+                                            </div>
+                                    </li>
+                                    <li><a href="/admin/logout"><i class="fa fa-power-off"></i> Logout</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <aside class="left-sidebar">
+            <div class="scroll-sidebar">
+                <div class="user-profile">
+                    <div class="profile-img"> <img src="/img/users/user.png" alt="user" /> </div>
+                    <div class="profile-text">Road Express</div>
+                </div>
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav">
+                        <li class="nav-small-cap">ACTIONS</li>
+                        <li>
+                            <% if(user.flag === 3 || user.flag === 0) {%>
+                            <a class="has-arrow" href="#" aria-expanded="false"><i class="mdi mdi-gauge"></i><span
+                                    class="hide-menu">Operations</a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="/admin/addTrans">Add Transport</a></li>
+                                <li><a href="/admin/addDriver">Add Driver</a></li>
+                                <li><a href="/admin/vehicles">Vehicle</a></li>
+                                <li><a href="/admin/city">Add City</a></li>
+                                <li><a href="/admin/loadType">Add Load Type</a></li>
+                                <li><a href="/admin/placement">Placement Sheet Update</a></li>
+                                <li><a href="/admin/mapD">Map Driver</a></li>
+                                <li><a href="/admin/trip">Add Trip</a></li>
+                                <li><a href="/admin/addUser">Add Client</a></li>
+                                <li><a href="/admin/masterOtp">Update Master OTP</a></li>
+                                <li><a href="/admin/client">Clients</a></li>
+                                <li><a href="/admin/fav">Add Favourites</a></li>
+                                <li><a href="/admin/invoice">Invoice List</a></li>
+                                <li><a href="/admin/subscription">Subscription</a></li>
+                                <li><a href="/admin/gps">GPS</a></li>
+                                <li><a href="/admin/monthly">Monthly Travel</a></li>
+                                <li><a href="/admin/mis">MIS</a></li>
+                            </ul>
+                            <% } %>
+                        </li>
+                        <li>
+                            <% if(user.flag === 1 || user.flag === 0) {%>
+                            <a class="has-arrow " href="#" aria-expanded="false"><i
+                                    class="mdi mdi-account-circle"></i><span class="hide-menu">Account</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="/accounts/clientWise">Client Wise</a></li>
+                                <li><a href="/accounts/cliAdvn">Client Advance Payment</a></li>
+                                <li><a href=#>Customer Wise</a></li>
+                                <li><a href=/accounts/transWise>Transport Wise</a> </li> <li><a
+                                            href="/accounts/driverWise">Driver Wise</a></li>
+                            </ul>
+                            <% } %>
+                        </li>
+                        <li>
+                            <% if(user.flag ===3 || user.flag === 2 || user.flag === 0) {%>
+                            <a class="has-arrow " href="#" aria-expanded="false"><i
+                                    class="mdi mdi-account-outline"></i><span class="hide-menu">Survelliance</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="/survellance/incomming">Incoming</a></li>
+                                <li><a href="/survellance/outgoing">Outgoing</a></li>
+                                <li><a href="/survellance/trips">Trips</a></li>
+                                <li><a href="/survellance/history">Trip History</a></li>
+                            </ul>
+                            <% } %>
+                        </li>
+                        <li>
+                            <% if(user.flag ===3 || user.flag === 0) {%>
+                            <a class="has-arrow " href="#" aria-expanded="false"><i
+                                    class="mdi mdi-account-outline"></i><span class="hide-menu">Rate Adjust</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="/admin/rateVehicle">Vehicle</a></li>
+                                <li><a href="/admin/rateClient">Client</a></li>
+                                <li><a href="/admin/dynamicRate">Dynamic Rate</a></li>
+                            </ul>
+                            <% } %>
+                        </li>
+                        <li>
+                            <% if(user.flag ===3 || user.flag === 0) {%>
+                            <a class="has-arrow " href="#" aria-expanded="false"><i
+                                    class="mdi mdi-account-outline"></i><span class="hide-menu">SIM Based Tracking</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="/simTracking/addNumber">Add Phone Number</a></li>
+                               
+                                <li><a href="/admin/dynamicRate">Route History</a></li>
+                            </ul>
+                            <% } %>
+                        </li>
+                        <li class="nav-devider"></li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+        <div class="col-md-6 col-4 align-self-center float-right dropdown"
+            style="position: fixed; right: 0; z-index: 1000">
+            <button type="button" class="btn btn-info float-right" style="margin-top: 2rem; height: 50px;"
+                data-toggle="dropdown">
+                <div class="menuBtn">Loads <span class="ti-bell text-white"><span class="badge badge-light"
+                    id="countLoad"></span></i></div>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="loadMenu">
+
+            </ul>
+        </div>

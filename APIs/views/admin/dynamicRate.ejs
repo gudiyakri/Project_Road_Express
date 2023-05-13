@@ -1,0 +1,996 @@
+<% include ../partials/header %> <% include ../partials/sidebar %>
+
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<div class="row page-titles">
+			<div class="col-md-6 col-8 align-self-center">
+				<h3 class="text-themecolor mb-0 mt-0">Dashboard</h3>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Rate Adjust</a></li>
+					<li class="breadcrumb-item active">Dynamic Rate</li>
+				</ol>
+			</div>
+		</div>
+		<% include ../partials/message %>
+		<div class="card">
+			<div class="card-body pb-0">
+				<ul class="nav nav-tabs customtab2" role="tablist">
+					<li class="nav-item col-md-4 text-center">
+						<a class="nav-link active" data-toggle="tab" href="#global" role="tab"
+							><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">B2C dynamic rate</span></a
+						>
+					</li>
+					<li class="nav-item col-md-4 text-center">
+						<a class="nav-link" data-toggle="tab" href="#clientWise" role="tab"
+							><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Client Wise</span></a
+						>
+					</li>
+					<li class="nav-item col-md-4 text-center">
+						<a class="nav-link" data-toggle="tab" href="#driverWise" role="tab"
+							><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Driver Wise</span></a
+						>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="global" role="tabpanel">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<div class="col-md-4">
+										<h5 class="mt-4 mb-2">Select Vehicle</h5>
+										<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="vehicle" data-style="btn-info">
+											<option id="choose">Choose</option>
+											<% for( let i = 0; i < vehicle.length; i++ ) { %>
+											<option value="<%=vehicle[i].v_type%>"><%=vehicle[i].type_name%></option>
+											<% } %>
+										</select>
+									</div>
+									<div class="col-md-4">
+										<h5 class="mt-4 mb-2">Select State</h5>
+										<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="stateB2C" data-style="btn-info">
+											<option id="choose">Choose</option>
+											<% for( let i = 0; i < state.length; i++ ) { %>
+											<option value="<%= state[i].state %>"><%= state[i].state %></option>
+											<% } %>
+										</select>
+									</div>
+									<div class="col-md-4">
+										<h5 class="mt-4 mb-2">Select City</h5>
+										<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="cityB2C" data-style="btn-info">
+											<option disabled selected value>Choose</option>
+										</select>
+									</div>
+								</div>
+								<br />
+
+								<span id="hide">
+									<div class="col-md-12">
+										<form action="/admin/dynamic" method="POST" id="dynamic">
+											<div class="row">
+												<div class="col-md-12">
+													<h5 class="mt-4 mb-2">Range</h5>
+													<input type="number" class="form-control col-md-4" name="start" placeholder="Enter Start" required />
+													<input type="number" class="form-control col-md-4" name="end" placeholder="Enter End" required />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<h5 class="mt-4 mb-2">Rate /km</h5>
+													<input type="number" class="form-control col-md-12" name="rate" placeholder="Enter Rate" required />
+													<input type="text" class="form-control col-md-12" name="vehicle" required hidden />
+													<input type="text" class="form-control col-md-12" name="cityB2C" required hidden />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<h5 class="mt-4 mb-2">Base Fare</h5>
+													<input type="number" class="form-control col-md-12" name="baseFare" placeholder="Enter Base Fare" required />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<h5 class="mt-4 mb-2">Wait Charge</h5>
+													<input type="number" class="form-control col-md-12" name="waitCharge" placeholder="Enter Wait Charge" required />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<h5 class="mt-4 mb-2">Max free wait time(in minutes)</h5>
+													<input type="number" class="form-control col-md-12" name="waitTime" placeholder="Enter Max free wait time" required />
+												</div>
+											</div>
+											<br />
+											<div class="row">
+												<div class="col-md-12">
+													<button type="submit" name="submit" class="btn btn-info">Submit</button>
+												</div>
+											</div>
+											<br />
+										</form>
+									</div>
+								</span>
+							</div>
+							<div class="col-md-12">
+								<table id="datatable" class="display table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+									<thead>
+										<tr>
+											<th>Vehicle Name</th>
+											<th>City</th>
+											<th>Range</th>
+											<th>Rate</th>
+											<th>Base Fare</th>
+											<th>Wait Charge</th>
+											<th>Max free wait time</th>
+											<th>Action</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane p-3" id="clientWise" role="tabpanel">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<div class="col-md-3">
+										<h5 class="mt-4 mb-2">Select Vehicle</h5>
+										<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="vehicleSelect" data-style="btn-info">
+											<option id="choose">Choose</option>
+											<% for( let i = 0; i < vehicle.length; i++ ) { %>
+											<option value="<%=vehicle[i].v_type%>"><%=vehicle[i].type_name%></option>
+											<% } %>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<h5 class="mt-4 mb-2">Select Client</h5>
+										<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="client" data-style="btn-info">
+											<option id="choose">Choose</option>
+											<% for( let i = 0; i < client.length; i++ ) { %>
+											<option value="<%=client[i].id%>"><%=client[i].name%></option>
+											<% } %>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<h5 class="mt-4 mb-2">Select State</h5>
+										<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="stateSelect" data-style="btn-info">
+											<option id="choose">Choose</option>
+											<% for( let i = 0; i < state.length; i++ ) { %>
+											<option value="<%= state[i].state %>"><%= state[i].state %></option>
+											<% } %>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<h5 class="mt-4 mb-2">Select City</h5>
+										<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="citySelect" data-style="btn-info">
+											<option disabled selected value>Choose</option>
+										</select>
+									</div>
+								</div>
+								<br />
+								<span id="hideClient">
+									<div class="col-md-12">
+										<form action="/admin/dynamicClient" id="dynamicClient" method="POST">
+											<div class="row">
+												<div class="col-md-12">
+													<h5 class="mt-4 mb-2">Range</h5>
+													<input type="number" class="form-control col-md-4" name="startClient" placeholder="Enter Start" required />
+													<input type="number" class="form-control col-md-4" name="endClient" placeholder="Enter End" required />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<h5 class="mt-4 mb-2">Rate /km</h5>
+													<input type="number" class="form-control col-md-12" name="rateClient" placeholder="Enter Rate" required />
+													<input type="number" class="form-control col-md-12" name="vehicleSelect" id="vehicleIdClient" required hidden />
+													<input type="text" class="form-control col-md-12" name="clientId" id="idClient" required hidden />
+													<input type="text" class="form-control col-md-12" name="citySelect" required hidden />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<h5 class="mt-4 mb-2">Base Fare</h5>
+													<input type="number" class="form-control col-md-12" name="baseFareClient" placeholder="Enter Base Fare" required />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<h5 class="mt-4 mb-2">Wait Charge</h5>
+													<input type="number" class="form-control col-md-12" name="waitChargeClient" placeholder="Enter Wait Charge" required />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<h5 class="mt-4 mb-2">Max free wait time(in minutes)</h5>
+													<input type="number" class="form-control col-md-12" name="waitTimeClient" placeholder="Enter Max free wait time" required />
+												</div>
+											</div>
+											<br />
+											<div class="row">
+												<div class="col-md-12">
+													<button type="submit" name="submitClient" class="btn btn-info">Submit</button>
+												</div>
+											</div>
+											<br />
+										</form>
+									</div>
+								</span>
+							</div>
+							<div class="col-md-12">
+								<span id="clientTab">
+									<div class="col-12">
+										<table id="datatableClient" class="display table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+											<thead>
+												<tr>
+													<th>Vehicle Name</th>
+													<th>City</th>
+													<th>Range</th>
+													<th>Rate</th>
+													<th>Base Fare</th>
+													<th>Wait Charge</th>
+													<th>Max free wait time</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody></tbody>
+										</table>
+									</div>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane p-3" id="driverWise" role="tabpanel">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<div class="col-md-3">
+										<h5 class="mt-4 mb-2">Select Vehicle</h5>
+										<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="vehicleDriver" data-style="btn-info">
+											<option id="choose">Choose</option>
+											<% for( let i = 0; i < vehicle.length; i++ ) { %>
+											<option value="<%=vehicle[i].v_type%>"><%=vehicle[i].type_name%></option>
+											<% } %>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<h5 class="mt-4 mb-2">Select Client</h5>
+										<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="clientDriver" data-style="btn-info">
+											<option id="choose">Choose</option>
+											<% for( let i = 0; i < client.length; i++ ) { %>
+											<option value="<%=client[i].id%>"><%=client[i].name%></option>
+											<% } %>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<h5 class="mt-4 mb-2">Select State</h5>
+										<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="stateDriver" data-style="btn-info">
+											<option id="choose">Choose</option>
+											<% for( let i = 0; i < state.length; i++ ) { %>
+											<option value="<%= state[i].state %>"><%= state[i].state %></option>
+											<% } %>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<h5 class="mt-4 mb-2">Select City</h5>
+										<select class="select2 mb-3 mr-2 btn-info btn-rounded" id="cityDriver" data-style="btn-info">
+											<option disabled selected value>Choose</option>
+										</select>
+									</div>
+								</div>
+								<br />
+								<span id="hideDriver">
+									<div class="col-md-12">
+										<form action="/admin/dynamicDriver" id="dynamicDriver" method="POST">
+											<div class="row">
+												<div class="col-md-12">
+													<h5 class="mt-4 mb-2">Range</h5>
+													<input type="number" class="form-control col-md-4" name="startDriver" placeholder="Enter Start" required />
+													<input type="number" class="form-control col-md-4" name="endDriver" placeholder="Enter End" required />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<h5 class="mt-4 mb-2">Rate /km</h5>
+													<input type="number" class="form-control col-md-12" name="rateDriver" placeholder="Enter Rate" required />
+													<input type="number" class="form-control col-md-12" name="vehicleDriver" id="vehicleIdDriver" required hidden />
+													<input type="text" class="form-control col-md-12" name="idClientDriver" id="idClientDriver" required hidden />
+													<input type="text" class="form-control col-md-12" name="cityDriver" required hidden />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<h5 class="mt-4 mb-2">Base Fare</h5>
+													<input type="number" class="form-control col-md-12" name="baseFareDriver" placeholder="Enter Base Fare" required />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<h5 class="mt-4 mb-2">Wait Charge</h5>
+													<input type="number" class="form-control col-md-12" name="waitChargeDriver" placeholder="Enter Wait Charge" required />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<h5 class="mt-4 mb-2">Max free wait time(in minutes)</h5>
+													<input type="number" class="form-control col-md-12" name="waitTimeDriver" placeholder="Enter Max free wait time" required />
+												</div>
+											</div>
+											<br />
+											<div class="row">
+												<div class="col-md-12">
+													<button type="submit" name="submitDriverModal" class="btn btn-info">Submit</button>
+												</div>
+											</div>
+											<br />
+										</form>
+									</div>
+								</span>
+							</div>
+							<div class="col-md-12">
+								<span id="driverTab">
+									<div class="col-12">
+										<table id="datatableDriver" class="display table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+											<thead>
+												<tr>
+													<th>Vehicle Name</th>
+													<th>City</th>
+													<th>Range</th>
+													<th>Rate</th>
+													<th>Base Fare</th>
+													<th>Wait Charge</th>
+													<th>Max free wait time</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody></tbody>
+										</table>
+									</div>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal1">
+				<div class="modal-dialog modal-md" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="exampleModalLabel1">Edit Rate</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<form action="/admin/updateDynamic" method="POST" id="updateDynamic">
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="mt-4 mb-2">Range</h5>
+										<input type="number" class="form-control col-md-4" name="startModal" placeholder="Enter Start" required />
+										<input type="number" class="form-control col-md-4" name="endModal" placeholder="Enter End" required />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<h5 class="mt-4 mb-2">Rate /km</h5>
+										<input type="number" class="form-control col-md-12" name="rateModal" placeholder="Enter Rate" required />
+										<input type="number" class="form-control col-md-12" name="vehicleModal" id="vehicleId" required hidden />
+										<input type="number" class="form-control col-md-12" name="idModal" required hidden />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="mt-4 mb-2">Base Fare</h5>
+										<input type="number" class="form-control col-md-3" name="baseFareModal" placeholder="Enter Base Fare" required />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="mt-4 mb-2">Wait Charge</h5>
+										<input type="number" class="form-control col-md-12" name="waitChargeModal" placeholder="Enter Wait Charge" required />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="mt-4 mb-2">Max free wait time(in minutes)</h5>
+										<input type="number" class="form-control col-md-12" name="waitTimeModal" placeholder="Enter Max free wait time" required />
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-md-12">
+										<button type="submit" name="submit" class="btn btn-info">Submit</button>
+									</div>
+								</div>
+								<br />
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="modal1">
+				<div class="modal-dialog modal-md" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="exampleModalLabel1">Edit Rate</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<form action="/admin/dynamicClientUpdate" id="dynamicClientUpdate" method="POST">
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="mt-4 mb-2">Range</h5>
+										<input type="number" class="form-control col-md-4" name="startClientModal" placeholder="Enter Start" required />
+										<input type="number" class="form-control col-md-4" name="endClientModal" placeholder="Enter End" required />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<h5 class="mt-4 mb-2">Rate /km</h5>
+										<input type="number" class="form-control col-md-12" name="rateClientModal" placeholder="Enter Rate" required />
+										<input type="number" class="form-control col-md-12" name="vehicleClientModal" required hidden />
+										<input type="text" class="form-control col-md-12" name="clientIdModal" required hidden />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="mt-4 mb-2">Base Fare</h5>
+										<input type="number" class="form-control col-md-12" name="baseFareClientModal" placeholder="Enter Base Fare" required />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="mt-4 mb-2">Wait Charge</h5>
+										<input type="number" class="form-control col-md-12" name="waitChargeClientModal" placeholder="Enter Wait Charge" required />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="mt-4 mb-2">Max free wait time(in minutes)</h5>
+										<input type="number" class="form-control col-md-12" name="waitTimeClientModal" placeholder="Enter Max free wait time" required />
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-md-12">
+										<button type="submit" name="submitClient" class="btn btn-info">Submit</button>
+									</div>
+								</div>
+								<br />
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="driverModal" tabindex="-1" role="dialog" aria-labelledby="modal1">
+				<div class="modal-dialog modal-md" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="exampleModalLabel1">Edit Rate</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<form action="/admin/dynamicDriverUpdate" id="dynamicDriverUpdate" method="POST">
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="mt-4 mb-2">Range</h5>
+										<input type="number" class="form-control col-md-4" name="startDriverModal" placeholder="Enter Start" required />
+										<input type="number" class="form-control col-md-4" name="endDriverModal" placeholder="Enter End" required />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<h5 class="mt-4 mb-2">Rate /km</h5>
+										<input type="number" class="form-control col-md-12" name="rateDriverModal" placeholder="Enter Rate" required />
+										<input type="number" class="form-control col-md-12" name="vehicleDriverModal" required hidden />
+										<input type="text" class="form-control col-md-12" name="driverIdModal" required hidden />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="mt-4 mb-2">Base Fare</h5>
+										<input type="number" class="form-control col-md-12" name="baseFareDriverModal" placeholder="Enter Base Fare" required />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="mt-4 mb-2">Wait Charge</h5>
+										<input type="number" class="form-control col-md-12" name="waitChargeDriverModal" placeholder="Enter Wait Charge" required />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<h5 class="mt-4 mb-2">Max free wait time(in minutes)</h5>
+										<input type="number" class="form-control col-md-12" name="waitTimeDriverModal" placeholder="Enter Max free wait time" required />
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-md-12">
+										<button type="submit" name="submitDriverModal" class="btn btn-info">Submit</button>
+									</div>
+								</div>
+								<br />
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<% include ../partials/footer %>
+
+<script>
+	$(document).ready(function () {
+		$("#hide").hide();
+		$("#hideClient").hide();
+		$("#clientTab").hide();
+		$("#hideDriver").hide();
+		$("#driverTab").hide();
+		$(".select2").select2();
+	});
+	const rateTab = $("#datatable").DataTable({
+		scrollY: 400,
+		scrollX: true,
+	});
+	const dataTab = $("#datatableClient").DataTable({
+		scrollY: 400,
+		scrollX: true,
+	});
+	const driverTab = $("#datatableDriver").DataTable({
+		scrollY: 400,
+		scrollX: true,
+	});
+
+	let vehicleSelect = "",
+		client = "",
+		vehicleId = "",
+		state = "",
+		city = "",
+		stateSelect = "",
+		citySelect = "",
+		vehicleDriver = "",
+		clientDriver = "",
+		stateDriver = "",
+		cityDriver = "";
+
+	$("#vehicle").on("change", function () {
+		vehicleId = $(this).children("option:selected").val();
+		$("input[name='vehicle']").val(vehicleId);
+		getRateData(vehicleId, city);
+	});
+
+	$("#stateB2C").change(function () {
+		state = $(this).children("option:selected").val();
+		stateFind(state);
+		getRateData(vehicleId, city);
+	});
+
+	$("#cityB2C").change(function () {
+		city = $(this).children("option:selected").val();
+		$("input[name='cityB2C']").val(city);
+		getRateData(vehicleId, city);
+	});
+
+	function stateFind(state) {
+		$.ajax({
+			url: "/admin/search",
+			type: "post",
+			data: {
+				state: state,
+			},
+			dataType: "json",
+			success: function (data) {
+				let len = data.length;
+				if (len > 0) {
+					$("#cityB2C").empty();
+					for (let i = 0; i < len; i++) {
+						let cid = data[i].id;
+						let city = data[i].city;
+						$("#cityB2C").append("<option>Select</option>");
+						$("#cityB2C").append("<option value='" + cid + "'>" + city + "</option>");
+					}
+				} else {
+					$("#cityB2C").empty();
+					$("#cityB2C").append("<option disabled selected>Choose</option>");
+				}
+			},
+		});
+	}
+
+	function getRateData(vehicleId, city) {
+		if (vehicleId && city) {
+			$("#hide").show();
+			$.ajax({
+				url: "/admin/getRate",
+				type: "post",
+				data: { vehicleId: vehicleId, city: city },
+				dataType: "json",
+				success: function (data) {
+					if (data.code === 1) {
+						rateTab.clear().draw();
+
+						for (let i = 0; i < data.rate.length; i++) {
+							rateTab.row
+								.add([
+									data.rate[i].type_name,
+									data.rate[i].city,
+									`${data.rate[i].start} - ${data.rate[i].end}`,
+									data.rate[i].rate,
+									data.rate[i].baseFare,
+									data.rate[i].waitCharge,
+									data.rate[i].waitTime,
+									`<a data-toggle="modal" data-target="#modal" class="btn btn-info"
+                                            data-id="${data.rate[i].id}"> Edit </a>`,
+								])
+								.draw();
+						}
+					}
+				},
+			});
+		}
+	}
+
+	$("#modal").on("show.bs.modal", function (event) {
+		const id = $(event.relatedTarget).attr("data-id");
+		$.ajax({
+			url: "/admin/autoFillRate",
+			type: "post",
+			data: { id: id },
+			dataType: "json",
+			success: function (data) {
+				if (data.code === 1) {
+					$("input[name='rateModal']").val(data.data[0] ? data.data[0].rate : "");
+					$("input[name='baseFareModal']").val(data.data[0] ? data.data[0].baseFare : "");
+					$("input[name='waitChargeModal']").val(data.data[0] ? data.data[0].waitCharge : "");
+					$("input[name='waitTimeModal']").val(data.data[0] ? data.data[0].waitTime : "");
+					$("input[name='startModal']").val(data.data[0] ? data.data[0].start : "");
+					$("input[name='endModal']").val(data.data[0] ? data.data[0].end : "");
+					$("input[name='vehicleModal']").val(data.data[0] ? data.data[0].vehicle_id : "");
+					$("input[name='idModal']").val(id);
+				}
+			},
+		});
+	});
+</script>
+
+<script>
+	$("#vehicleSelect").on("change", function () {
+		vehicleSelect = $(this).children("option:selected").val();
+		$("#vehicleIdClient").val(vehicleSelect);
+		getRateDataClient(vehicleSelect, client);
+	});
+
+	$("#client").on("change", function () {
+		client = $(this).children("option:selected").val();
+		$("#idClient").val(client);
+		getRateDataClient(vehicleSelect, client, stateSelect, citySelect);
+	});
+
+	$("#stateSelect").change(function () {
+		stateSelect = $(this).children("option:selected").val();
+		stateFindSelect(stateSelect);
+		getRateDataClient(vehicleSelect, client, stateSelect, citySelect);
+	});
+
+	$("#citySelect").change(function () {
+		citySelect = $(this).children("option:selected").val();
+		$("input[name='citySelect']").val(citySelect);
+		getRateDataClient(vehicleSelect, client, stateSelect, citySelect);
+	});
+
+	function stateFindSelect(stateSelect) {
+		$.ajax({
+			url: "/admin/search",
+			type: "post",
+			data: {
+				state: stateSelect,
+			},
+			dataType: "json",
+			success: function (data) {
+				let len = data.length;
+				if (len > 0) {
+					$("#citySelect").empty();
+					for (let i = 0; i < len; i++) {
+						let cid = data[i].id;
+						let city = data[i].city;
+						$("#citySelect").append("<option>Select</option>");
+						$("#citySelect").append("<option value='" + cid + "'>" + city + "</option>");
+					}
+				} else {
+					$("#citySelect").empty();
+					$("#citySelect").append("<option disabled selected>Choose</option>");
+				}
+			},
+		});
+	}
+
+	$("#clientModal").on("show.bs.modal", function (event) {
+		const id = $(event.relatedTarget).attr("data-id");
+		$.ajax({
+			url: "/admin/getRateClient",
+			type: "post",
+			data: { id: id },
+			dataType: "json",
+			success: function (data) {
+				if (data.code === 1) {
+					$("input[name='rateClientModal']").val(data.data[0] ? data.data[0].rate : "");
+					$("input[name='baseFareClientModal']").val(data.data[0] ? data.data[0].baseFare : "");
+					$("input[name='waitChargeClientModal']").val(data.data[0] ? data.data[0].waitCharge : "");
+					$("input[name='waitTimeClientModal']").val(data.data[0] ? data.data[0].waitTime : "");
+					$("input[name='startClientModal']").val(data.data[0] ? data.data[0].start : "");
+					$("input[name='endClientModal']").val(data.data[0] ? data.data[0].end : "");
+					$("input[name='vehicleClientModal']").val(data.data[0] ? data.data[0].vehicle_id : "");
+					$("input[name='clientIdModal']").val(id);
+				}
+			},
+		});
+	});
+
+	function getRateDataClient(vehicleId, client, stateSelect, citySelect) {
+		dataTab.clear().draw();
+		if (vehicleId && client && stateSelect && citySelect) {
+			$("#hideClient").show();
+			$("#clientTab").show();
+			$.ajax({
+				url: "/admin/getClientRate",
+				type: "post",
+				data: { client: client, city: citySelect },
+				dataType: "json",
+				success: function (data) {
+					if (data.code === 1) {
+						for (let i = 0; i < data.data.length; i++) {
+							dataTab.row
+								.add([
+									data.data[i].type_name,
+									data.data[i].city,
+									`${data.data[i].start} - ${data.data[i].end}`,
+									data.data[i].rate,
+									data.data[i].baseFare,
+									data.data[i].waitCharge,
+									data.data[i].waitTime,
+									`<a data-toggle="modal" data-target="#clientModal" class="btn btn-info"
+                                            data-id="${data.data[i].id}"> Edit </a>`,
+								])
+								.draw();
+						}
+					}
+				},
+			});
+		}
+	}
+</script>
+
+<script>
+	$("#vehicleDriver").on("change", function () {
+		vehicleDriver = $(this).children("option:selected").val();
+		$("#vehicleIdDriver").val(vehicleDriver);
+		getRateDataDriver(vehicleDriver, clientDriver, stateDriver, cityDriver);
+	});
+
+	$("#clientDriver").on("change", function () {
+		clientDriver = $(this).children("option:selected").val();
+		$("#idClientDriver").val(clientDriver);
+		getRateDataDriver(vehicleDriver, clientDriver, stateDriver, cityDriver);
+	});
+
+	$("#stateDriver").change(function () {
+		stateDriver = $(this).children("option:selected").val();
+		stateFindDriver(stateDriver);
+		getRateDataDriver(vehicleDriver, clientDriver, stateDriver, cityDriver);
+	});
+
+	$("#cityDriver").change(function () {
+		cityDriver = $(this).children("option:selected").val();
+		$("input[name='cityDriver']").val(cityDriver);
+		getRateDataDriver(vehicleDriver, clientDriver, stateDriver, cityDriver);
+	});
+
+	function stateFindDriver(stateDriver) {
+		$.ajax({
+			url: "/admin/search",
+			type: "post",
+			data: {
+				state: stateDriver,
+			},
+			dataType: "json",
+			success: function (data) {
+				let len = data.length;
+				if (len > 0) {
+					$("#cityDriver").empty();
+					for (let i = 0; i < len; i++) {
+						let cid = data[i].id;
+						let city = data[i].city;
+						$("#cityDriver").append("<option>Select</option>");
+						$("#cityDriver").append("<option value='" + cid + "'>" + city + "</option>");
+					}
+				} else {
+					$("#cityDriver").empty();
+					$("#cityDriver").append("<option disabled selected>Choose</option>");
+				}
+			},
+		});
+	}
+
+	$("#driverModal").on("show.bs.modal", function (event) {
+		const id = $(event.relatedTarget).attr("data-id");
+		$.ajax({
+			url: "/admin/getRateDriver",
+			type: "post",
+			data: { id: id },
+			dataType: "json",
+			success: function (data) {
+				if (data.code === 1) {
+					$("input[name='rateDriverModal']").val(data.data[0] ? data.data[0].rate : "");
+					$("input[name='baseFareDriverModal']").val(data.data[0] ? data.data[0].baseFare : "");
+					$("input[name='waitChargeDriverModal']").val(data.data[0] ? data.data[0].waitCharge : "");
+					$("input[name='waitTimeDriverModal']").val(data.data[0] ? data.data[0].waitTime : "");
+					$("input[name='startDriverModal']").val(data.data[0] ? data.data[0].start : "");
+					$("input[name='endDriverModal']").val(data.data[0] ? data.data[0].end : "");
+					$("input[name='vehicleDriverModal']").val(data.data[0] ? data.data[0].vehicle_id : "");
+					$("input[name='driverIdModal']").val(id);
+				}
+			},
+		});
+	});
+
+	function getRateDataDriver(vehicleDriver, clientDriver, stateDriver, cityDriver) {
+		driverTab.clear().draw();
+		if (vehicleDriver && clientDriver && stateDriver && cityDriver) {
+			$("#hideDriver").show();
+			$("#driverTab").show();
+			$.ajax({
+				url: "/admin/getDriverRate",
+				type: "post",
+				data: { client: clientDriver, city: cityDriver },
+				dataType: "json",
+				success: function (data) {
+					if (data.code === 1) {
+						for (let i = 0; i < data.data.length; i++) {
+							driverTab.row
+								.add([
+									data.data[i].type_name,
+									data.data[i].city,
+									`${data.data[i].start} - ${data.data[i].end}`,
+									data.data[i].rate,
+									data.data[i].baseFare,
+									data.data[i].waitCharge,
+									data.data[i].waitTime,
+									`<a data-toggle="modal" data-target="#driverModal" class="btn btn-info"
+	                                           data-id="${data.data[i].id}"> Edit </a>`,
+								])
+								.draw();
+						}
+					}
+				},
+			});
+		}
+	}
+</script>
+
+<script>
+	$("#dynamic").submit(function (e) {
+		e.preventDefault();
+
+		$.ajax({
+			url: "/admin/dynamic",
+			type: "POST",
+			data: $(this).serialize(),
+			dataType: "json",
+			success: function (data) {
+				if (data.code === 1) {
+					Swal.fire("Success", "New Rate Added", "success");
+					getRateData(vehicleId, city);
+				} else if (data.code === 2) {
+					Swal.fire("Alert", "Start should be less than end", "error");
+				} else {
+					Swal.fire("Error", "Unable to save", "error");
+				}
+			},
+		});
+	});
+
+	$("#updateDynamic").submit(function (e) {
+		e.preventDefault();
+
+		$.ajax({
+			url: "/admin/updateDynamic",
+			type: "POST",
+			data: $(this).serialize(),
+			dataType: "json",
+			success: function (data) {
+				if (data.code === 1) {
+					Swal.fire("Success", "Rate Updated", "success");
+					getRateData(vehicleId, city);
+				} else if (data.code === 2) {
+					Swal.fire("Alert", "Start should be less than end", "error");
+				} else {
+					Swal.fire("Error", "Unable to save", "error");
+				}
+			},
+		});
+	});
+
+	$("#dynamicClient").submit(function (e) {
+		e.preventDefault();
+
+		$.ajax({
+			url: "/admin/dynamicClient",
+			type: "POST",
+			data: $(this).serialize(),
+			dataType: "json",
+			success: function (data) {
+				if (data.code === 1) {
+					Swal.fire("Success", "Rate Added", "success");
+					getRateDataClient(vehicleSelect, client, stateSelect, citySelect);
+				} else if (data.code === 2) {
+					Swal.fire("Alert", "Start should be less than end", "error");
+				} else {
+					Swal.fire("Error", "Unable to save", "error");
+				}
+			},
+		});
+	});
+
+	$("#dynamicClientUpdate").submit(function (e) {
+		e.preventDefault();
+
+		$.ajax({
+			url: "/admin/dynamicClientUpdate",
+			type: "POST",
+			data: $(this).serialize(),
+			dataType: "json",
+			success: function (data) {
+				if (data.code === 1) {
+					Swal.fire("Success", "Rate Updated", "success");
+					getRateDataClient(vehicleSelect, client, stateSelect, citySelect);
+				} else if (data.code === 2) {
+					Swal.fire("Alert", "Start should be less than end", "error");
+				} else {
+					Swal.fire("Error", "Unable to save", "error");
+				}
+			},
+		});
+	});
+
+	$("#dynamicDriver").submit(function (e) {
+		e.preventDefault();
+
+		$.ajax({
+			url: "/admin/dynamicDriver",
+			type: "POST",
+			data: $(this).serialize(),
+			dataType: "json",
+			success: function (data) {
+				if (data.code === 1) {
+					Swal.fire("Success", "Rate Added", "success");
+					getRateDataDriver(vehicleDriver, clientDriver, stateDriver, cityDriver);
+				} else if (data.code === 2) {
+					Swal.fire("Alert", "Start should be less than end", "error");
+				} else {
+					Swal.fire("Error", "Unable to save", "error");
+				}
+			},
+		});
+	});
+
+	$("#dynamicDriverUpdate").submit(function (e) {
+		e.preventDefault();
+
+		$.ajax({
+			url: "/admin/dynamicDriverUpdate",
+			type: "POST",
+			data: $(this).serialize(),
+			dataType: "json",
+			success: function (data) {
+				if (data.code === 1) {
+					Swal.fire("Success", "Rate Updated", "success");
+					getRateDataDriver(vehicleDriver, clientDriver, stateDriver, cityDriver);
+				} else if (data.code === 2) {
+					Swal.fire("Alert", "Start should be less than end", "error");
+				} else {
+					Swal.fire("Error", "Unable to save", "error");
+				}
+			},
+		});
+	});
+</script>
